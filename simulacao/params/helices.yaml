@@ -1,0 +1,16 @@
+rotor_0:
+  a0: 0.4
+  alpha_stall: 1.4
+  cla: 5.5
+  cda: 0.15
+  cma: 0.01
+  cla_stall: -0.03
+  cda_stall: 0.0
+  cma_stall: 0.0
+  area: 0.073
+  air_density: 1.225
+  cp: 0.084 0 0
+  forward: 0 -1 0
+  upward: 0 0 1
+  link_name: iris::rotor_0
+

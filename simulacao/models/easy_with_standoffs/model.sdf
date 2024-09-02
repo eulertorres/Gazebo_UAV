@@ -1,0 +1,786 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+  <model name='iris'>
+    <pose>0 0 0 0 0 0</pose>
+    <link name='base_link'>
+      <inertial>
+        <mass>58.65</mass>
+        <inertia>
+          <ixx>18.58</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>19.4</iyy>
+          <iyz>0</iyz>
+          <izz>27.27</izz>
+        </inertia>
+        <pose>0 0 0.74215 0 0 0</pose>
+      </inertial>
+      <pose>0 0 0 0 0 1.5708</pose>
+      <gravity>1</gravity>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+      <enable_wind>1</enable_wind>
+      <visual name='visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/home/euler/Desktop/Models/EASy/Partes/frame_3.dae</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <lighting>1</lighting>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Black</name>
+          </script>
+			<shader type="pixel" name="gazebo.material">
+			  <normal_map>file://media/materials/textures/carbon_fiber_normal.png</normal_map>
+			</shader>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+          <emissive>0 0 0 1</emissive>
+        </material>
+        <transparency>0</transparency>
+        <cast_shadows>1</cast_shadows>
+      </visual>
+      <collision name='base_link_collision'>
+        <pose>0 0 0.5 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.98 0.98 1.00</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode>
+              <max_vel>100.0</max_vel>
+              <min_depth>0.001</min_depth>
+            </ode>
+          </contact>
+          <friction>
+            <ode>
+              <mu>100000.0</mu>
+              <mu2>100000.0</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+    </link>
+	
+	<link name='iris/imu_link'>
+	  <pose>0 0 0.74215 0 0 0</pose>
+	  <inertial>
+		<pose>0 0 0 0 0 0</pose>
+		<mass>0.15</mass>
+		<inertia>
+		  <ixx>0.00001</ixx>
+		  <ixy>0</ixy>
+		  <ixz>0</ixz>
+		  <iyy>0.00002</iyy>
+		  <iyz>0</iyz>
+		  <izz>0.00002</izz>
+		</inertia>
+	  </inertial>
+	  <visual name="imu_visual">
+		<pose>0 0 0 3.141593 0 0</pose>
+		<geometry>
+		  <box>
+			<size>0.1 0.05 0.04</size>
+		  </box>
+		</geometry>
+		<material>
+		  <script>
+			<uri>file://media/materials/scripts/gazebo.material</uri>
+			<name>Gazebo/Red</name>
+		  </script>
+		</material>
+	  </visual>
+	  <sensor name="imu_sensor" type="imu">
+		<pose>0 0 0 3.141593 0 0</pose>
+		<always_on>1</always_on>
+		<update_rate>1000.0</update_rate>
+	  </sensor>
+	</link>
+    <joint name='iris/imu_joint' type='revolute'>
+      <child>iris/imu_link</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>0</upper>
+          <effort>0</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <damping>1.0</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+
+    <link name='rotor_0'>
+      <inertial>
+        <mass>0.25</mass>
+        <inertia>
+          <ixx>0.0194</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0194</iyy>
+          <iyz>0</iyz>
+          <izz>0.0097</izz>
+        </inertia>
+        <pose>0 0 0 0 -0 0</pose>
+      </inertial>
+      <pose>1.12315 -0.470068 1.08 -0.139626 0 -0.3926991</pose>
+      <gravity>1</gravity>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+      <enable_wind>1</enable_wind>
+      <visual name='visual'>
+        <pose>-1.14 -0.46 -1.09 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/home/euler/Desktop/Models/EASy/Partes/helicesCCW.dae</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <lighting>1</lighting>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+          <emissive>0 0 0 1</emissive>
+        </material>
+        <transparency>0</transparency>
+        <cast_shadows>1</cast_shadows>
+      </visual>
+      <collision name='rotor_0_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.015</length>
+            <radius>0.4826</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+    </link>
+	<joint name='rotor_0_joint' type='revolute'>
+      <child>rotor_0</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+
+    <link name='rotor_1'>
+      <inertial>
+        <mass>0.25</mass>
+        <inertia>
+          <ixx>0.0194</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0194</iyy>
+          <iyz>0</iyz>
+          <izz>0.0097</izz>
+        </inertia>
+        <pose>0 0 0 0 -0 0</pose>
+      </inertial>
+      <pose>0.472969 -1.11674 1.08 0.139626 0 -1.178097</pose>
+      <gravity>1</gravity>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+      <enable_wind>1</enable_wind>
+      <visual name='visual'>
+        <pose>-1.14 -0.46 -1.09 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/home/euler/Desktop/Models/EASy/Partes/helicesCCW.dae</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <lighting>1</lighting>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+          <emissive>0 0 0 1</emissive>
+        </material>
+        <transparency>0</transparency>
+        <cast_shadows>1</cast_shadows>
+      </visual>
+      <collision name='rotor_1_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.015</length>
+            <radius>0.4826</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+    </link>
+    <joint name='rotor_1_joint' type='revolute'>
+      <child>rotor_1</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+
+    <link name='rotor_2'>
+      <collision name='rotor_2_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.005</length>
+            <radius>0.4826</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <inertial>
+        <mass>0.25</mass>
+        <inertia>
+          <ixx>0.0194</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0194</iyy>
+          <iyz>0</iyz>
+          <izz>0.0097</izz>
+        </inertia>
+        <pose>0 0 0 0 -0 0</pose>
+      </inertial>
+      <pose>-0.475712 -1.12224 1.08 -0.139626 -0 -1.9634954</pose>
+      <gravity>1</gravity>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+      <enable_wind>1</enable_wind>
+      <visual name='visual'>
+        <pose>-1.14 -0.46 -1.09 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/home/euler/Desktop/Models/EASy/Partes/helicesCCW.dae</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <lighting>1</lighting>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+          <emissive>0 0 0 1</emissive>
+        </material>
+        <transparency>0</transparency>
+        <cast_shadows>1</cast_shadows>
+      </visual>
+    </link>
+    <joint name='rotor_2_joint' type='revolute'>
+      <child>rotor_2</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+	
+    <link name='rotor_3'>
+      <collision name='rotor_3_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.005</length>
+            <radius>0.4826</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <inertial>
+        <mass>0.25</mass>
+        <inertia>
+          <ixx>0.0194</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0194</iyy>
+          <iyz>0</iyz>
+          <izz>0.0097</izz>
+        </inertia>
+        <pose>0 0 0 0 -0 0</pose>
+      </inertial>
+      <pose>-1.11268 -0.460514 1.08 0.139626 -0 -2.7488936</pose>
+      <gravity>1</gravity>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+      <enable_wind>1</enable_wind>
+      <visual name='visual'>
+        <pose>-1.14 -0.46 -1.09 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/home/euler/Desktop/Models/EASy/Partes/helicesCCW.dae</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <lighting>1</lighting>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+          <emissive>0 0 0 1</emissive>
+        </material>
+        <transparency>0</transparency>
+        <cast_shadows>1</cast_shadows>
+      </visual>
+    </link>
+    <joint name='rotor_3_joint' type='revolute'>
+      <child>rotor_3</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+	
+    <link name='rotor_4'>
+      <collision name='rotor_4_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.005</length>
+            <radius>0.4826</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <inertial>
+        <mass>0.25</mass>
+        <inertia>
+          <ixx>0.0194</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0194</iyy>
+          <iyz>0</iyz>
+          <izz>0.0097</izz>
+        </inertia>
+        <pose>0 0 0 0 -0 0</pose>
+      </inertial>
+      <pose>-1.11174 0.465589 1.08 -0.139626 0 2.7488936</pose>
+      <gravity>1</gravity>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+      <enable_wind>1</enable_wind>
+      <visual name='visual'>
+        <pose>-1.14 -0.46 -1.09 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/home/euler/Desktop/Models/EASy/Partes/helicesCCW.dae</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <lighting>1</lighting>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+          <emissive>0 0 0 1</emissive>
+        </material>
+        <transparency>0</transparency>
+        <cast_shadows>1</cast_shadows>
+      </visual>
+    </link>
+    <joint name='rotor_4_joint' type='revolute'>
+      <child>rotor_4</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+	
+    <link name='rotor_5'>
+      <collision name='rotor_5_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.005</length>
+            <radius>0.4826</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <inertial>
+        <mass>0.25</mass>
+        <inertia>
+          <ixx>0.0194</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0194</iyy>
+          <iyz>0</iyz>
+          <izz>0.0097</izz>
+        </inertia>
+        <pose>0 0 0 0 -0 0</pose>
+      </inertial>
+      <pose>-0.46537 1.11505 1.08 0.139626 -0 1.9634954</pose>
+      <gravity>1</gravity>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+      <enable_wind>1</enable_wind>
+      <visual name='visual'>
+        <pose>-1.14 -0.46 -1.09 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/home/euler/Desktop/Models/EASy/Partes/helicesCCW.dae</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <lighting>1</lighting>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+          <emissive>0 0 0 1</emissive>
+        </material>
+        <transparency>0</transparency>
+        <cast_shadows>1</cast_shadows>
+      </visual>
+    </link>
+    <joint name='rotor_5_joint' type='revolute'>
+      <child>rotor_5</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+
+    <link name='rotor_6'>
+      <collision name='rotor_6_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.005</length>
+            <radius>0.4826</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <inertial>
+        <mass>0.25</mass>
+        <inertia>
+          <ixx>0.0194</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0194</iyy>
+          <iyz>0</iyz>
+          <izz>0.0097</izz>
+        </inertia>
+        <pose>0 0 0 0 -0 0</pose>
+      </inertial>
+      <pose>0.458149 1.12087 1.08 -0.139626 -0 1.178097</pose>
+      <gravity>1</gravity>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+      <enable_wind>1</enable_wind>
+      <visual name='visual'>
+        <pose>-1.14 -0.46 -1.09 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/home/euler/Desktop/Models/EASy/Partes/helicesCCW.dae</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <lighting>1</lighting>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+          <emissive>0 0 0 1</emissive>
+        </material>
+        <transparency>0</transparency>
+        <cast_shadows>1</cast_shadows>
+      </visual>
+    </link>
+    <joint name='rotor_6_joint' type='revolute'>
+      <child>rotor_6</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+	
+    <link name='rotor_7'>
+      <collision name='rotor_7_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.005</length>
+            <radius>0.4826</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <inertial>
+        <mass>0.25</mass>
+        <inertia>
+          <ixx>0.0194</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0194</iyy>
+          <iyz>0</iyz>
+          <izz>0.0097</izz>
+        </inertia>
+        <pose>0 0 0 0 -0 0</pose>
+      </inertial>
+      <pose>1.12562 0.464026 1.08 0.139626 -0 0.3926991</pose>
+      <gravity>1</gravity>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+      <enable_wind>1</enable_wind>
+      <visual name='visual'>
+        <pose>-1.14 -0.46 -1.09 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/home/euler/Desktop/Models/EASy/Partes/helicesCCW.dae</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <lighting>1</lighting>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+          <emissive>0 0 0 1</emissive>
+        </material>
+        <transparency>0</transparency>
+        <cast_shadows>1</cast_shadows>
+      </visual>
+    </link>
+    <joint name='rotor_7_joint' type='revolute'>
+      <child>rotor_7</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+    <static>0</static>
+  </model>
+</sdf>

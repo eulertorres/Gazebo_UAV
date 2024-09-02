@@ -1,0 +1,429 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+  <model name='iris_demo'>
+    <include>
+      <uri>model://easy_with_standoffs</uri>
+    </include>
+    <plugin name="rotor_0_blade_1" filename="libLiftDragPlugin.so"> <!-- CW -->
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 -1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>iris::rotor_0</link_name>
+    </plugin>
+    <plugin name="rotor_0_blade_2" filename="libLiftDragPlugin.so">
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>-0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>iris::rotor_0</link_name>
+    </plugin>
+    <plugin name="rotor_1_blade_1" filename="libLiftDragPlugin.so">	<!-- CCW -->
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>iris::rotor_1</link_name>
+    </plugin>
+    <plugin name="rotor_1_blade_2" filename="libLiftDragPlugin.so">
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>-0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 -1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>iris::rotor_1</link_name>
+    </plugin>
+    <plugin name="rotor_2_blade_1" filename="libLiftDragPlugin.so"> <!-- CW -->
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 -1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>iris::rotor_2</link_name>
+    </plugin>
+    <plugin name="rotor_2_blade_2" filename="libLiftDragPlugin.so">
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>-0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>iris::rotor_2</link_name>
+    </plugin>
+    <plugin name="rotor_3_blade_1" filename="libLiftDragPlugin.so"> <!-- CCW -->
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>iris::rotor_3</link_name>
+    </plugin>
+    <plugin name="rotor_3_blade_2" filename="libLiftDragPlugin.so">
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>-0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 -1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>iris::rotor_3</link_name>
+    </plugin>
+    <plugin name="rotor_4_blade_1" filename="libLiftDragPlugin.so"> <!-- CW -->
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 -1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>iris::rotor_4</link_name>
+    </plugin>
+    <plugin name="rotor_4_blade_2" filename="libLiftDragPlugin.so">
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>-0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>iris::rotor_4</link_name>
+    </plugin>
+    <plugin name="rotor_5_blade_1" filename="libLiftDragPlugin.so"> <!-- CCW -->
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>iris::rotor_5</link_name>
+    </plugin>
+    <plugin name="rotor_5_blade_2" filename="libLiftDragPlugin.so">
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>-0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 -1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>iris::rotor_5</link_name>
+    </plugin>
+    <plugin name="rotor_6_blade_1" filename="libLiftDragPlugin.so"> <!-- CW -->
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 -1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>iris::rotor_6</link_name>
+    </plugin>
+    <plugin name="rotor_6_blade_2" filename="libLiftDragPlugin.so">
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>-0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>iris::rotor_6</link_name>
+    </plugin>
+    <plugin name="rotor_7_blade_1" filename="libLiftDragPlugin.so"> <!-- CCW -->
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>iris::rotor_7</link_name>
+    </plugin>
+    <plugin name="rotor_7_blade_2" filename="libLiftDragPlugin.so">
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>-0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <forward>0 -1 0</forward>
+	  <upward>0 0 1</upward>
+      <link_name>iris::rotor_7</link_name>
+    </plugin>
+    <plugin name="arducopter_plugin" filename="libArduPilotPlugin.so">
+      <fdm_addr>127.0.0.1</fdm_addr>
+      <fdm_port_in>9002</fdm_port_in>
+      <fdm_port_out>9003</fdm_port_out>
+      <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+      <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+      <imuName>iris_demo::iris::iris/imu_link::imu_sensor</imuName>
+      <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+	       <!--
+          RPM = 60 * multiplier / (2 * PI)
+        -->
+      <control channel="0">
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>0.20</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>iris::rotor_0_joint</jointName>
+        <multiplier>-491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="1">
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>0.20</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>iris::rotor_4_joint</jointName>
+        <multiplier>-491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="2">
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>0.20</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>iris::rotor_1_joint</jointName>
+        <multiplier>491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="3">
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>0.20</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>iris::rotor_3_joint</jointName>
+        <multiplier>491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="4">
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>0.20</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>iris::rotor_7_joint</jointName>
+        <multiplier>491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="5">
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>0.20</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>iris::rotor_5_joint</jointName>
+        <multiplier>491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="6">
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>0.20</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>iris::rotor_6_joint</jointName>
+        <multiplier>-491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="7">
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>0.20</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>iris::rotor_2_joint</jointName>
+        <multiplier>-491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+    </plugin>
+
+	<!--
+	<plugin name="plugin_resistencia_ar_simples" filename="libfluid_resitance_plugin.so">
+		<TopicName>/resistencia_ar/frame</TopicName>
+		<LinkName>iris::base_link</LinkName>
+		<rate>10.0</rate>
+		<uCoeff>2.0</uCoeff>
+	</plugin>  
+	-->
+	
+	<plugin name="gazebo_wind_plugin" filename="librotors_gazebo_wind_plugin.so">
+	  <robotNamespace>/iris_demo</robotNamespace>
+	  <xyzOffset>0 0 0</xyzOffset> <!-- Altere para a posição desejada -->
+	  
+	  <!-- Tópicos para publicação de vento -->
+	  <windForcePubTopic>vento/forca</windForcePubTopic>
+	  <windSpeedPubTopic>vento/velocidade</windSpeedPubTopic>
+	  
+	  <!-- Definições de vento constante -->
+	  <windSpeedMean>5.0</windSpeedMean> <!-- Velocidade média do vento (m/s) -->
+	  <windSpeedVariance>1.0</windSpeedVariance> <!-- Variação da velocidade do vento (m/s) -->
+	  <windDirection>1 0 0</windDirection> <!-- Direção do vento em coordenadas XYZ -->
+
+	  <!-- Definições de rajadas de vento -->
+	  <windGustStart>3.0</windGustStart> <!-- Tempo em que a rajada começa (s) -->
+	  <windGustDuration>90000.0</windGustDuration> <!-- Duração da rajada (s) -->
+	  <windGustForceMean>40.0</windGustForceMean> <!-- Força média da rajada (N) -->
+	  <windGustForceVariance>4.0</windGustForceVariance> <!-- Variação da força da rajada (N) -->
+	  <windGustDirection>0 1 0</windGustDirection> <!-- Direção da rajada em coordenadas XYZ -->
+
+	  <!-- Campo de vento customizado -->
+	  <useCustomStaticWindField>false</useCustomStaticWindField>
+	  <customWindFieldPath>~/catkin_ws/src/EASy/simulacao/models/EASy/vento_EASy.txt</customWindFieldPath>
+	  
+	  <!-- Link que será afetado pelo vento -->
+	  <linkName>iris::base_link</linkName> <!-- Substitua por nome real do link -->
+	  
+	  <!-- ID do frame para mensagens -->
+	  <frameId>world</frameId>
+	</plugin>
+	
+  </model>
+</sdf>

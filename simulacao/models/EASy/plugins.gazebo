@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Adicione os outros links, joints e propriedades conforme necessário -->
+  <gazebo>
+    <plugin name="arducopter_plugin" filename="libArduPilotPlugin.so">
+      <fdm_addr>127.0.0.1</fdm_addr>
+      <fdm_port_in>9002</fdm_port_in>
+      <fdm_port_out>9003</fdm_port_out>
+      <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+      <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+      <imuName>iris/imu_link::imu_sensor</imuName>
+      <connectionTimeoutMaxCount>60</connectionTimeoutMaxCount>
+    </plugin>
+  </gazebo>
+  
+  <!--
+  <gazebo reference="base_link">
+  <material>
+	  <script>
+	  <uri>file://media/materials/scripts/gazebo.material</uri>
+	  <name>Gazebo/Carbon</name>
+	  </script>
+  </material>
+  </gazebo>
+  -->
+  
+  <gazebo reference="iris/imu_link">
+  <material>
+	  <script>
+	  <uri>file://media/materials/scripts/gazebo.material</uri>
+	  <name>Gazebo/Carbon</name>
+	  </script>
+  </material>
+  </gazebo>
+
+
+</robot>

@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="iris">
+ 
+  <xacro:include filename="$(find simulacao)/models/EASy/macros.xacro" />
+  <xacro:include filename="$(find simulacao)/models/EASy/materials.xacro" />
+  <xacro:include filename="$(find simulacao)/models/EASy/parametros.xacro" />
+  <xacro:include filename="$(find simulacao)/models/EASy/plugins.gazebo" />
+
+  <link name="base_dummy">
+	<pose>0 0 0 0 0 0 </pose>
+  </link>
+  <joint type="fixed" name="link_dummy_base">
+    <child link="base_link" />
+    <parent link="base_dummy" />
+  </joint>
+
+  <link name="base_link">
+    <inertial>
+		<xacro:inertial_properties mass="${frame_massa}" pose="0 0 0 0 0 0" ixx="${frame_ixx}" ixy="${frame_ixy}" ixz="${frame_ixz}" iyy="${frame_iyy}" iyz="${frame_iyz}" izz="${frame_izz}"/>
+    </inertial>
+    <pose>0 0 0 0 0 1.5708</pose>
+    <gravity>1</gravity>
+    <self_collide>0</self_collide>
+    <kinematic>0</kinematic>
+    <enable_wind>1</enable_wind>
+    <xacro:visual_properties pose="0 0 0 0 0 0" uri="/home/euler/Desktop/Models/EASy/Partes/frame_3.dae" scale="1 1 1" material_script="file://media/materials/scripts/gazebo.material" material_name="Gazebo/Black" ambient="0.3 0.3 0.3 1" diffuse="0.7 0.7 0.7 1" specular="0.01 0.01 0.01 1" emissive="0 0 0 1" transparency="0" cast_shadows="1" namee="base_link_visual"/>
+    <xacro:collision_properties pose="0 0 0.5 0 0 0" size_x="0.98" size_y="0.98" size_z="1.00" nameP="base_link"/>
+  </link>
+  
+  <link name="iris/imu_link">
+    <pose>0 0 0.87675 0 0 0</pose>
+	<inertial>
+		<xacro:inertial_properties mass="${imu_massa}" pose="0 0 0.87675 0 0 0" ixx="${imu_ixx}" ixy="${imu_ixy}" ixz="${imu_ixz}" iyy="${imu_iyy}" iyz="${imu_iyz}" izz="${imu_izz}"/>
+	</inertial>
+    <visual name="imu_visual">
+      <pose>0 0 0 3.141593 0 0</pose>
+      <geometry>
+        <box size="0.1 0.05 0.04" />
+      </geometry>
+    </visual>
+    <sensor name="imu_sensor" type="imu">
+      <pose>0 0 0 3.141593 0 0</pose>
+      <always_on>1</always_on>
+      <update_rate>1000.0</update_rate>
+    </sensor>
+  </link>
+
+  <!-- Outros links e juntas seguem o mesmo padrão -->
+  
+  <!-- Juntasuntas -->
+  <joint name="iris/imu_joint" type="revolute">
+    <origin xyz="0 0 0.87675" rpy="0 0 0"/>
+    <child link="iris/imu_link" />
+    <parent link = "base_link" />
+	<axis xyz="0 0 1" />
+	<limit lower="0" upper="0" velocity="0" effort="0" />
+	<dynamics damping="1.0"	/>
+  </joint>
+    
+  <!-- Adicione os outros links, joints e propriedades conforme necessário -->
+
+</robot>

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="iris">
+  
+ <!-- Não inclui os motores, hélices, bateria e IMU. Mas caso não tenha esses valores separados coloque tudo aqui -->
+ <xacro:property name="frame_massa" value="58.65" />
+ <xacro:property name="frame_ixx" value="18.58" />
+ <xacro:property name="frame_ixy" value="0.0" />
+ <xacro:property name="frame_ixz" value="0.0" />
+ <xacro:property name="frame_iyy" value="19.4" />
+ <xacro:property name="frame_iyz" value="0.0" />
+ <xacro:property name="frame_izz" value="27.27" />
+ 
+ <!-- IMU-->
+ <xacro:property name="imu_massa" value="0.15" />
+ <xacro:property name="imu_ixx" value="0.00001" />
+ <xacro:property name="imu_ixy" value="0.0" />
+ <xacro:property name="imu_ixz" value="0.0" />
+ <xacro:property name="imu_iyy" value="0.00002" />
+ <xacro:property name="imu_iyz" value="0.0" />
+ <xacro:property name="imu_izz" value="0.0002" /> 
+ 
+ <!-- Pá CW hélice -->
+ <xacro:property name="PCW_massa" value="0.0" />
+ <xacro:property name="PCW_ixx" value="0.0" />
+ <xacro:property name="PCW_ixy" value="0.0" />
+ <xacro:property name="PCW_ixz" value="0.0" />
+ <xacro:property name="PCW_iyy" value="0.0" />
+ <xacro:property name="PCW_iyz" value="0.0" />
+ <xacro:property name="PCW_izz" value="0.0" />
+
+</robot>
