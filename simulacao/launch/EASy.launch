@@ -41,4 +41,8 @@
         <rosparam param="/rosout/logger_level">error</rosparam>
     </node>
 
+	<!--<node pkg="euler_aerodinamica_v1" type="Mission_sender.py" name="Mission_sender" output="screen" launch-prefix="stdbuf -o L" >
+		<param name="log_level" value="debug"/>
+	</node> -->
+
 </launch>

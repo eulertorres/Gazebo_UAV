@@ -61,13 +61,7 @@
           </surface>
         </collision>
       </link>
-
-      <!-- Plugin -->
-      <plugin name="PropellerPlugin" filename="libeuler_helices_v2.so">
-        <robotNamespace>/propeller_test_model</robotNamespace>
-        <updateRate>10.0</updateRate>
-      </plugin>
-	  
+  
 	  <!--
       <plugin name="plugin_resistencia_ar_simples" filename="libfluid_resitance_plugin.so">
         <fluid_resistanceTopicName>/fluid_resistance</fluid_resistanceTopicName>
@@ -76,8 +70,8 @@
       </plugin> 
 		-->
 
-	<plugin name="gazebo_wind_plugin" filename="librotors_gazebo_wind_plugin.so">
-	  <robotNamespace>/your_robot_namespace</robotNamespace>
+	<plugin name="euler_aero_plugin" filename="libeuler_aerodinamica_v1.so">
+	  <robotNamespace>/propeller_test_model</robotNamespace>
 	  <xyzOffset>0 0 0</xyzOffset> <!-- Altere para a posição desejada -->
 	  
 	  <!-- Tópicos para publicação de vento -->
@@ -85,21 +79,23 @@
 	  <windSpeedPubTopic>vento/velocidade</windSpeedPubTopic>
 	  
 	  <!-- Definições de vento constante -->
-	  <windSpeedMean>5.0</windSpeedMean> <!-- Velocidade média do vento (m/s) -->
+	  <windSpeedMean>0.0</windSpeedMean> <!-- Velocidade média do vento (m/s) -->
 	  <windSpeedVariance>1.0</windSpeedVariance> <!-- Variação da velocidade do vento (m/s) -->
 	  <windDirection>1 0 0</windDirection> <!-- Direção do vento em coordenadas XYZ -->
 
-	  <!-- Definições de rajadas de vento -->
-	  <windGustStart>0.0</windGustStart> <!-- Tempo em que a rajada começa (s) -->
-	  <windGustDuration>3000.0</windGustDuration> <!-- Duração da rajada (s) -->
-	  <windGustForceMean>5.0</windGustForceMean> <!-- Força média da rajada (N) -->
-	  <windGustForceVariance>2.0</windGustForceVariance> <!-- Variação da força da rajada (N) -->
-	  <windGustDirection>1 0 0</windGustDirection> <!-- Direção da rajada em coordenadas XYZ -->
+	  <frontArea>2.0</frontArea> <!-- Direção da rajada em coordenadas XYZ -->
+	  <dragCoeff>2.0</dragCoeff> <!-- Direção da rajada em coordenadas XYZ -->
 
 	  <!-- Campo de vento customizado -->
 	  <useCustomStaticWindField>false</useCustomStaticWindField>
-	  <customWindFieldPath>~/catkin_ws/src/EASy/simulacao/models/EASy/vento_EASy.txt</customWindFieldPath>
 	  
+	  <windForceVariance>1.0</windForceVariance> <!-- Direção da rajada em coordenadas XYZ -->
+	  <!-- Definições de rajadas de vento -->
+	  <windGustStart>0.0</windGustStart> <!-- Tempo em que a rajada começa (s) -->
+	  <windGustDuration>1.0</windGustDuration> <!-- Duração da rajada (s) -->
+	  <windGustForceMean>5.0</windGustForceMean> <!-- Força média da rajada (N) -->
+	  <windGustForceVariance>2.0</windGustForceVariance> <!-- Variação da força da rajada (N) -->
+	  <windGustDirection>1 0 0</windGustDirection> <!-- Direção da rajada em coordenadas XYZ -->
 	  <!-- Link que será afetado pelo vento -->
 	  <linkName>base_link</linkName> <!-- Substitua por nome real do link -->
 	  

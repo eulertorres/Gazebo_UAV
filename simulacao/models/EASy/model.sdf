@@ -15,7 +15,7 @@
 	  <cma_stall>0.0</cma_stall>
 	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
 	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
-	  <cp>0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <cp>0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
       <forward>0 -1 0</forward>
       <upward>0 0 1</upward>
       <link_name>iris::rotor_0</link_name>
@@ -31,7 +31,7 @@
 	  <cma_stall>0.0</cma_stall>
 	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
 	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
-	  <cp>-0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <cp>-0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
       <forward>0 1 0</forward>
       <upward>0 0 1</upward>
       <link_name>iris::rotor_0</link_name>
@@ -47,7 +47,7 @@
 	  <cma_stall>0.0</cma_stall>
 	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
 	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
-	  <cp>0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <cp>0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
       <forward>0 1 0</forward>
       <upward>0 0 1</upward>
       <link_name>iris::rotor_1</link_name>
@@ -63,7 +63,7 @@
 	  <cma_stall>0.0</cma_stall>
 	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
 	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
-	  <cp>-0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <cp>-0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
       <forward>0 -1 0</forward>
       <upward>0 0 1</upward>
       <link_name>iris::rotor_1</link_name>
@@ -79,7 +79,7 @@
 	  <cma_stall>0.0</cma_stall>
 	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
 	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
-	  <cp>0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <cp>0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
       <forward>0 -1 0</forward>
       <upward>0 0 1</upward>
       <link_name>iris::rotor_2</link_name>
@@ -95,7 +95,7 @@
 	  <cma_stall>0.0</cma_stall>
 	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
 	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
-	  <cp>-0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <cp>-0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
       <forward>0 1 0</forward>
       <upward>0 0 1</upward>
       <link_name>iris::rotor_2</link_name>
@@ -111,7 +111,7 @@
 	  <cma_stall>0.0</cma_stall>
 	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
 	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
-	  <cp>0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <cp>0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
       <forward>0 1 0</forward>
       <upward>0 0 1</upward>
       <link_name>iris::rotor_3</link_name>
@@ -127,7 +127,7 @@
 	  <cma_stall>0.0</cma_stall>
 	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
 	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
-	  <cp>-0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <cp>-0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
       <forward>0 -1 0</forward>
       <upward>0 0 1</upward>
       <link_name>iris::rotor_3</link_name>
@@ -143,7 +143,7 @@
 	  <cma_stall>0.0</cma_stall>
 	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
 	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
-	  <cp>0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <cp>0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
       <forward>0 -1 0</forward>
       <upward>0 0 1</upward>
       <link_name>iris::rotor_4</link_name>
@@ -159,7 +159,7 @@
 	  <cma_stall>0.0</cma_stall>
 	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
 	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
-	  <cp>-0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <cp>-0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
       <forward>0 1 0</forward>
       <upward>0 0 1</upward>
       <link_name>iris::rotor_4</link_name>
@@ -175,7 +175,7 @@
 	  <cma_stall>0.0</cma_stall>
 	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
 	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
-	  <cp>0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <cp>0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
       <forward>0 1 0</forward>
       <upward>0 0 1</upward>
       <link_name>iris::rotor_5</link_name>
@@ -191,7 +191,7 @@
 	  <cma_stall>0.0</cma_stall>
 	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
 	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
-	  <cp>-0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <cp>-0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
       <forward>0 -1 0</forward>
       <upward>0 0 1</upward>
       <link_name>iris::rotor_5</link_name>
@@ -207,7 +207,7 @@
 	  <cma_stall>0.0</cma_stall>
 	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
 	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
-	  <cp>0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <cp>0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
       <forward>0 -1 0</forward>
       <upward>0 0 1</upward>
       <link_name>iris::rotor_6</link_name>
@@ -223,7 +223,7 @@
 	  <cma_stall>0.0</cma_stall>
 	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
 	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
-	  <cp>-0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <cp>-0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
       <forward>0 1 0</forward>
       <upward>0 0 1</upward>
       <link_name>iris::rotor_6</link_name>
@@ -239,7 +239,7 @@
 	  <cma_stall>0.0</cma_stall>
 	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
 	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
-	  <cp>0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <cp>0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
       <forward>0 1 0</forward>
       <upward>0 0 1</upward>
       <link_name>iris::rotor_7</link_name>
@@ -255,7 +255,7 @@
 	  <cma_stall>0.0</cma_stall>
 	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
 	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
-	  <cp>-0.084 0 0</cp> <!-- Adjusted position of the center of pressure -->
+	  <cp>-0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
 	  <forward>0 -1 0</forward>
 	  <upward>0 0 1</upward>
       <link_name>iris::rotor_7</link_name>
@@ -274,9 +274,9 @@
       <control channel="0">
         <type>VELOCITY</type>
         <offset>0</offset>
-        <p_gain>0.20</p_gain>
-        <i_gain>0</i_gain>
-        <d_gain>0</d_gain>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
         <i_max>0</i_max>
         <i_min>0</i_min>
         <cmd_max>2.5</cmd_max>
@@ -288,9 +288,9 @@
       <control channel="1">
         <type>VELOCITY</type>
         <offset>0</offset>
-        <p_gain>0.20</p_gain>
-        <i_gain>0</i_gain>
-        <d_gain>0</d_gain>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
         <i_max>0</i_max>
         <i_min>0</i_min>
         <cmd_max>2.5</cmd_max>
@@ -302,9 +302,9 @@
       <control channel="2">
         <type>VELOCITY</type>
         <offset>0</offset>
-        <p_gain>0.20</p_gain>
-        <i_gain>0</i_gain>
-        <d_gain>0</d_gain>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
         <i_max>0</i_max>
         <i_min>0</i_min>
         <cmd_max>2.5</cmd_max>
@@ -316,9 +316,9 @@
       <control channel="3">
         <type>VELOCITY</type>
         <offset>0</offset>
-        <p_gain>0.20</p_gain>
-        <i_gain>0</i_gain>
-        <d_gain>0</d_gain>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
         <i_max>0</i_max>
         <i_min>0</i_min>
         <cmd_max>2.5</cmd_max>
@@ -330,9 +330,9 @@
       <control channel="4">
         <type>VELOCITY</type>
         <offset>0</offset>
-        <p_gain>0.20</p_gain>
-        <i_gain>0</i_gain>
-        <d_gain>0</d_gain>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
         <i_max>0</i_max>
         <i_min>0</i_min>
         <cmd_max>2.5</cmd_max>
@@ -344,9 +344,9 @@
       <control channel="5">
         <type>VELOCITY</type>
         <offset>0</offset>
-        <p_gain>0.20</p_gain>
-        <i_gain>0</i_gain>
-        <d_gain>0</d_gain>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
         <i_max>0</i_max>
         <i_min>0</i_min>
         <cmd_max>2.5</cmd_max>
@@ -358,9 +358,9 @@
       <control channel="6">
         <type>VELOCITY</type>
         <offset>0</offset>
-        <p_gain>0.20</p_gain>
-        <i_gain>0</i_gain>
-        <d_gain>0</d_gain>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
         <i_max>0</i_max>
         <i_min>0</i_min>
         <cmd_max>2.5</cmd_max>
@@ -372,9 +372,9 @@
       <control channel="7">
         <type>VELOCITY</type>
         <offset>0</offset>
-        <p_gain>0.20</p_gain>
-        <i_gain>0</i_gain>
-        <d_gain>0</d_gain>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
         <i_max>0</i_max>
         <i_min>0</i_min>
         <cmd_max>2.5</cmd_max>
@@ -394,7 +394,7 @@
 	</plugin>  
 	-->
 	
-	<plugin name="gazebo_wind_plugin" filename="librotors_gazebo_wind_plugin.so">
+	<plugin name="gazebo_wind_plugin" filename="libeuler_aerodinamica_v1.so">
 	  <robotNamespace>/iris_demo</robotNamespace>
 	  <xyzOffset>0 0 0</xyzOffset> <!-- Altere para a posição desejada -->
 	  
@@ -403,23 +403,28 @@
 	  <windSpeedPubTopic>vento/velocidade</windSpeedPubTopic>
 	  
 	  <!-- Definições de vento constante -->
-	  <windSpeedMean>5.0</windSpeedMean> <!-- Velocidade média do vento (m/s) -->
-	  <windSpeedVariance>1.0</windSpeedVariance> <!-- Variação da velocidade do vento (m/s) -->
-	  <windDirection>1 0 0</windDirection> <!-- Direção do vento em coordenadas XYZ -->
+	  <windSpeedMean>0.01</windSpeedMean> <!-- Velocidade média do vento (m/s) -->
+	  <windSpeedVariance>0.0</windSpeedVariance> <!-- Variação da velocidade do vento (m/s) -->
+	  <windDirection>0 1 0</windDirection> <!-- Direção do vento em coordenadas XYZ -->
 
-	  <!-- Definições de rajadas de vento -->
-	  <windGustStart>3.0</windGustStart> <!-- Tempo em que a rajada começa (s) -->
-	  <windGustDuration>90000.0</windGustDuration> <!-- Duração da rajada (s) -->
-	  <windGustForceMean>40.0</windGustForceMean> <!-- Força média da rajada (N) -->
-	  <windGustForceVariance>4.0</windGustForceVariance> <!-- Variação da força da rajada (N) -->
-	  <windGustDirection>0 1 0</windGustDirection> <!-- Direção da rajada em coordenadas XYZ -->
+	  <frontArea>1.0</frontArea> <!-- Area em m² -->
+	  <dragCoeff>1.15</dragCoeff> <!-- Direção da rajada em coordenadas XYZ -->
 
 	  <!-- Campo de vento customizado -->
 	  <useCustomStaticWindField>false</useCustomStaticWindField>
-	  <customWindFieldPath>~/catkin_ws/src/EASy/simulacao/models/EASy/vento_EASy.txt</customWindFieldPath>
 	  
+	  <windForceVariance>1.0</windForceVariance> <!-- Direção da rajada em coordenadas XYZ -->
+	  <!-- Definições de rajadas de vento -->
+	  <windGustStart>0.0</windGustStart> <!-- Tempo em que a rajada começa (s) -->
+	  <windGustDuration>1.0</windGustDuration> <!-- Duração da rajada (s) -->
+	  <windGustForceMean>5.5</windGustForceMean> <!-- Força média da rajada (N) -->
+	  <windGustForceVariance>2.0</windGustForceVariance> <!-- Variação da força da rajada (N) -->
+	  <windGustDirection>1 0 0</windGustDirection> <!-- Direção da rajada em coordenadas XYZ -->
 	  <!-- Link que será afetado pelo vento -->
 	  <linkName>iris::base_link</linkName> <!-- Substitua por nome real do link -->
+	  
+    <!-- Nova variável: taxa de atualização da força -->
+	<forceUpdateRate>50.0</forceUpdateRate> <!-- Taxa de atualização em Hz -->
 	  
 	  <!-- ID do frame para mensagens -->
 	  <frameId>world</frameId>

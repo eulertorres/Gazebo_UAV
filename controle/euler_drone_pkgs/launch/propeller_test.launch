@@ -1,17 +1,10 @@
-<?xml version='1.0'?>
 <launch>
-    <!-- Inicia o Gazebo com um mundo especificado -->
-    <include file="$(find gazebo_ros)/launch/empty_world.launch">
-        <!-- Carrega o arquivo SDF do mundo -->
-        <arg name="world_name" value="$(find euler_helices_v2)/worlds/propeller_test.sdf"/>
-        
-        <!-- Configurações do Gazebo -->
-        <arg name="paused" value="false"/>
-        <arg name="use_sim_time" value="true"/>
-        <arg name="gui" value="true"/>
-        <arg name="headless" value="false"/>
-    </include>
+    <!-- Inicia o servidor do Gazebo com o mundo especificado -->
+    <arg name="world_file" default="$(find euler_aerodinamica_v1)/worlds/propeller_test.sdf" />
+    <node name="gazebo" pkg="gazebo_ros" type="gzserver" args="$(arg world_file)" output="screen"/>
 
-    <!-- Inicia o nó do ROS para visualizar o tópico de força -->
-    <node pkg="rostopic" type="rostopic" name="prop_force_viewer" args="echo /prop/force" output="screen"/>
+    <!-- Inicia o cliente do Gazebo -->
+    <node name="gazebo_client" pkg="gazebo_ros" type="gzclient" output="screen"/>
+
+    <!-- Inclua qualquer outro nó ROS que você queira iniciar junto com o Gazebo -->
 </launch>

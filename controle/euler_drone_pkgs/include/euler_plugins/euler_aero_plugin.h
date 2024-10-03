@@ -36,6 +36,11 @@ static constexpr double kDefaultWindGustDuration = 0.0;
 static constexpr double kDefaultWindSpeedMean = 0.0;
 static constexpr double kDefaultWindSpeedVariance = 0.0;
 
+static constexpr double kDefaultFrontArea = 1.0;
+static constexpr double kDefaultDragCoeff = 1.0;
+
+static constexpr double kDefaultUpdate = 10.0;
+
 static const ignition::math::Vector3d kDefaultWindDirection = ignition::math::Vector3d(1, 0, 0);
 static const ignition::math::Vector3d kDefaultWindGustDirection = ignition::math::Vector3d(0, 1, 0);
 
@@ -43,10 +48,10 @@ static constexpr bool kDefaultUseCustomStaticWindField = false;
 
 /// \brief    Este plugin do gazebo simula o vento agindo sobre um modelo.
 /// \details  Este plugin publica em um tópico ROS as informações do vento.
-class GazeboWindPlugin : public ModelPlugin {
+class EulerAeroPlugin : public ModelPlugin {
  public:
-  GazeboWindPlugin();
-  virtual ~GazeboWindPlugin();
+  EulerAeroPlugin();
+  virtual ~EulerAeroPlugin();
 
  protected:
 
@@ -68,6 +73,8 @@ class GazeboWindPlugin : public ModelPlugin {
   /// \param[in] custom_wind_field_path Caminho para o arquivo de campo de vento em ~/.ros.
   void ReadCustomWindField(std::string& custom_wind_field_path);
 
+  void CalculaCustom();
+
   /// \brief Interpolação linear
   ignition::math::Vector3d LinearInterpolation(double position, ignition::math::Vector3d* values, double* points) const;
 
@@ -85,12 +92,13 @@ class GazeboWindPlugin : public ModelPlugin {
   physics::ModelPtr model_;
   physics::LinkPtr link_;
 
-  /// Node handle do ROS
-  ros::NodeHandle nh_;
-
   /// Publishers do ROS
   ros::Publisher wind_force_pub_;
   ros::Publisher wind_speed_pub_;
+
+  ros::Publisher drag_force_pub_;
+  ros::Publisher resultant_force_pub_;
+  ros::Publisher wind_as_force_pub_;
 
   /// Parâmetros do plugin
   std::string namespace_;
@@ -105,6 +113,10 @@ class GazeboWindPlugin : public ModelPlugin {
   double wind_gust_force_variance_;
   double wind_speed_mean_;
   double wind_speed_variance_;
+  double front_area_;
+  double drag_coeff_;
+  double force_update_rate_;
+  double rho;
 
   ignition::math::Vector3d xyz_offset_;
   ignition::math::Vector3d wind_direction_;
@@ -112,6 +124,7 @@ class GazeboWindPlugin : public ModelPlugin {
 
   common::Time wind_gust_end_;
   common::Time wind_gust_start_;
+  common::Time last_force_update_time_; // Adicionada a variável de tempo para controle de atualização
 
   /// Variáveis para geração de campo de vento personalizado
   bool use_custom_static_wind_field_;
