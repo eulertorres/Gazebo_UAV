@@ -1,0 +1,345 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+  <model name='T30_drone'>
+    <include>
+      <uri>model://T30_inercia</uri>
+    </include>
+    <plugin name="rotor_0_blade_1" filename="libLiftDragPlugin.so"> <!-- CW -->
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 -1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>T30_inercia_::rotor_0</link_name>
+    </plugin>
+    <plugin name="rotor_0_blade_2" filename="libLiftDragPlugin.so">
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>-0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>T30_inercia_::rotor_0</link_name>
+    </plugin>
+    <plugin name="rotor_1_blade_1" filename="libLiftDragPlugin.so">	<!-- CCW -->
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>T30_inercia_::rotor_1</link_name>
+    </plugin>
+    <plugin name="rotor_1_blade_2" filename="libLiftDragPlugin.so">
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>-0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 -1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>T30_inercia_::rotor_1</link_name>
+    </plugin>
+    <plugin name="rotor_2_blade_1" filename="libLiftDragPlugin.so"> <!-- CW -->
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 -1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>T30_inercia_::rotor_2</link_name>
+    </plugin>
+    <plugin name="rotor_2_blade_2" filename="libLiftDragPlugin.so">
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>-0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>T30_inercia_::rotor_2</link_name>
+    </plugin>
+    <plugin name="rotor_3_blade_1" filename="libLiftDragPlugin.so"> <!-- CCW -->
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>T30_inercia_::rotor_3</link_name>
+    </plugin>
+    <plugin name="rotor_3_blade_2" filename="libLiftDragPlugin.so">
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>-0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 -1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>T30_inercia_::rotor_3</link_name>
+    </plugin>
+    <plugin name="rotor_4_blade_1" filename="libLiftDragPlugin.so"> <!-- CW -->
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 -1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>T30_inercia_::rotor_4</link_name>
+    </plugin>
+    <plugin name="rotor_4_blade_2" filename="libLiftDragPlugin.so">
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>-0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>T30_inercia_::rotor_4</link_name>
+    </plugin>
+    <plugin name="rotor_5_blade_1" filename="libLiftDragPlugin.so"> <!-- CCW -->
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>T30_inercia_::rotor_5</link_name>
+    </plugin>
+    <plugin name="rotor_5_blade_2" filename="libLiftDragPlugin.so">
+	  <a0>0.4</a0>
+	  <alpha_stall>1.4</alpha_stall>
+	  <cla>5.5</cla> <!-- Higher lift coefficient for larger propeller -->
+	  <cda>0.15</cda> <!-- Higher drag coefficient for larger propeller -->
+	  <cma>0.01</cma> <!-- Slight moment coefficient -->
+	  <cla_stall>-0.03</cla_stall>
+	  <cda_stall>0.0</cda_stall>
+	  <cma_stall>0.0</cma_stall>
+	  <area>0.073</area> <!-- 38 inches diameter propeller area in square meters -->
+	  <air_density>1.225</air_density> <!-- Standard air density at sea level -->
+	  <cp>-0.110 0 0</cp> <!-- Adjusted position of the center of pressure -->
+      <forward>0 -1 0</forward>
+      <upward>0 0 1</upward>
+      <link_name>T30_inercia_::rotor_5</link_name>
+    </plugin>
+	
+    <plugin name="arducopter_plugin" filename="libArduPilotPlugin.so">
+      <fdm_addr>127.0.0.1</fdm_addr>
+      <fdm_port_in>9002</fdm_port_in>
+      <fdm_port_out>9003</fdm_port_out>
+      <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+      <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+      <imuName>T30_drone::T30_inercia_::iris/imu_link::imu_sensor</imuName>
+      <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+	       <!--
+          RPM = 60 * multiplier / (2 * PI)
+        -->
+      <control channel="0">	 <!--CW-->
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>T30_inercia_::rotor_0_joint</jointName>
+        <multiplier>-491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="1"> <!--CCW-->
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>T30_inercia_::rotor_3_joint</jointName>
+        <multiplier>491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="2"> <!--CW-->
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>T30_inercia_::rotor_4_joint</jointName>
+        <multiplier>-491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="3"> <!--CCW-->
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>T30_inercia_::rotor_1_joint</jointName>
+        <multiplier>491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="4"> <!--CCW-->
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>T30_inercia_::rotor_5_joint</jointName>
+        <multiplier>491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="5"> <!--CW-->
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>T30_inercia_::rotor_2_joint</jointName>
+        <multiplier>-491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+    </plugin>
+
+	<!--
+	<plugin name="plugin_resistencia_ar_simples" filename="libfluid_resitance_plugin.so">
+		<TopicName>/resistencia_ar/frame</TopicName>
+		<LinkName>T30_inercia::base_link</LinkName>
+		<rate>10.0</rate>
+		<uCoeff>2.0</uCoeff>
+	</plugin>  
+	-->
+	
+	
+	<plugin name="vento_do_euler" filename="libeuler_aerodinamica_v1.so">
+	  <robotNamespace>/T30_drone</robotNamespace>
+	  <xyzOffset>0 0 0</xyzOffset> <!-- Altere para a posição desejada -->
+	  
+	  <!-- Tópicos para publicação de vento -->
+	  <windForcePubTopic>vento/forca</windForcePubTopic>
+	  <windSpeedPubTopic>vento/velocidade</windSpeedPubTopic>
+	  
+	  <!-- Definições de vento constante -->
+	  <windSpeedMean>0.01</windSpeedMean> <!-- Velocidade média do vento (m/s) -->
+	  <windSpeedVariance>0.0</windSpeedVariance> <!-- Variação da velocidade do vento (m/s) -->
+	  <windDirection>0 1 0</windDirection> <!-- Direção do vento em coordenadas XYZ -->
+
+	  <frontArea>1.0</frontArea> <!-- Area em m² -->
+	  <dragCoeff>1.15</dragCoeff> <!-- Direção da rajada em coordenadas XYZ -->
+
+	  <!-- Campo de vento customizado -->
+	  <useCustomStaticWindField>false</useCustomStaticWindField>
+	  
+	  <windForceVariance>1.0</windForceVariance> <!-- Direção da rajada em coordenadas XYZ -->
+	  <!-- Definições de rajadas de vento -->
+	  <windGustStart>0.0</windGustStart> <!-- Tempo em que a rajada começa (s) -->
+	  <windGustDuration>1.0</windGustDuration> <!-- Duração da rajada (s) -->
+	  <windGustForceMean>5.5</windGustForceMean> <!-- Força média da rajada (N) -->
+	  <windGustForceVariance>2.0</windGustForceVariance> <!-- Variação da força da rajada (N) -->
+	  <windGustDirection>1 0 0</windGustDirection> <!-- Direção da rajada em coordenadas XYZ -->
+	  <!-- Link que será afetado pelo vento -->
+	  <linkName>T30_inercia_::base_link</linkName> <!-- Substitua por nome real do link -->
+	  
+    <!-- Nova variável: taxa de atualização da força -->
+	<forceUpdateRate>50.0</forceUpdateRate> <!-- Taxa de atualização em Hz -->
+	  
+	  <!-- ID do frame para mensagens -->
+	  <frameId>world</frameId>
+	</plugin>
+
+  </model>
+</sdf>

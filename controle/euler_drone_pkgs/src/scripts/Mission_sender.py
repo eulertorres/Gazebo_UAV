@@ -10,7 +10,7 @@ from mavros_msgs.srv import WaypointPush, WaypointPushRequest
 from sensor_msgs.msg import NavSatFix
 
 # Caminho para o arquivo CSV
-CSV_FILE_PATH = "dados-simulador.csv"
+CSV_FILE_PATH = "mission.csv"
 
 # Altitude padrão (em metros) para os waypoints
 DEFAULT_RELATIVE_ALTITUDE = 2.0  # Você pode alterar este valor conforme necessário
@@ -20,7 +20,7 @@ class MissionPlanner:
     def __init__(self):
         rospy.init_node('mission_planner', anonymous=True)
 
-        print("Inicializando o Mission Planner...")
+        print("Inicializando o Enviador de missao...")
 
         # Variáveis para armazenar a posição atual do drone
         self.current_latitude = None
@@ -77,9 +77,10 @@ class MissionPlanner:
 
     def read_csv(self, filepath):
         try:
-            df = pd.read_csv(filepath, delimiter=';')
-            print("Arquivo CSV '%s' carregado com sucesso." % filepath)
-            print("Dados do CSV:\n%s" % df.head())
+            # Lê apenas as primeiras 450 linhas do CSV
+            df = pd.read_csv(filepath, delimiter=';', nrows=450)
+            print("Arquivo CSV '%s' carregado com sucesso com as primeiras 450 linhas." % filepath)
+            print("Dados do CSV (primeiras 450 linhas):\n%s" % df.head())
             return df
         except Exception as e:
             print("Falha ao ler o arquivo CSV '%s': %s" % (filepath, e))
@@ -100,8 +101,8 @@ class MissionPlanner:
         new_lon = geodesic(meters=east_offset).destination(home_point, 90).longitude
 
         # Adiciona print para verificar as coordenadas convertidas
-        print("Coordenadas relativas (x: %.2f, y: %.2f) convertidas para GPS (lat: %.6f, lon: %.6f)" %
-              (x, y, new_lat, new_lon))
+        #print("Coordenadas relativas (x: %.2f, y: %.2f) convertidas para GPS (lat: %.6f, lon: %.6f)" %
+        #      (x, y, new_lat, new_lon))
 
         return new_lat, new_lon
 
@@ -114,31 +115,28 @@ class MissionPlanner:
         HOME_LONGITUDE = self.current_longitude
         HOME_ALTITUDE = DEFAULT_RELATIVE_ALTITUDE  # Usa a altitude relativa padrão
 
-        # Waypoint de home
-        home_wp = Waypoint()
-        home_wp.frame = 3  # MAV_FRAME_GLOBAL_RELATIVE_ALT
-        home_wp.command = 16  # MAV_CMD_NAV_WAYPOINT
-        home_wp.is_current = True
-        home_wp.autocontinue = True
-        home_wp.param1 = 0  # Hold time in decimal seconds
-        home_wp.param2 = 0  # Acceptance radius in meters
-        home_wp.param3 = 0  # Pass radius in meters
-        home_wp.param4 = 0  # Yaw angle
-        home_wp.x_lat = HOME_LATITUDE
-        home_wp.y_long = HOME_LONGITUDE
-        home_wp.z_alt = HOME_ALTITUDE
-        waypoints.append(home_wp)
+        # Waypoint de decolagem (takeoff)
+        takeoff_wp = Waypoint()
+        takeoff_wp.frame = 3  # MAV_FRAME_GLOBAL_RELATIVE_ALT
+        takeoff_wp.command = 22  # MAV_CMD_NAV_TAKEOFF
+        takeoff_wp.is_current = True
+        takeoff_wp.autocontinue = True
+        takeoff_wp.param1 = 0  # Minimum pitch (set to 0 for default)
+        takeoff_wp.param2 = 0  # Empty
+        takeoff_wp.param3 = 0  # Empty
+        takeoff_wp.param4 = 0  # Yaw angle (set to 0 for default)
+        takeoff_wp.x_lat = HOME_LATITUDE
+        takeoff_wp.y_long = HOME_LONGITUDE
+        takeoff_wp.z_alt = HOME_ALTITUDE
+        waypoints.append(takeoff_wp)
 
-        print("Waypoint inicial (Home) adicionado: %s" % home_wp)
+        print("Waypoint inicial (Takeoff) adicionado: %s" % takeoff_wp)
 
         for index, row in df.iterrows():
             x = row['x[m]']
             y = row['y[m]']
             operacao = row.get('operacao', '')
             angulo = row.get('ang.abs[deg]', 0)
-            # Adiciona print para cada linha do CSV processada
-            print("Processando linha %d: x=%.2f, y=%.2f, operacao=%s, angulo=%.2f" %
-                  (index, x, y, operacao, angulo))
 
             # Converter coordenadas relativas para GPS usando a posição atual como home
             lat, lon = self.relative_to_gps(x, y, HOME_LATITUDE, HOME_LONGITUDE)
@@ -159,10 +157,28 @@ class MissionPlanner:
 
             print("Waypoint %d adicionado: %s" % (index + 1, wp))
 
+        # Waypoint final (Return to Launch - RTL)
+        rtl_wp = Waypoint()
+        rtl_wp.frame = 3  # MAV_FRAME_GLOBAL_RELATIVE_ALT
+        rtl_wp.command = 20  # MAV_CMD_NAV_RETURN_TO_LAUNCH
+        rtl_wp.is_current = False
+        rtl_wp.autocontinue = True
+        rtl_wp.param1 = 0  # Empty
+        rtl_wp.param2 = 0  # Empty
+        rtl_wp.param3 = 0  # Empty
+        rtl_wp.param4 = 0  # Empty
+        rtl_wp.x_lat = HOME_LATITUDE  # Retorna à posição de home (launch)
+        rtl_wp.y_long = HOME_LONGITUDE
+        rtl_wp.z_alt = HOME_ALTITUDE  # Pode usar a altitude padrão ou outra especificada
+        waypoints.append(rtl_wp)
+
+        print("Waypoint final (RTL) adicionado: %s" % rtl_wp)
+
         print("Total de %d waypoints gerados." % len(waypoints))
 
         # Retornar uma lista de waypoints
         return waypoints
+
 
     def send_mission(self, waypoints):
         print("Enviando missão com %d waypoints..." % len(waypoints))

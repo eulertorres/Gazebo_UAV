@@ -332,7 +332,7 @@ void EulerAeroPlugin::OnUpdate(const common::UpdateInfo& _info) {
     ignition::math::Vector3d wind_velocity = wind_speed_mean_ * wind_direction_;
     ignition::math::Vector3d relative_wind_velocity = wind_velocity - drone_velocity;
 	
-    ignition::math::Vector3d wind_force(0.0, 0.0, 0.0);
+    //ignition::math::Vector3d wind_force(0.0, 0.0, 0.0);
     ignition::math::Vector3d drag_force(0.0, 0.0, 0.0);
 
 
@@ -342,27 +342,27 @@ void EulerAeroPlugin::OnUpdate(const common::UpdateInfo& _info) {
     }
 
     // Calcula a força de arrasto considerando apenas a velocidade do drone
-    if (drone_velocity.Length() > 0) {
-        double v_squared = drone_velocity.Length() * drone_velocity.Length();
-        double drag_force_magnitude = 0.5 * rho * drag_coeff_ * front_area_ * v_squared;
-        drag_force = -drag_force_magnitude * drone_velocity.Normalized();
-    }
+    //if (drone_velocity.Length() > 0) {
+    //    double v_squared = drone_velocity.Length() * drone_velocity.Length();
+    //    double drag_force_magnitude = 0.5 * rho * drag_coeff_ * front_area_ * v_squared;
+    //    drag_force = -drag_force_magnitude * drone_velocity.Normalized();
+    //}
 
     // Calcula a força do vento considerando a velocidade relativa
     if (relative_wind_velocity.Length() > 0) {
         double v_squared = relative_wind_velocity.Length() * relative_wind_velocity.Length();
         double wind_force_magnitude = 0.5 * rho * front_area_ * v_squared;
-        wind_force = wind_force_magnitude * relative_wind_velocity.Normalized();
+        drag_force = wind_force_magnitude * relative_wind_velocity.Normalized();
     }
 
     // Aplica as forças calculadas ao drone
-    link_->AddForceAtRelativePosition(drag_force + wind_force, xyz_offset_);
+    link_->AddForceAtRelativePosition(drag_force, xyz_offset_);
 
     if ((now - last_force_update_time_).Double() >= (1.0 / force_update_rate_)) {
         // Publicar as forças calculadas pra debug
         PublishWrenchStamped(drag_force_pub_, frame_id_, drag_force);
-        PublishWrenchStamped(wind_force_pub_, frame_id_, wind_force);
-        PublishWrenchStamped(resultant_force_pub_, frame_id_, drag_force + wind_force);
+        //PublishWrenchStamped(wind_force_pub_, frame_id_, wind_force);
+        PublishWrenchStamped(resultant_force_pub_, frame_id_, drag_force);
         PublishWindAsWrench(wind_as_force_pub_, frame_id_, wind_velocity);
         last_force_update_time_ = now;
     }

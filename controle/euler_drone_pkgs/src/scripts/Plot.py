@@ -1,201 +1,321 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import rospy
 import pandas as pd
-from geopy.distance import geodesic
-from geopy import Point
-from mavros_msgs.msg import Waypoint, WaypointList, State
-from mavros_msgs.srv import WaypointPush, WaypointPushRequest
-from sensor_msgs.msg import NavSatFix
+import os
+import threading
+import queue
+import time
+from mavros_msgs.msg import Altitude, GlobalPositionTarget, RCIn, RCOut
+from sensor_msgs.msg import NavSatFix, Imu
+from nav_msgs.msg import Odometry
+from geometry_msgs.msg import AccelWithCovarianceStamped, WrenchStamped, TwistStamped, PoseStamped
+from openpyxl import Workbook, load_workbook
 
-# Caminho para o arquivo CSV
-CSV_FILE_PATH = "dados-simulador.csv"
+# Variáveis globais para armazenar os dados
+topics = [
+    '/mavros/altitude',
+    '/mavros/global_position/global',
+    '/mavros/global_position/local',
+    '/mavros/global_position/raw/gps_vel',
+    '/mavros/imu/data',
+    #'/mavros/local_position/accel',
+    '/mavros/local_position/pose',
+    '/mavros/local_position/velocity_body',
+    '/mavros/rc/in',
+    '/mavros/rc/out',
+    '/vento/drag',
+    '/vento/resultante',
+    '/vento/velocidade'
+]
 
-# Altitude padrão (em metros) para os waypoints
-DEFAULT_RELATIVE_ALTITUDE = 2.0  # Você pode alterar este valor conforme necessário
+# Filas para armazenar os dados a serem escritos
+data_queues = {topic: queue.Queue() for topic in topics}
 
-# Classe para gerenciar a missão de waypoints
-class MissionPlanner:
-    def __init__(self):
-        rospy.init_node('mission_planner', anonymous=True)
+# Evento para sinalizar a parada do thread de escrita
+stop_event = threading.Event()
 
-        print("Inicializando o Mission Planner...")
+# Mapeamento de nomes de colunas para cada tópico
+column_names = {
+    '/vento/drag': ['timestamp', 'force_x', 'force_y', 'force_z'],
+    '/vento/velocidade': ['timestamp', 'force_x', 'force_y', 'force_z'],
+    '/vento/resultante': ['timestamp', 'force_x', 'force_y', 'force_z'],
+    '/mavros/altitude': ['timestamp', 'amsl'],
+    '/mavros/global_position/global': ['timestamp', 'latitude', 'longitude', 'altitude'],
+    '/mavros/global_position/local': ['timestamp', 'position_x', 'position_y', 'position_z'],
+    '/mavros/global_position/raw/gps_vel': ['timestamp', 'vel_x', 'vel_y', 'vel_z'],
+    '/mavros/imu/data': ['timestamp', 'accel_x', 'accel_y', 'accel_z'],
+    #'/mavros/local_position/accel': ['timestamp', 'accel_x', 'accel_y', 'accel_z'],
+    '/mavros/local_position/pose': ['timestamp', 'pose_x', 'pose_y', 'pose_z'],
+    '/mavros/local_position/velocity_body': ['timestamp', 'vel_x', 'vel_y', 'vel_z'],
+    # Adicione outros tópicos se desejar nomes de colunas específicos
+}
 
-        # Variáveis para armazenar a posição atual do drone
-        self.current_latitude = None
-        self.current_longitude = None
-        # Não precisamos mais da altitude absoluta
-        # self.current_altitude = None
+# Funções de callback para leitura de tópicos
+def altitude_callback(msg):
+    timestamp = rospy.get_time()
+    data_row = [timestamp, msg.amsl]
+    data_queues['/mavros/altitude'].put(data_row)
 
-        # Publisher para publicar a missão
-        self.waypoint_publisher = rospy.Publisher('/mavros/mission/waypoints', WaypointList, queue_size=10)
+def global_position_callback(msg):
+    timestamp = rospy.get_time()
+    data_row = [timestamp, msg.latitude, msg.longitude, msg.altitude]
+    data_queues['/mavros/global_position/global'].put(data_row)
 
-        # Serviço para enviar waypoints
-        print("Aguardando pelo serviço /mavros/mission/push...")
-        rospy.wait_for_service('/mavros/mission/push')
-        try:
-            self.push_waypoints = rospy.ServiceProxy('/mavros/mission/push', WaypointPush)
-            print("Serviço /mavros/mission/push disponível.")
-        except rospy.ServiceException as e:
-            print("Serviço de envio de waypoints falhou: %s" % e)
+def local_position_callback(msg):
+    timestamp = rospy.get_time()
+    data_row = [
+        timestamp,
+        msg.pose.pose.position.x,
+        msg.pose.pose.position.y,
+        msg.pose.pose.position.z
+    ]
+    data_queues['/mavros/global_position/local'].put(data_row)
 
-        # Subscriber para o estado do drone
-        self.current_state = None
-        rospy.Subscriber('/mavros/state', State, self.state_callback)
-        print("Subscrito ao tópico /mavros/state.")
+def gps_velocity_callback(msg):
+    timestamp = rospy.get_time()
+    data_row = [
+        timestamp,
+        msg.twist.linear.x,
+        msg.twist.linear.y,
+        msg.twist.linear.z
+    ]
+    data_queues['/mavros/global_position/raw/gps_vel'].put(data_row)
 
-        # Subscriber para a posição global atual do drone
-        rospy.Subscriber('/mavros/global_position/global', NavSatFix, self.global_position_callback)
-        print("Subscrito ao tópico /mavros/global_position/global.")
+def imu_data_callback(msg):
+    timestamp = rospy.get_time()
+    data_row = [
+        timestamp,
+        msg.linear_acceleration.x,
+        msg.linear_acceleration.y,
+        msg.linear_acceleration.z
+    ]
+    data_queues['/mavros/imu/data'].put(data_row)
 
-        # Aguarda o estado do drone estar conectado
-        while not rospy.is_shutdown() and not self.current_state:
-            print("Aguardando informações do estado do drone...")
-            rospy.sleep(0.1)
+def accel_callback(msg):
+    timestamp = rospy.get_time()
+    data_row = [
+        timestamp,
+        msg.accel.accel.linear.x,
+        msg.accel.accel.linear.y,
+        msg.accel.accel.linear.z
+    ]
+    data_queues['/mavros/local_position/accel'].put(data_row)
 
-        # Aguarda até receber a posição atual do drone
-        while not rospy.is_shutdown() and (self.current_latitude is None or self.current_longitude is None):
-            print("Aguardando a posição atual do drone...")
-            rospy.sleep(0.1)
+def pose_callback(msg):
+    timestamp = rospy.get_time()
+    data_row = [
+        timestamp,
+        msg.pose.position.x,
+        msg.pose.position.y,
+        msg.pose.position.z
+    ]
+    data_queues['/mavros/local_position/pose'].put(data_row)
 
-        print("Mission Planner Inicializado")
+def velocity_body_callback(msg):
+    timestamp = rospy.get_time()
+    data_row = [
+        timestamp,
+        msg.twist.linear.x,
+        msg.twist.linear.y,
+        msg.twist.linear.z
+    ]
+    data_queues['/mavros/local_position/velocity_body'].put(data_row)
 
-    def state_callback(self, msg):
-        self.current_state = msg
-        # Adiciona print para verificar o estado atual
-        print("Estado do drone atualizado: %s" % self.current_state.mode)
+def rc_in_callback(msg):
+    timestamp = rospy.get_time()
+    data_row = [timestamp] + list(msg.channels)
+    data_queues['/mavros/rc/in'].put(data_row)
 
-    def global_position_callback(self, msg):
-        self.current_latitude = msg.latitude
-        self.current_longitude = msg.longitude
-        # Não usamos mais a altitude absoluta do GPS
-        # self.current_altitude = msg.altitude
-        # Adiciona print para verificar a posição atual
-        print("Posição atual do drone atualizada: lat=%.6f, lon=%.6f" %
-              (self.current_latitude, self.current_longitude))
+def rc_out_callback(msg):
+    timestamp = rospy.get_time()
+    data_row = [timestamp] + list(msg.channels)
+    data_queues['/mavros/rc/out'].put(data_row)
 
-    def read_csv(self, filepath):
-        try:
-            df = pd.read_csv(filepath, delimiter=';')
-            print("Arquivo CSV '%s' carregado com sucesso." % filepath)
-            print("Dados do CSV:\n%s" % df.head())
-            return df
-        except Exception as e:
-            print("Falha ao ler o arquivo CSV '%s': %s" % (filepath, e))
-            return None
+def vento_drag_callback(msg):
+    timestamp = rospy.get_time()
+    data_row = [timestamp, msg.wrench.force.x, msg.wrench.force.y, msg.wrench.force.z]
+    data_queues['/vento/drag'].put(data_row)
 
-    def relative_to_gps(self, x, y, home_lat, home_lon):
-        """
-        Converte coordenadas relativas (x, y) em metros para latitude e longitude.
-        """
-        home_point = Point(home_lat, home_lon)
-        # Deslocamento no eixo Norte e Leste
-        north_offset = y  # metros
-        east_offset = x   # metros
+def vento_velocidade_callback(msg):
+    timestamp = rospy.get_time()
+    data_row = [timestamp, msg.wrench.force.x, msg.wrench.force.y, msg.wrench.force.z]
+    data_queues['/vento/velocidade'].put(data_row)
 
-        # Calcula a nova latitude deslocada para o norte
-        new_lat = geodesic(meters=north_offset).destination(home_point, 0).latitude
-        # Calcula a nova longitude deslocada para o leste
-        new_lon = geodesic(meters=east_offset).destination(home_point, 90).longitude
+def vento_resultante_callback(msg):
+    timestamp = rospy.get_time()
+    data_row = [timestamp, msg.wrench.force.x, msg.wrench.force.y, msg.wrench.force.z]
+    data_queues['/vento/resultante'].put(data_row)
 
-        # Adiciona print para verificar as coordenadas convertidas
-        print("Coordenadas relativas (x: %.2f, y: %.2f) convertidas para GPS (lat: %.6f, lon: %.6f)" %
-              (x, y, new_lat, new_lon))
+# Função para inicializar o arquivo Excel com as planilhas
+def initialize_workbook(filename):
+    wb = Workbook()
+    # Remove a planilha padrão
+    default_sheet = wb.active
+    wb.remove(default_sheet)
+    # Cria as planilhas para cada tópico
+    for topic in topics:
+        sheet_name = topic.replace('/', '_')[:31]
+        ws = wb.create_sheet(title=sheet_name)
+        # Escreve os cabeçalhos se estiverem definidos
+        if topic in column_names:
+            ws.append(column_names[topic])
+    wb.save(filename)
 
-        return new_lat, new_lon
+# Função do thread de escrita
+def writer_thread_func(filename, stop_event):
+    while not stop_event.is_set():
+        time.sleep(1)  # Espera 1 segundo
+        wb = load_workbook(filename)
+        for topic, q in data_queues.items():
+            sheet_name = topic.replace('/', '_')[:31]
+            ws = wb[sheet_name]
+            rows_to_write = []
+            while not q.empty():
+                data_row = q.get()
+                rows_to_write.append(data_row)
+            if rows_to_write:
+                for data_row in rows_to_write:
+                    ws.append(data_row)
+        wb.save(filename)
+    # Escreve quaisquer dados restantes antes de sair
+    wb = load_workbook(filename)
+    for topic, q in data_queues.items():
+        sheet_name = topic.replace('/', '_')[:31]
+        ws = wb[sheet_name]
+        rows_to_write = []
+        while not q.empty():
+            data_row = q.get()
+            rows_to_write.append(data_row)
+        if rows_to_write:
+            for data_row in rows_to_write:
+                ws.append(data_row)
+    wb.save(filename)
 
-    def generate_waypoints(self, df):
-        print("Gerando waypoints a partir dos dados do CSV...")
-        waypoints = []
+# Função para monitorar a entrada do teclado
+def monitor_keyboard():
+    while not rospy.is_shutdown():
+        user_input = input("Digite 'q' para sair e salvar o arquivo: ")
+        if user_input == 'q':
+            filename = input("Digite o nome do arquivo para salvar: ")
+            # Sinaliza o thread de escrita para parar
+            stop_event.set()
+            writer_thread.join()
+            # Renomeia o arquivo temp.xlsx para o nome escolhido
+            os.rename('temp.xlsx', f"{filename}.xlsx")
+            print(f"Dados salvos no arquivo {filename}")
+            # Chama a função para gerar o gráfico interativo
+            #interactive_plot(filename)
+            rospy.signal_shutdown("Usuário encerrou o programa")
+            break
 
-        # Utiliza a posição atual do drone como home
-        HOME_LATITUDE = self.current_latitude
-        HOME_LONGITUDE = self.current_longitude
-        HOME_ALTITUDE = DEFAULT_RELATIVE_ALTITUDE  # Usa a altitude relativa padrão
+# Função para gerar o gráfico interativo
+def interactive_plot(filename):
+    # Lê o arquivo Excel
+    xls = pd.ExcelFile(filename)
+    sheet_names = xls.sheet_names
 
-        # Waypoint de home
-        home_wp = Waypoint()
-        home_wp.frame = 3  # MAV_FRAME_GLOBAL_RELATIVE_ALT
-        home_wp.command = 16  # MAV_CMD_NAV_WAYPOINT
-        home_wp.is_current = True
-        home_wp.autocontinue = True
-        home_wp.param1 = 0  # Hold time in decimal seconds
-        home_wp.param2 = 0  # Acceptance radius in meters
-        home_wp.param3 = 0  # Pass radius in meters
-        home_wp.param4 = 0  # Yaw angle
-        home_wp.x_lat = HOME_LATITUDE
-        home_wp.y_long = HOME_LONGITUDE
-        home_wp.z_alt = HOME_ALTITUDE
-        waypoints.append(home_wp)
+    # Mapeia as colunas disponíveis
+    data_columns = {}
+    for sheet_name in sheet_names:
+        df = pd.read_excel(xls, sheet_name)
+        columns = list(df.columns)
+        if 'timestamp' in columns:
+            columns.remove('timestamp')
+        if columns:  # Só adiciona se houver colunas além do timestamp
+            data_columns[sheet_name] = columns
 
-        print("Waypoint inicial (Home) adicionado: %s" % home_wp)
+    # Exibe as opções disponíveis
+    print("\nColunas disponíveis para plotagem:")
+    idx = 1
+    options = []
+    for sheet_name, columns in data_columns.items():
+        for col in columns:
+            options.append((sheet_name, col))
+            print(f"{idx}. {sheet_name} - {col}")
+            idx += 1
 
-        for index, row in df.iterrows():
-            x = row['x[m]']
-            y = row['y[m]']
-            operacao = row.get('operacao', '')
-            angulo = row.get('ang.abs[deg]', 0)
-            # Adiciona print para cada linha do CSV processada
-            print("Processando linha %d: x=%.2f, y=%.2f, operacao=%s, angulo=%.2f" %
-                  (index, x, y, operacao, angulo))
+    # Verifica se há opções disponíveis
+    if not options:
+        print("Não há dados disponíveis para plotagem.")
+        return
 
-            # Converter coordenadas relativas para GPS usando a posição atual como home
-            lat, lon = self.relative_to_gps(x, y, HOME_LATITUDE, HOME_LONGITUDE)
-
-            wp = Waypoint()
-            wp.frame = 3  # MAV_FRAME_GLOBAL_RELATIVE_ALT
-            wp.command = 16  # MAV_CMD_NAV_WAYPOINT
-            wp.is_current = False
-            wp.autocontinue = True
-            wp.param1 = 0  # Hold time in decimal seconds
-            wp.param2 = 5  # Acceptance radius in meters
-            wp.param3 = 0  # Pass radius in meters
-            wp.param4 = angulo  # Yaw angle
-            wp.x_lat = lat
-            wp.y_long = lon
-            wp.z_alt = HOME_ALTITUDE  # Usa a altitude relativa padrão
-            waypoints.append(wp)
-
-            print("Waypoint %d adicionado: %s" % (index + 1, wp))
-
-        print("Total de %d waypoints gerados." % len(waypoints))
-
-        # Retornar uma lista de waypoints
-        return waypoints
-
-    def send_mission(self, waypoints):
-        print("Enviando missão com %d waypoints..." % len(waypoints))
-        req = WaypointPushRequest()
-        req.start_index = 0
-        req.waypoints = waypoints
-
-        try:
-            print("Chamando o serviço /mavros/mission/push...")
-            response = self.push_waypoints(req)
-            print("Resposta do serviço: %s" % response)
-            if response.success:
-                print("Waypoints enviados com sucesso. Waypoints transferidos: %d" % response.wp_transfered)
-            else:
-                print("Falha ao enviar waypoints. Erro: %s" % response)
-        except rospy.ServiceException as e:
-            print("Erro ao chamar o serviço de envio de waypoints: %s" % e)
-
-    def run(self):
-        df = self.read_csv(CSV_FILE_PATH)
-        if df is None:
-            print("Não foi possível carregar os dados do CSV. Encerrando o nó.")
+    # Solicita ao usuário que selecione uma opção
+    while True:
+        selection = input("Selecione uma coluna de dados para plotar (digite o número ou 's' para sair): ")
+        if selection.lower() == 's':
+            print("Encerrando a plotagem interativa.")
             return
+        try:
+            selection = int(selection)
+            if 1 <= selection <= len(options):
+                break
+            else:
+                print("Seleção inválida. Tente novamente.")
+        except ValueError:
+            print("Entrada inválida. Digite um número ou 's' para sair.")
 
-        waypoints = self.generate_waypoints(df)
-        self.send_mission(waypoints)
+    selected_sheet, selected_column = options[selection - 1]
 
-        print("Missão concluída. Encerrando o nó.")
-        rospy.signal_shutdown("Missão Enviada")
+    # Lê os dados selecionados
+    df = pd.read_excel(filename, sheet_name=selected_sheet)
+
+    # Verifica se 'timestamp' está presente
+    if 'timestamp' in df.columns:
+        x = df['timestamp']
+    else:
+        print("Não há timestamp nos dados selecionados.")
+        return
+
+    y = df[selected_column]
+
+    # Plota os dados
+    plt.figure()
+    plt.plot(x, y)
+    plt.xlabel('Timestamp')
+    plt.ylabel(selected_column)
+    plt.title(f"{selected_sheet} - {selected_column} vs Timestamp")
+    plt.grid(True)
+    plt.show()
+
+# Função para inicializar o nó ROS e os subscritores
+def listener():
+    global writer_thread
+    rospy.init_node('data_recorder', anonymous=True)
+
+    # Inicializa o arquivo Excel
+    initialize_workbook('temp.xlsx')
+
+    # Inicia o thread de escrita
+    writer_thread = threading.Thread(target=writer_thread_func, args=('temp.xlsx', stop_event))
+    writer_thread.start()
+
+    rospy.Subscriber("/mavros/global_position/global", NavSatFix, global_position_callback)
+    rospy.Subscriber("/mavros/global_position/local", Odometry, local_position_callback)
+    #rospy.Subscriber("/mavros/local_position/accel", AccelWithCovarianceStamped, accel_callback)
+    rospy.Subscriber("/vento/drag", WrenchStamped, vento_drag_callback)
+    rospy.Subscriber("/vento/resultante", WrenchStamped, vento_resultante_callback)
+    rospy.Subscriber("/vento/velocidade", WrenchStamped, vento_velocidade_callback)
+    rospy.Subscriber("/mavros/altitude", Altitude, altitude_callback)
+    rospy.Subscriber("/mavros/global_position/raw/gps_vel", TwistStamped, gps_velocity_callback)
+    rospy.Subscriber("/mavros/imu/data", Imu, imu_data_callback)
+    rospy.Subscriber("/mavros/local_position/pose", PoseStamped, pose_callback)
+    rospy.Subscriber("/mavros/local_position/velocity_body", TwistStamped, velocity_body_callback)
+    rospy.Subscriber("/mavros/rc/in", RCIn, rc_in_callback)
+    rospy.Subscriber("/mavros/rc/out", RCOut, rc_out_callback)
+
+    # Thread para monitorar entrada do teclado
+    keyboard_thread = threading.Thread(target=monitor_keyboard)
+    keyboard_thread.start()
+
+    # Define a taxa de amostragem
+    rate = rospy.Rate(10)  # 10 Hz
+
+    while not rospy.is_shutdown():
+        rate.sleep()
 
 if __name__ == '__main__':
     try:
-        planner = MissionPlanner()
-        planner.run()
+        listener()
     except rospy.ROSInterruptException:
         pass
