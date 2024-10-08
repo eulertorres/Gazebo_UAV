@@ -6,46 +6,63 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   gazebo_ros
   std_msgs
+  sensor_msgs  # Adicionado para o plugin da bateria
 )
 
 find_package(gazebo REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system)  # Adicionado para o plugin da bateria
 
 ## Definição do pacote catkin
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES ${PROJECT_NAME} # Referência à biblioteca do projeto
-  CATKIN_DEPENDS roscpp gazebo_ros std_msgs
-  DEPENDS system_lib
+  LIBRARIES ${PROJECT_NAME}_aero_plugin ${PROJECT_NAME}_batt_plugin
+  CATKIN_DEPENDS roscpp gazebo_ros std_msgs sensor_msgs
+  DEPENDS ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES}  # Adicione dependências do sistema reais, se houver
 )
+
 
 ## Incluir diretórios
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${GAZEBO_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}  # Adicionado para o plugin da bateria
 )
 
 ## Linkar diretórios
 link_directories(
   ${GAZEBO_LIBRARY_DIRS}
 )
+
+## Definições adicionais
 list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
 
-## Criação da biblioteca a partir do plugin
-add_library(${PROJECT_NAME} SHARED src/euler_aero_plugin.cpp)
-
-## Definir outras bibliotecas, se necessário
-# add_library(fluid_resitance_plugin src/another_plugin.cpp)
+## Criação das bibliotecas a partir dos plugins
+add_library(${PROJECT_NAME}_aero_plugin SHARED src/euler_aero_plugin.cpp)
+add_library(${PROJECT_NAME}_batt_plugin SHARED src/euler_batt_plugin.cpp)
 
 ## Linkagem das bibliotecas
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME}_aero_plugin
   ${catkin_LIBRARIES}
   ${GAZEBO_LIBRARIES}
 )
 
-# Linkagem de outras bibliotecas, se necessário
-# target_link_libraries(fluid_resitance_plugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_batt_plugin
+  ${catkin_LIBRARIES}
+  ${GAZEBO_LIBRARIES}
+  ${Boost_LIBRARIES}  # Necessário se o plugin da bateria utilizar Boost
+)
 
 ## Mensagens para depuração
 message("GAZEBO_LIBRARIES: ${GAZEBO_LIBRARIES}")
 message("catkin_LIBRARIES: ${catkin_LIBRARIES}")
+
+## Instalação das bibliotecas
+install(TARGETS ${PROJECT_NAME}_aero_plugin ${PROJECT_NAME}_batt_plugin
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+)
+
+## Instalação dos arquivos de cabeçalho
+install(DIRECTORY include/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+)

@@ -1,9 +1,8 @@
-<?xml version='1.0'?>
 <sdf version='1.7'>
   <world name='default'>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose>-6.28899 -0.591807 2.04391 0 0.268079 0.075444</pose>
+        <pose>-5.966 -4.03584 2.1492 0 0.244079 0.459449</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
@@ -126,60 +125,66 @@
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
     <state world_name='default'>
-      <sim_time>10816 251000000</sim_time>
-      <real_time>1182 802474446</real_time>
-      <wall_time>1728305902 328260056</wall_time>
-      <iterations>1131904</iterations>
+      <sim_time>11921 907000000</sim_time>
+      <real_time>1397 832314813</real_time>
+      <wall_time>1728330076 378948664</wall_time>
+      <iterations>1105656</iterations>
       <model name='T30_drone'>
         <pose>0.010344 -0.039173 0 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='T30_inercia_::base_link'>
           <pose>0.008449 -0.019651 0 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>-0.48376 0.013049 -0.024666 -0.121376 0.019122 0.062846</acceleration>
-          <wrench>-32.7457 0.883313 -1.66967 0 -0 0</wrench>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='T30_inercia_::bateria'>
+          <pose>-0.209656 -0.039173 0.5 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
         </link>
         <link name='T30_inercia_::iris/imu_link'>
           <pose>0.010344 -0.039173 0.74215 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>-0.482778 0.030908 -0.028318 -0.121386 0.019109 0.062834</acceleration>
-          <wrench>-0.072417 0.004636 -0.004248 0 -0 0</wrench>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
         </link>
         <link name='T30_inercia_::rotor_0'>
-          <pose>0.924449 -0.042651 0.72 9e-06 -0 -0.040806</pose>
+          <pose>0.924449 -0.042651 0.72 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>-0.486397 0.09091 -0.049409 2.76158 0.263879 -0.442116</acceleration>
-          <wrench>-0.097279 0.018182 -0.009882 0 -0 0</wrench>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
         </link>
         <link name='T30_inercia_::rotor_1'>
-          <pose>0.571772 -0.939353 0.72 -9e-06 5e-06 0.468078</pose>
+          <pose>0.571772 -0.939353 0.72 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>-0.428876 0.070823 0.067795 -2.28988 -0.264577 -1.06075</acceleration>
-          <wrench>-0.085775 0.014165 0.013559 0 -0 0</wrench>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
         </link>
         <link name='T30_inercia_::rotor_2'>
-          <pose>-0.551611 -0.938124 0.72 3e-06 9e-06 -1.30779</pose>
+          <pose>-0.551611 -0.938124 0.72 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>-0.424756 -0.006099 0.094068 2.80357 0.27515 -1.99716</acceleration>
-          <wrench>-0.084951 -0.00122 0.018814 0 -0 0</wrench>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
         </link>
         <link name='T30_inercia_::rotor_3'>
-          <pose>-0.903921 -0.043581 0.72 6e-06 9e-06 2.0583</pose>
+          <pose>-0.903921 -0.043581 0.72 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>-0.479508 -0.034272 -0.006293 -2.3178 -0.263385 -1.64558</acceleration>
-          <wrench>-0.095902 -0.006854 -0.001259 0 -0 0</wrench>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
         </link>
         <link name='T30_inercia_::rotor_4'>
-          <pose>-0.549586 0.855854 0.72 8e-06 5e-06 -0.646015</pose>
+          <pose>-0.549586 0.855854 0.72 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>-0.537207 -0.014083 -0.123869 2.68909 0.261711 2.56821</acceleration>
-          <wrench>-0.107441 -0.002817 -0.024774 0 -0 0</wrench>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
         </link>
         <link name='T30_inercia_::rotor_5'>
-          <pose>0.572856 0.853294 0.72 -7e-06 7e-06 0.737175</pose>
+          <pose>0.572856 0.853294 0.72 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>-0.54124 0.062781 -0.149958 -2.45364 -0.253773 -1.83897</acceleration>
-          <wrench>-0.108248 0.012556 -0.029992 0 -0 0</wrench>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
       <model name='ground_plane'>
@@ -202,7 +207,7 @@
       </frame>
       <link name='T30_inercia_::base_link'>
         <inertial>
-          <mass>67.69</mass>
+          <mass>26.4</mass>
           <inertia>
             <ixx>8.96</ixx>
             <ixy>0</ixy>
@@ -299,11 +304,71 @@
           </surface>
         </collision>
       </link>
+      <link name='T30_inercia_::bateria'>
+        <pose relative_to='T30_inercia_::__model__'>-0.22 0 0.5 0 -0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>3</mass>
+          <inertia>
+            <ixx>0.02</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.02</iyy>
+            <iyz>0</iyz>
+            <izz>0.02</izz>
+          </inertia>
+        </inertial>
+        <visual name='bateria_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.12 0.25 0.3</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Green</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='T30_inercia_::bateria/joint' type='revolute'>
+        <child>T30_inercia_::bateria</child>
+        <parent>T30_inercia_::base_link</parent>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>0</lower>
+            <upper>0</upper>
+            <effort>0</effort>
+            <velocity>0</velocity>
+          </limit>
+          <dynamics>
+            <damping>1</damping>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+            <limit>
+              <cfm>0</cfm>
+              <erp>0.2</erp>
+            </limit>
+          </ode>
+        </physics>
+      </joint>
       <link name='T30_inercia_::iris/imu_link'>
         <pose relative_to='T30_inercia_::__model__'>0 0 0.74215 0 -0 0</pose>
         <inertial>
           <pose>0 0 0 0 -0 0</pose>
-          <mass>0.15</mass>
+          <mass>0.09</mass>
           <inertia>
             <ixx>1e-05</ixx>
             <ixy>0</ixy>
@@ -1435,8 +1500,8 @@
           <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
         </control>
       </plugin>
-      <plugin name='gazebo_wind_plugin' filename='libeuler_aerodinamica_v1.so'>
-        <robotNamespace>/iris_demo</robotNamespace>
+      <plugin name='vento_do_euler' filename='libeuler_aerodinamica_v1.so'>
+        <robotNamespace>/T30_drone</robotNamespace>
         <xyzOffset>0 0 0</xyzOffset>
         <windForcePubTopic>vento/forca</windForcePubTopic>
         <windSpeedPubTopic>vento/velocidade</windSpeedPubTopic>
@@ -1452,11 +1517,11 @@
         <windGustForceMean>5.5</windGustForceMean>
         <windGustForceVariance>2.0</windGustForceVariance>
         <windGustDirection>1 0 0</windGustDirection>
-        <linkName>T30_inercia::base_link</linkName>
+        <linkName>T30_inercia_::base_link</linkName>
         <forceUpdateRate>50.0</forceUpdateRate>
         <frameId>world</frameId>
       </plugin>
-      <pose>0.010344 -0.039173 0 0 -0 0</pose>
+      <pose>0.04134 0.075155 0 0 -0 0</pose>
     </model>
   </world>
 </sdf>

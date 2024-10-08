@@ -294,16 +294,6 @@
         <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
       </control>
     </plugin>
-
-	<!--
-	<plugin name="plugin_resistencia_ar_simples" filename="libfluid_resitance_plugin.so">
-		<TopicName>/resistencia_ar/frame</TopicName>
-		<LinkName>T30_inercia::base_link</LinkName>
-		<rate>10.0</rate>
-		<uCoeff>2.0</uCoeff>
-	</plugin>  
-	-->
-	
 	
 	<plugin name="vento_do_euler" filename="libeuler_aerodinamica_v1.so">
 	  <robotNamespace>/T30_drone</robotNamespace>
@@ -334,11 +324,35 @@
 	  <!-- Link que será afetado pelo vento -->
 	  <linkName>T30_inercia_::base_link</linkName> <!-- Substitua por nome real do link -->
 	  
-    <!-- Nova variável: taxa de atualização da força -->
-	<forceUpdateRate>50.0</forceUpdateRate> <!-- Taxa de atualização em Hz -->
+      <!-- Nova variável: taxa de atualização da força -->
+	  <forceUpdateRate>50.0</forceUpdateRate> <!-- Taxa de atualização em Hz -->
 	  
 	  <!-- ID do frame para mensagens -->
 	  <frameId>world</frameId>
+	</plugin>
+
+	<!-- Inclusão do plugin euler_batt_plugin -->
+	<plugin name="euler_batt_plugin" filename="libeuler_aerodinamica_v1_batt_plugin.so">
+		<!-- Tipo de bateria: 'Welion', 'LiPo', 'LiIon' ou outro definido no plugin -->
+		<batteryType>Welion</batteryType>
+
+		<!-- Número de células em série (S) -->
+		<S>14</S>
+
+		<!-- Número de células em paralelo (P) -->
+		<P>3</P>
+
+		<!-- Nome do link onde a massa da bateria será atribuída -->
+		<nomeLink>T30_inercia_::bateria</nomeLink>
+
+		<!-- Tópico ROS onde a corrente consumida será recebida -->
+		<TopicoCorrente>/battery/current</TopicoCorrente>
+
+		<!-- Tópico ROS onde a tensão disponível será publicada -->
+		<TopicoTensao>/battery/voltage</TopicoTensao>
+
+		<!-- Tópico ROS onde o estado da bateria será publicado -->
+		<EstadoBattPubTopic>/battery/state</EstadoBattPubTopic>
 	</plugin>
 
   </model>

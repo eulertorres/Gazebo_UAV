@@ -10,12 +10,10 @@
     <arg name="debug" default="false"/>
     <arg name="fcu_url" default="udp://127.0.0.1:14550@14550"/>
     <arg name="gcs_url" default=""/>
-    <arg name="xacro_model" default="$(find simulacao)/models/EASy/easy.xacro"/>
-    <arg name="sdf_model" default="/tmp/easy.sdf"/>
 
     <!-- Carregar o ambiente do mundo -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
-        <arg name="world_name" value="$(find simulacao)/worlds/T30.world"/>
+        <arg name="world_name" value="$(find simulacao)/worlds/DJI_T30.world"/>
         <arg name="paused" value="$(arg paused)"/>
         <arg name="use_sim_time" value="$(arg use_sim_time)"/>
         <arg name="gui" value="$(arg gui)"/>
