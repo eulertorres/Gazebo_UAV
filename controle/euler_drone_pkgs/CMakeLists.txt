@@ -27,6 +27,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${GAZEBO_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}  # Adicionado para o plugin da bateria
+  #${PROJECT_SOURCE_DIR}/mavlink2
 )
 
 ## Linkar diretórios

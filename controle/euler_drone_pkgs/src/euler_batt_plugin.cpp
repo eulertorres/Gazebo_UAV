@@ -6,12 +6,16 @@ namespace gazebo {
 
 GZ_REGISTER_MODEL_PLUGIN(EulerBattPlugin)
 
-EulerBattPlugin::EulerBattPlugin() : ModelPlugin(), nh_(nullptr), current_draw_(0.0) {}
+// Construtor e destrutor
+EulerBattPlugin::EulerBattPlugin() : ModelPlugin(), nh_(nullptr), current_draw_(0.0), sockfd_(-1) {}
 
 EulerBattPlugin::~EulerBattPlugin() {
     if (nh_) {
         nh_->shutdown();
         delete nh_;
+    }
+    if (sockfd_ >= 0) {
+        close(sockfd_);
     }
 }
 
@@ -92,9 +96,54 @@ void EulerBattPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     update_connection_ = event::Events::ConnectWorldUpdateBegin(
         std::bind(&EulerBattPlugin::OnUpdate, this, std::placeholders::_1));
 
+	/*
+	// Criar o socket TCP
+	sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
+	if (sockfd_ < 0) {
+		gzerr << "[euler_batt_plugin] Falha ao criar o socket TCP.\n";
+		return;
+	}
+
+	server_addr_.sin_family = AF_INET;
+	server_addr_.sin_port = htons(5760); // Nova porta TCP do ArduPilot SITL
+	server_addr_.sin_addr.s_addr = inet_addr("127.0.0.1"); // IP local
+	memset(&(server_addr_.sin_zero), '\0', 8);
+
+	// Conectar ao ArduPilot SITL na nova porta
+	if (connect(sockfd_, (struct sockaddr *)&server_addr_, sizeof(struct sockaddr)) < 0) {
+		gzerr << "[euler_batt_plugin] Falha ao conectar ao ArduPilot SITL via TCP na porta 5770.\n";
+		close(sockfd_);
+		sockfd_ = -1;
+		return;
+		
+	gzdbg << "[euler_batt_plugin] Conectado ao ArduPilot SITL via TCP na porta 5770.\n";
+	}
+	*/
+
+	/*
+	// Criar um socket UDP
+	int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sockfd < 0) {
+		ROS_ERROR("[euler_batt_plugin] Falha ao criar o socket UDP.");
+		return;
+	}
+
+	// Configurar o endereço de destino
+	struct sockaddr_in dest_addr;
+	memset(&dest_addr, 0, sizeof(dest_addr));
+	dest_addr.sin_family = AF_INET;
+	dest_addr.sin_port = htons(5760); // Porta UDP do SITL
+	inet_aton("127.0.0.1", &dest_addr.sin_addr);
+
+	// Salvar dest_addr para uso posterior no sendto()
+	//this->dest_addr = dest_addr;
+
+	gzdbg << "[euler_batt_plugin] Conectado ao ArduPilot SITL via UDP na porta 5760.\n";
+	*/
+
     last_update_time_ = world_->SimTime();
 
-    ROS_INFO("[euler_batt_plugin] Plugin carregado com sucesso. Seguuuuura peão");
+	std::cout << "[euler_batt_plugin] Plugin carregado com sucesso. Seguuuuura peão" << std::endl;
 }
 
 void EulerBattPlugin::OnUpdate(const common::UpdateInfo& _info) {
@@ -109,6 +158,9 @@ void EulerBattPlugin::OnUpdate(const common::UpdateInfo& _info) {
 
     // Publica o estado da bateria
     PublishBatteryState();
+
+    // Enviar a mensagem MAVLink de BATTERY_STATUS
+    SendBatteryStatusMavlink();
 
     last_update_time_ = current_time;
 }
@@ -159,7 +211,6 @@ void EulerBattPlugin::CalculateAndSetBatteryMass() {
     gzdbg << "[euler_batt_plugin] Massa da bateria definida para " << total_mass << " kg.\n";
 }
 
-
 void EulerBattPlugin::CurrentCallback(const std_msgs::Float32::ConstPtr& msg) {
     current_draw_ = msg->data;  // Corrente em Amperes
 }
@@ -192,5 +243,47 @@ void EulerBattPlugin::PublishBatteryState() {
     battery_state_msg.percentage = state_of_charge_;
     battery_state_pub_.publish(battery_state_msg);
 }
+
+// Método SendBatteryStatusMavlink
+void EulerBattPlugin::SendBatteryStatusMavlink() {
+    if (sockfd_ < 0) {
+        // Socket inválido, não enviar
+        return;
+    }
+
+    // Construir a mensagem MAVLink
+    mavlink_message_t msg;
+    uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+
+    // Preencher a estrutura battery_status
+    mavlink_battery_status_t battery_status;
+    memset(&battery_status, 0, sizeof(battery_status));
+
+    battery_status.id = 0;
+    battery_status.battery_function = MAV_BATTERY_FUNCTION_ALL;
+    battery_status.type = MAV_BATTERY_TYPE_LIPO;
+    battery_status.temperature = INT16_MAX; // Temperatura não medida
+
+    for (int i = 0; i < 10; i++) {
+        if (i == 0) {
+            battery_status.voltages[i] = static_cast<uint16_t>(available_voltage_ * 1000); // Em mV
+        } else {
+            battery_status.voltages[i] = UINT16_MAX; // Valor não utilizado
+        }
+    }
+
+    battery_status.current_battery = -1; // Corrente não medida
+    battery_status.current_consumed = -1; // Não utilizado
+    battery_status.energy_consumed = -1; // Não utilizado
+    battery_status.battery_remaining = static_cast<int8_t>(state_of_charge_ * 100); // Porcentagem da carga
+
+    // Codificar a mensagem
+    mavlink_msg_battery_status_encode(255, 0, &msg, &battery_status); // IDs de sistema e componente
+
+    // Copiar a mensagem para o buffer de envio
+    uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
+
+}
+
 
 }  // namespace gazebo

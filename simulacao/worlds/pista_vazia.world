@@ -113,7 +113,7 @@
     <atmosphere type='adiabatic'/>
     <scene>
       <ambient>0.4 0.4 0.4 1</ambient>
-      <background>0.2 0.2 1 1</background>
+      <background>0.3294 0.3922 1 1</background>
       <shadows>0</shadows>
     </scene>
     <wind/>

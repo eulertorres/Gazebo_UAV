@@ -11,6 +11,12 @@
 #include <sensor_msgs/BatteryState.h>
 #include <map>
 
+//Includes para a bateria cia MAVLink
+#include <mavlink2/common/mavlink.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+
 namespace gazebo {
 
 class EulerBattPlugin : public ModelPlugin {
@@ -28,6 +34,7 @@ private:
     void UpdateBatteryState(double dt);
     void PublishVoltage();
     void PublishBatteryState();
+    void SendBatteryStatusMavlink(); // Novo método
 
     // Estrutura para armazenar informações da bateria
     struct BatteryInfo {
@@ -71,6 +78,11 @@ private:
     std::string battery_state_pub_topic_;
 
     common::Time last_update_time_;
+
+    // Variáveis para comunicação MAVLink
+    int sockfd_;
+    struct sockaddr_in server_addr_;
+
 };
 
 }  // namespace gazebo
