@@ -7,15 +7,9 @@
 #include <gazebo/physics/physics.hh>
 #include <gazebo/common/common.hh>
 #include <ros/ros.h>
-#include <std_msgs/Float32.h>
 #include <sensor_msgs/BatteryState.h>
+#include <std_msgs/Float32.h>
 #include <map>
-
-//Includes para a bateria cia MAVLink
-#include <mavlink2/common/mavlink.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <unistd.h>
 
 namespace gazebo {
 
@@ -25,35 +19,25 @@ public:
     virtual ~EulerBattPlugin();
 
     void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf);
-    void OnUpdate(const common::UpdateInfo& _info);
 
 private:
+    void OnUpdate(const common::UpdateInfo& _info);
     void ConfigureBatteryParameters();
     void CalculateAndSetBatteryMass();
     void CurrentCallback(const std_msgs::Float32::ConstPtr& msg);
     void UpdateBatteryState(double dt);
-    void PublishVoltage();
     void PublishBatteryState();
-    void SendBatteryStatusMavlink(); // Novo método
+	void PublishVoltage();
 
-    // Estrutura para armazenar informações da bateria
-    struct BatteryInfo {
-        double nominal_voltage;
-        double capacity;  // Em Ah
-        double mass;      // Em kg
-    };
-
-    // Membros da classe
+    // Ponteiros e objetos
     physics::ModelPtr model_;
     physics::WorldPtr world_;
     physics::LinkPtr link_;
     event::ConnectionPtr update_connection_;
-
-    // ROS
     ros::NodeHandle* nh_;
     ros::Subscriber current_sub_;
-    ros::Publisher voltage_pub_;
     ros::Publisher battery_state_pub_;
+	ros::Publisher voltage_pub_;
 
     // Parâmetros da bateria
     std::string battery_type_;
@@ -65,26 +49,24 @@ private:
     double total_voltage_;
     double total_capacity_;
     double available_voltage_;
-    double state_of_charge_;  // Entre 0 e 1
-    double current_draw_;     // Corrente atual em A
+    double state_of_charge_;
+    double current_draw_;
 
-    // Banco de dados de baterias
+    // Banco de dados de tipos de bateria
+    struct BatteryInfo {
+        double nominal_voltage;
+        double capacity;
+        double mass;
+    };
     std::map<std::string, BatteryInfo> battery_database_;
 
-    // Outros parâmetros
+    // Outros
     std::string link_name_;
     std::string current_topic_;
-    std::string voltage_pub_topic_;
-    std::string battery_state_pub_topic_;
-
+	std::string voltage_pub_topic_;
     common::Time last_update_time_;
-
-    // Variáveis para comunicação MAVLink
-    int sockfd_;
-    struct sockaddr_in server_addr_;
-
 };
 
 }  // namespace gazebo
 
-#endif // EULER_BATT_PLUGIN_H
+#endif  // EULER_BATT_PLUGIN_H

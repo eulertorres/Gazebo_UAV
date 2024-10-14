@@ -34,6 +34,9 @@
         <param name="target_system_id" value="1"/>
         <param name="target_component_id" value="1"/>
         <rosparam param="/rosout/logger_level">debug</rosparam>
+
+		<!-- Configuração para habilitar o plugin de bateria -->
+		<rosparam param="/mavros/battery">true</rosparam>
     </node>
 
     <!-- Outros nós ou plugins -->
