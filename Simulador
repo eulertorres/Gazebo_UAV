@@ -3,41 +3,41 @@
 
 roslaunch simulacao EASy.launch 2>&1 | grep -v "DS: no mapping for sensor id"
 
----------------------------- (Localização canavial da Reizein) --------------------------
+roslaunch simulacao T30.launch 2>&1 | grep -v "DS: no mapping for sensor id"
 
-cd ~/ardupilot/ArduCopter
+roslaunch simulacao simulacao.launch 2>&1 | grep -v "DS: no mapping for sensor id"
+
+
+---------------------------- (Arupilot para cada aeronave ) --------------------------
+
+cd ~/catkin_ws/src/Euler_Drone_Sim/simulacao/models/EASy/Copter
 sim_vehicle.py -f gazebo-iris --speedup 20 -j 8 -v ArduCopter --console --map -l -22.013852,-47.947333,858,0
 
--j 16: Usa 16 threads para compilar rapidamente o código.
--v ArduCopter: Especifica o tipo de veículo a simular (drones).
--f: Frame
---speedup 10: Aumenta a velocidade da simulação em 10 vezes.
-gazebo-iris: Modelo do drone quadricóptero Iris para simulação.
---console: Abre o console do ArduPilot para depuração.
--l -22.013852,-47.947333,858,0: Define posição (latitude, longitude, altitude, ângulo).
+cd ~/catkin_ws/src/Euler_Drone_Sim/simulacao/models/T30/Copter
+sim_vehicle.py -f gazebo-iris --speedup 20 -j 8 -v ArduCopter --console --map -l -22.013852,-47.947333,858,0
 
-Outros argumentos úteis:
+cd ~/catkin_ws/src/Euler_Drone_Sim/simulacao/models/T30_barra/Copter
+sim_vehicle.py -f gazebo-iris --speedup 20 -j 8 -v ArduCopter --console --map -l -22.013852,-47.947333,858,0
 
---map: Abre interface gráfica para visualizar o drone no mapa.
--I 1: Inicia segunda instância da simulação (instância 1).
---model plane: Carrega modelo de avião no Gazebo.
---wipe: Limpa parâmetros de simulações anteriores.
---aircraft: Define o diretório de armazenamento dos dados da simulação.
--N: Executa sem reiniciar o firmware do SITL.
---add-param-file: Carrega arquivo de parâmetros específicos.
+mavproxy.py --master=tcp:127.0.0.1:5760 --out=udp:127.0.0.1:14550 --map --console --udp=14551
 
-sim_vehicle.py -j 6 -v ArduCopter -f gazebo-iris --console -l -22.013852,-47.947333,858,0
+--sim-address=127.0.0.1:5770
 
-(Localização canavial da Reizein)
+sim_vehicle.py -v ArduCopter -f gazebo-iris --console --map --out=udp:127.0.0.1:14550 --sim-address=udp:0.0.0.0:5760 -l -22.013852,-47.947333,858,0
+
+
+--------------------------- ( Mission Planner e Scripts ) -----------------------------------
+
+(Localização canavial da Raizen)
 
 cd ~/Desktop/MissionPlanner
 mono MissionPlanner.exe
 
 cd ~/catkin_ws/src/Euler_Drone_Sim/controle/euler_drone_pkgs/src/scripts
 rosrun euler_aerodinamica_v1 Mission_sender.py _log:=debug
+python Plot.py
 
-
-
+---------------------------------------------------------------------------------------
 
 Conectar no TCP 127.0.0.1 5762
 
@@ -47,29 +47,39 @@ cd {workspace}
 catkin_make
 source devel/setup.bash
 
+catkin build euler_aerodinamica_v1
 
-Pra rodar roslaunch com debug de sensor:
+		-j 16: Usa 16 threads para compilar rapidamente o código.
+		-v ArduCopter: Especifica o tipo de veículo a simular (drones).
+		-f: Frame
+		--speedup 10: Aumenta a velocidade da simulação em 10 vezes.
+		gazebo-iris: Modelo do drone quadricóptero Iris para simulação.
+		--console: Abre o console do ArduPilot para depuração.
+		-l -22.013852,-47.947333,858,0: Define posição (latitude, longitude, altitude, ângulo).
 
-roslaunch simulacao EASy.launch
+		Outros argumentos úteis:
 
-
-
-rosrun xacro xacro $(find simulacao)/models/xacro/easy.xacro > /tmp/easy.urdf
-
-sudo rm usr/lib/x86_64-linux-gnu/gazebo-11/plugins/PLUGINNNN
-sudo mv ~/Desktop/Plugins/libEulerHelicesPlugin.so /usr/lib/x86_64-linux-gnu/gazebo-11/plugins
-
-tacar plugin na pasta
-
-Cria plugin ws catkin
+		--map: Abre interface gráfica para visualizar o drone no mapa.
+		-I 1: Inicia segunda instância da simulação (instância 1).
+		--model plane: Carrega modelo de avião no Gazebo.
+		--wipe: Limpa parâmetros de simulações anteriores.
+		--aircraft: Define o diretório de armazenamento dos dados da simulação.
+		-N: Executa sem reiniciar o firmware do SITL.
+		--add-param-file: Carrega arquivo de parâmetros específicos.
 
 cd ~/catkin_ws/src
 catkin_create_pkg euler_helices_plugin roscpp rospy std_msgs gazebo_ros
 
 
-exportar o plugin depois de compilado
+Pra matar o gazebo:
+	# Encerrar processos do Gazebo
+	pkill -f gazebo
 
-export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/plugin_do_euler/build
+	# Encerrar processos do ROS
+	rosnode kill -a
+
+	ps aux | grep gazebo
+
 
 upgrade do gazebo_ros para ter a função readCommonParameter()
 
@@ -80,7 +90,6 @@ sudo apt-get upgrade ros-noetic-gazebo-ros
 gzserver ~/catkin_ws/src/Euler_Drone_Sim/controle/euler_drone_pkgs/worlds/propeller_test.sdf --verbose
 
 gzserver ~/catkin_ws/src/Euler_Drone_Sim/controle/euler_drone_pkgs/worlds/propeller_test.sdf --verbose & gzclient
-
 
 
 git remote set-url origin https://eulertorres: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@github.com/eulertorres/Gazebo_Xmobots.git
