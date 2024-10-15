@@ -105,7 +105,7 @@ void EulerBattPlugin::OnUpdate(const common::UpdateInfo& _info) {
     //PublishSysStatus();
 
     // Atualiza o parâmetro SIM_BATT_VOLTAGE a cada 10 Hz
-    if (dt >= 1) {  // 10 Hz = 100 ms
+    if (dt >= 10) {  // 10 Hz = 100 ms
 
 		// Atualiza o estado de carga (SoC)
 		UpdateBatteryState(dt);

@@ -34,7 +34,7 @@ private:
 	void PublishVoltage();
     // Novo: Método para publicar o status do sistema
     void PublishSysStatus();
-	void SetSimBatteryVoltage(const std::string& param_id, float value);
+	void SetSimBatteryVoltage(float voltage);
 
     // Ponteiros e objetos
     physics::ModelPtr model_;
