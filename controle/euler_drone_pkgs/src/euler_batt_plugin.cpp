@@ -7,7 +7,7 @@ namespace gazebo {
 GZ_REGISTER_MODEL_PLUGIN(EulerBattPlugin)
 
 // Construtor e destrutor
-EulerBattPlugin::EulerBattPlugin() : ModelPlugin(), nh_(nullptr), current_draw_(0.0) {}
+EulerBattPlugin::EulerBattPlugin() : ModelPlugin(), nh_(nullptr), current_draw_(0.0), script_executed_(false) {}
 
 EulerBattPlugin::~EulerBattPlugin() {
     if (nh_) {
@@ -78,10 +78,6 @@ void EulerBattPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     // Inscrever-se no tópico de corrente
     current_sub_ = nh_->subscribe(current_topic_, 1, &EulerBattPlugin::CurrentCallback, this);
 
-    // Publisher para o tópico /mavros/battery
-    battery_state_pub_ = nh_->advertise<mavros_msgs::BatteryStatus>("/mavros/battery", 1);
-	sys_status_pub_ = nh_->advertise<mavros_msgs::SysStatus>("/mavros/sys_status", 1);
-
 	// Inicializar o publisher para o tópico de tensão
 	voltage_pub_ = nh_->advertise<std_msgs::Float32>(voltage_pub_topic_, 1);
 
@@ -90,7 +86,7 @@ void EulerBattPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
         std::bind(&EulerBattPlugin::OnUpdate, this, std::placeholders::_1));
 
     std::cout << "[euler_batt_plugin] Plugin carregado com sucesso.\n";
-
+	std::cout.flush(); 
     last_update_time_ = world_->SimTime();
 }
 
@@ -98,14 +94,8 @@ void EulerBattPlugin::OnUpdate(const common::UpdateInfo& _info) {
     common::Time current_time = world_->SimTime();
     double dt = (current_time - last_update_time_).Double();
 
-    // Publica o estado da bateria
-    //PublishBatteryState();
-
-    // Publica o status do sistema para o ArduPilot
-    //PublishSysStatus();
-
     // Atualiza o parâmetro SIM_BATT_VOLTAGE a cada 10 Hz
-    if (dt >= 10) {  // 10 Hz = 100 ms
+    if (dt >= 1) {  // 1 Hz = 1s
 
 		// Atualiza o estado de carga (SoC)
 		UpdateBatteryState(dt);
@@ -113,11 +103,9 @@ void EulerBattPlugin::OnUpdate(const common::UpdateInfo& _info) {
 		// Publica a tensão disponível
 		PublishVoltage();
 
-        SetSimBatteryVoltage(available_voltage_);  // Atualiza o parâmetro SIM_BATT_VOLTAGE com a tensão calculada
+        //SetSimBatteryVoltage(available_voltage_);  // Atualiza o parâmetro SIM_BATT_VOLTAGE com a tensão calculada
         last_update_time_ = current_time;
     }
-
-    //last_update_time_ = current_time;
 }
 
 void EulerBattPlugin::ConfigureBatteryParameters() {
@@ -147,9 +135,9 @@ void EulerBattPlugin::ConfigureBatteryParameters() {
     total_capacity_ = cell_capacity_ * cells_in_parallel_;
 
     // Estado inicial de carga (100%)
-    state_of_charge_ = 0.8;  // 100%
-    available_voltage_ = total_voltage_*0.8;
-	current_draw_ = 20;	//Debug apenas, arrumar para corrente da avionica
+    state_of_charge_ = 1;  // 100%
+    available_voltage_ = total_voltage_;
+	current_draw_ = 0.5;	//Debug apenas, arrumar para corrente da avionica
 }
 
 void EulerBattPlugin::CalculateAndSetBatteryMass() {
@@ -162,6 +150,7 @@ void EulerBattPlugin::CalculateAndSetBatteryMass() {
     inertial->SetMass(total_mass);
 
     gzdbg << "[euler_batt_plugin] Massa da bateria definida para " << total_mass << " kg.\n";
+	std::cout.flush(); 
 }
 
 void EulerBattPlugin::CurrentCallback(const std_msgs::Float32::ConstPtr& msg) {
@@ -183,57 +172,35 @@ void EulerBattPlugin::UpdateBatteryState(double dt) {
         available_voltage_ = min_total_voltage;
 }
 
-void EulerBattPlugin::PublishBatteryState() {
-    sensor_msgs::BatteryState battery_state_msg;
-    battery_state_msg.header.stamp = ros::Time::now();
-    battery_state_msg.voltage = available_voltage_;  // Tensão em volts
-    battery_state_msg.current = current_draw_;       // Corrente em amperes
-    battery_state_msg.charge = std::numeric_limits<float>::quiet_NaN();  // Desconhecido
-    battery_state_msg.capacity = std::numeric_limits<float>::quiet_NaN();  // Desconhecido
-    battery_state_msg.design_capacity = total_capacity_;  // Capacidade total em Ah
-    battery_state_msg.percentage = state_of_charge_;      // Estado de carga (0.0 a 1.0)
-    battery_state_msg.power_supply_status = sensor_msgs::BatteryState::POWER_SUPPLY_STATUS_DISCHARGING;
-    battery_state_msg.power_supply_health = sensor_msgs::BatteryState::POWER_SUPPLY_HEALTH_GOOD;
-    battery_state_msg.power_supply_technology = sensor_msgs::BatteryState::POWER_SUPPLY_TECHNOLOGY_LIPO;
-    battery_state_msg.present = true;
-
-    // Publica a mensagem no tópico /mavros/battery
-    battery_state_pub_.publish(battery_state_msg);
-}
 
 void EulerBattPlugin::PublishVoltage() {
     std_msgs::Float32 voltage_msg;
     voltage_msg.data = available_voltage_;
     voltage_pub_.publish(voltage_msg);
-}
 
-void EulerBattPlugin::PublishSysStatus() {
-    mavros_msgs::SysStatus sys_status_msg;
-    sys_status_msg.header.stamp = ros::Time::now();
-    sys_status_msg.voltage_battery = available_voltage_ * 1000;  // Em milivolts
-    sys_status_msg.current_battery = current_draw_ * 100;        // Em centiamperes
-    sys_status_msg.battery_remaining = state_of_charge_ * 100;   // Estado de carga em porcentagem
+/*
+    // Executa o script Python apenas uma vez, após a primeira publicação
+    if (!script_executed_) {
+        script_executed_ = true;
 
-    // Publica a mensagem no tópico /mavros/sys_status
-    sys_status_pub_.publish(sys_status_msg);
-}
+        // Obtenha o caminho do pacote
+        std::string package_path = ros::package::getPath("euler_aerodinamica_v1");
+        std::string script_path = package_path + "/src/scripts/MAVLink_sender.py";
 
-void EulerBattPlugin::SetSimBatteryVoltage(float voltage) {
-    // Configura a mensagem para alterar o parâmetro SIM_BATT_VOLTAGE
-    mavros_msgs::ParamSet param_set_msg;
-    param_set_msg.request.param_id = "SIM_BATT_VOLTAGE";
-    param_set_msg.request.value.real = voltage;
-
-    // Envia a solicitação para alterar o parâmetro via serviço ROS
-    ros::ServiceClient param_set_client = nh_->serviceClient<mavros_msgs::ParamSet>("/mavros/param/set");
-    param_set_client.call(param_set_msg);
-
-    if (param_set_msg.response.success) {
-        ROS_INFO("Parâmetro SIM_BATT_VOLTAGE atualizado com sucesso: %f", voltage);
-    } else {
-        ROS_ERROR("Falha ao atualizar o parâmetro SIM_BATT_VOLTAGE");
+        // Chama o script MAVLink_sender.py via system()
+        std::string command = "python3 " + script_path;
+        int ret = system(command.c_str());
+        if (ret == -1) {
+            gzerr << "Falha ao executar o script MAVLink_sender.py\n";
+        } else {
+            gzdbg << "Script MAVLink_sender.py executado com sucesso.\n";
+        }
+		std::cout.flush(); 
     }
+*/
 }
+
+
 
 
 }  // namespace gazebo

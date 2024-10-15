@@ -178,7 +178,7 @@ void EulerAeroPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
 	ros::NodeHandle nh;
 
 	ROS_INFO("O ROS TA VIVO REPITO O ROS TA VIVO");
-
+	std::cout.flush();  // Garante que a mensagem seja exibida imediatamente
     // Conecte-se ao evento de atualização do mundo do Gazebo
     update_connection_ = event::Events::ConnectWorldUpdateBegin(
         std::bind(&EulerAeroPlugin::OnUpdate, this, std::placeholders::_1));

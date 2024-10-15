@@ -2,7 +2,7 @@
   <world name='default'>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose>-5.966 -4.03584 2.1492 0 0.244079 0.459449</pose>
+        <pose>-8.03958 -4.06421 2.60055 0 0.251788 0.348983</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
@@ -113,7 +113,7 @@
     <atmosphere type='adiabatic'/>
     <scene>
       <ambient>0.4 0.4 0.4 1</ambient>
-      <background>0.7 0.7 0.7 1</background>
+      <background>0.3294 0.3922 1 1</background>
       <shadows>0</shadows>
     </scene>
     <wind/>
@@ -125,66 +125,66 @@
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
     <state world_name='default'>
-      <sim_time>11921 907000000</sim_time>
-      <real_time>1397 832314813</real_time>
-      <wall_time>1728330076 378948664</wall_time>
-      <iterations>1105656</iterations>
+      <sim_time>12281 578000000</sim_time>
+      <real_time>42 368455513</real_time>
+      <wall_time>1729000338 862910936</wall_time>
+      <iterations>35941</iterations>
       <model name='T30_drone'>
-        <pose>0.010344 -0.039173 0 0 -0 0</pose>
+        <pose>0.07408 -0.007571 0.008197 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='T30_inercia_::base_link'>
-          <pose>0.008449 -0.019651 0 0 -0 0</pose>
+          <pose>0.072185 0.011951 0.008197 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
         <link name='T30_inercia_::bateria'>
-          <pose>-0.209656 -0.039173 0.5 0 -0 0</pose>
+          <pose>-0.14592 -0.007571 0.508197 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
+          <acceleration>0 0 -0 0 -0 0</acceleration>
+          <wrench>0 0 -0 0 -0 0</wrench>
         </link>
         <link name='T30_inercia_::iris/imu_link'>
-          <pose>0.010344 -0.039173 0.74215 0 -0 0</pose>
+          <pose>0.07408 -0.007571 0.750347 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
+          <acceleration>-0 -0 -0 0 -0 0</acceleration>
+          <wrench>-0 -0 -0 0 -0 0</wrench>
         </link>
         <link name='T30_inercia_::rotor_0'>
-          <pose>0.924449 -0.042651 0.72 0 -0 0</pose>
+          <pose>0.988185 -0.011049 0.728197 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
+          <acceleration>0 0 0 -0 -0 -0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
         <link name='T30_inercia_::rotor_1'>
-          <pose>0.571772 -0.939353 0.72 0 -0 0</pose>
+          <pose>0.635508 -0.907751 0.728197 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
+          <acceleration>0 -0 0 -0 -0 -0</acceleration>
+          <wrench>0 -0 0 0 -0 0</wrench>
         </link>
         <link name='T30_inercia_::rotor_2'>
-          <pose>-0.551611 -0.938124 0.72 0 -0 0</pose>
+          <pose>-0.487875 -0.906522 0.728197 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
+          <acceleration>0 0 0 -0 -0 -0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
         <link name='T30_inercia_::rotor_3'>
-          <pose>-0.903921 -0.043581 0.72 0 -0 0</pose>
+          <pose>-0.840185 -0.011979 0.728197 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
+          <acceleration>-0 0 0 -0 -0 -0</acceleration>
+          <wrench>-0 0 0 0 -0 0</wrench>
         </link>
         <link name='T30_inercia_::rotor_4'>
-          <pose>-0.549586 0.855854 0.72 0 -0 0</pose>
+          <pose>-0.48585 0.887456 0.728197 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
+          <acceleration>-0 -0 -0 -0 -0 -0</acceleration>
+          <wrench>-0 -0 -0 0 -0 0</wrench>
         </link>
         <link name='T30_inercia_::rotor_5'>
-          <pose>0.572856 0.853294 0.72 0 -0 0</pose>
+          <pose>0.636592 0.884896 0.728197 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
+          <acceleration>-0 0 -0 -0 -0 -0</acceleration>
+          <wrench>-0 0 -0 0 -0 0</wrench>
         </link>
       </model>
       <model name='ground_plane'>
@@ -308,7 +308,7 @@
         <pose relative_to='T30_inercia_::__model__'>-0.22 0 0.5 0 -0 0</pose>
         <inertial>
           <pose>0 0 0 0 -0 0</pose>
-          <mass>3</mass>
+          <mass>16.17</mass>
           <inertia>
             <ixx>0.02</ixx>
             <ixy>0</ixy>
@@ -1500,7 +1500,7 @@
           <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
         </control>
       </plugin>
-      <plugin name='vento_do_euler' filename='libeuler_aerodinamica_v1.so'>
+      <plugin name='vento_do_euler' filename='libeuler_aerodinamica_v1_aero_plugin.so'>
         <robotNamespace>/T30_drone</robotNamespace>
         <xyzOffset>0 0 0</xyzOffset>
         <windForcePubTopic>vento/forca</windForcePubTopic>
@@ -1521,7 +1521,16 @@
         <forceUpdateRate>50.0</forceUpdateRate>
         <frameId>world</frameId>
       </plugin>
-      <pose>0.04134 0.075155 0 0 -0 0</pose>
+      <plugin name='euler_batt_plugin' filename='libeuler_aerodinamica_v1_batt_plugin.so'>
+        <batteryType>Welion</batteryType>
+        <S>14</S>
+        <P>3</P>
+        <nomeLink>T30_inercia_::bateria</nomeLink>
+        <TopicoCorrente>/battery/current</TopicoCorrente>
+        <TopicoTensao>/battery/voltage</TopicoTensao>
+        <EstadoBattPubTopic>/battery/state</EstadoBattPubTopic>
+      </plugin>
+      <pose>0.07408 -0.007571 0 0 -0 0</pose>
     </model>
   </world>
 </sdf>
