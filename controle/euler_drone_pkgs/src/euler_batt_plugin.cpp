@@ -79,7 +79,8 @@ void EulerBattPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     current_sub_ = nh_->subscribe(current_topic_, 1, &EulerBattPlugin::CurrentCallback, this);
 
     // Publisher para o tópico /mavros/battery
-    battery_state_pub_ = nh_->advertise<sensor_msgs::BatteryState>("/mavros/battery", 1);
+    battery_state_pub_ = nh_->advertise<mavros_msgs::BatteryStatus>("/mavros/battery", 1);
+	sys_status_pub_ = nh_->advertise<mavros_msgs::SysStatus>("/mavros/sys_status", 1);
 
 	// Inicializar o publisher para o tópico de tensão
 	voltage_pub_ = nh_->advertise<std_msgs::Float32>(voltage_pub_topic_, 1);
@@ -88,25 +89,35 @@ void EulerBattPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     update_connection_ = event::Events::ConnectWorldUpdateBegin(
         std::bind(&EulerBattPlugin::OnUpdate, this, std::placeholders::_1));
 
-    last_update_time_ = world_->SimTime();
-
     std::cout << "[euler_batt_plugin] Plugin carregado com sucesso.\n";
+
+    last_update_time_ = world_->SimTime();
 }
 
 void EulerBattPlugin::OnUpdate(const common::UpdateInfo& _info) {
     common::Time current_time = world_->SimTime();
     double dt = (current_time - last_update_time_).Double();
 
-    // Atualiza o estado de carga (SoC)
-    UpdateBatteryState(dt);
-
-    // Publica a tensão disponível
-    PublishVoltage();
-
     // Publica o estado da bateria
-    PublishBatteryState();
+    //PublishBatteryState();
 
-    last_update_time_ = current_time;
+    // Publica o status do sistema para o ArduPilot
+    //PublishSysStatus();
+
+    // Atualiza o parâmetro SIM_BATT_VOLTAGE a cada 10 Hz
+    if (dt >= 1) {  // 10 Hz = 100 ms
+
+		// Atualiza o estado de carga (SoC)
+		UpdateBatteryState(dt);
+
+		// Publica a tensão disponível
+		PublishVoltage();
+
+        SetSimBatteryVoltage(available_voltage_);  // Atualiza o parâmetro SIM_BATT_VOLTAGE com a tensão calculada
+        last_update_time_ = current_time;
+    }
+
+    //last_update_time_ = current_time;
 }
 
 void EulerBattPlugin::ConfigureBatteryParameters() {
@@ -136,8 +147,9 @@ void EulerBattPlugin::ConfigureBatteryParameters() {
     total_capacity_ = cell_capacity_ * cells_in_parallel_;
 
     // Estado inicial de carga (100%)
-    state_of_charge_ = 1.0;  // 100%
-    available_voltage_ = total_voltage_;
+    state_of_charge_ = 0.8;  // 100%
+    available_voltage_ = total_voltage_*0.8;
+	current_draw_ = 20;	//Debug apenas, arrumar para corrente da avionica
 }
 
 void EulerBattPlugin::CalculateAndSetBatteryMass() {
@@ -154,6 +166,7 @@ void EulerBattPlugin::CalculateAndSetBatteryMass() {
 
 void EulerBattPlugin::CurrentCallback(const std_msgs::Float32::ConstPtr& msg) {
     current_draw_ = msg->data;  // Corrente em Amperes
+    //current_draw_ = 50;  // Corrente em Amperes
 }
 
 void EulerBattPlugin::UpdateBatteryState(double dt) {
@@ -192,6 +205,34 @@ void EulerBattPlugin::PublishVoltage() {
     std_msgs::Float32 voltage_msg;
     voltage_msg.data = available_voltage_;
     voltage_pub_.publish(voltage_msg);
+}
+
+void EulerBattPlugin::PublishSysStatus() {
+    mavros_msgs::SysStatus sys_status_msg;
+    sys_status_msg.header.stamp = ros::Time::now();
+    sys_status_msg.voltage_battery = available_voltage_ * 1000;  // Em milivolts
+    sys_status_msg.current_battery = current_draw_ * 100;        // Em centiamperes
+    sys_status_msg.battery_remaining = state_of_charge_ * 100;   // Estado de carga em porcentagem
+
+    // Publica a mensagem no tópico /mavros/sys_status
+    sys_status_pub_.publish(sys_status_msg);
+}
+
+void EulerBattPlugin::SetSimBatteryVoltage(float voltage) {
+    // Configura a mensagem para alterar o parâmetro SIM_BATT_VOLTAGE
+    mavros_msgs::ParamSet param_set_msg;
+    param_set_msg.request.param_id = "SIM_BATT_VOLTAGE";
+    param_set_msg.request.value.real = voltage;
+
+    // Envia a solicitação para alterar o parâmetro via serviço ROS
+    ros::ServiceClient param_set_client = nh_->serviceClient<mavros_msgs::ParamSet>("/mavros/param/set");
+    param_set_client.call(param_set_msg);
+
+    if (param_set_msg.response.success) {
+        ROS_INFO("Parâmetro SIM_BATT_VOLTAGE atualizado com sucesso: %f", voltage);
+    } else {
+        ROS_ERROR("Falha ao atualizar o parâmetro SIM_BATT_VOLTAGE");
+    }
 }
 
 

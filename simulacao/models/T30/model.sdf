@@ -295,7 +295,7 @@
       </control>
     </plugin>
 	
-	<plugin name="vento_do_euler" filename="libeuler_aerodinamica_v1.so">
+	<plugin name="vento_do_euler" filename="libeuler_aerodinamica_v1_aero_plugin.so">
 	  <robotNamespace>/T30_drone</robotNamespace>
 	  <xyzOffset>0 0 0</xyzOffset> <!-- Altere para a posição desejada -->
 	  

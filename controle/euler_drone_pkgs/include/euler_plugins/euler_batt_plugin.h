@@ -7,9 +7,13 @@
 #include <gazebo/physics/physics.hh>
 #include <gazebo/common/common.hh>
 #include <ros/ros.h>
+#include <mavros_msgs/SysStatus.h>
 #include <sensor_msgs/BatteryState.h>
+#include <mavros_msgs/StatusText.h>
+#include <mavros_msgs/BatteryStatus.h> 
 #include <std_msgs/Float32.h>
 #include <map>
+#include <mavros_msgs/ParamSet.h>
 
 namespace gazebo {
 
@@ -28,6 +32,9 @@ private:
     void UpdateBatteryState(double dt);
     void PublishBatteryState();
 	void PublishVoltage();
+    // Novo: Método para publicar o status do sistema
+    void PublishSysStatus();
+	void SetSimBatteryVoltage(const std::string& param_id, float value);
 
     // Ponteiros e objetos
     physics::ModelPtr model_;
@@ -38,6 +45,9 @@ private:
     ros::Subscriber current_sub_;
     ros::Publisher battery_state_pub_;
 	ros::Publisher voltage_pub_;
+    // Novo: Publisher para o status do sistema
+    ros::Publisher sys_status_pub_;
+
 
     // Parâmetros da bateria
     std::string battery_type_;
