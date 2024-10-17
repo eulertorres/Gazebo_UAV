@@ -3,7 +3,7 @@
   <model name='T30_inercia_'>
     <link name='base_link'>
       <inertial>
-        <mass>26.4</mass> <!-- Sem Bateria. Com bateria é 10.1kg -->
+        <mass>26.4</mass> <!-- Sem Bateria. Com bateria é 10.1kg a mais -->
         <inertia>
           <ixx>8.96</ixx>
           <ixy>0</ixy>

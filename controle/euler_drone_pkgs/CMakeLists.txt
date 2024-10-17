@@ -15,7 +15,7 @@ find_package(Boost REQUIRED COMPONENTS system)  # Adicionado para o plugin da ba
 ## Definição do pacote catkin
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES ${PROJECT_NAME}_aero_plugin ${PROJECT_NAME}_batt_plugin
+  LIBRARIES ${PROJECT_NAME}_aero_plugin ${PROJECT_NAME}_batt_plugin ${PROJECT_NAME}_mot_plugin
   CATKIN_DEPENDS roscpp gazebo_ros std_msgs sensor_msgs
   DEPENDS ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES}  # Adicione dependências do sistema reais, se houver
 )
@@ -41,6 +41,7 @@ list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
 ## Criação das bibliotecas a partir dos plugins
 add_library(${PROJECT_NAME}_aero_plugin SHARED src/euler_aero_plugin.cpp)
 add_library(${PROJECT_NAME}_batt_plugin SHARED src/euler_batt_plugin.cpp)
+add_library(${PROJECT_NAME}_mot_plugin SHARED src/euler_mot_plugin.cpp)
 
 ## Linkagem das bibliotecas
 target_link_libraries(${PROJECT_NAME}_aero_plugin
@@ -54,12 +55,20 @@ target_link_libraries(${PROJECT_NAME}_batt_plugin
   ${Boost_LIBRARIES}  # Necessário se o plugin da bateria utilizar Boost
 )
 
+target_link_libraries(${PROJECT_NAME}_mot_plugin
+  ${catkin_LIBRARIES}
+  ${GAZEBO_LIBRARIES}
+  ${Boost_LIBRARIES} 
+)
+
+set(CMAKE_BUILD_TYPE Debug)
+
 ## Mensagens para depuração
 message("GAZEBO_LIBRARIES: ${GAZEBO_LIBRARIES}")
 message("catkin_LIBRARIES: ${catkin_LIBRARIES}")
 
 ## Instalação das bibliotecas
-install(TARGETS ${PROJECT_NAME}_aero_plugin ${PROJECT_NAME}_batt_plugin
+install(TARGETS ${PROJECT_NAME}_aero_plugin ${PROJECT_NAME}_batt_plugin ${PROJECT_NAME}_mot_plugin
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
 

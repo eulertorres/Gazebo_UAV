@@ -9,7 +9,7 @@
 #include <ros/ros.h>
 #include <std_msgs/Float32.h>
 #include <map>
-
+#include <ros/master.h>
 #include <cstdlib>
 #include <ros/package.h> 
 
@@ -26,10 +26,11 @@ private:
     void OnUpdate(const common::UpdateInfo& _info);
     void ConfigureBatteryParameters();
     void CalculateAndSetBatteryMass();
-    void CurrentCallback(const std_msgs::Float32::ConstPtr& msg);
+    void CurrentComponentCallback(const std_msgs::Float32::ConstPtr& msg, const std::string& topic_name);
     void UpdateBatteryState(double dt);
     void PublishBatteryState();
 	void PublishVoltage();
+	void CheckForCurrentTopics(const ros::TimerEvent&);
 
     // Ponteiros e objetos
     physics::ModelPtr model_;
@@ -37,7 +38,7 @@ private:
     physics::LinkPtr link_;
     event::ConnectionPtr update_connection_;
     ros::NodeHandle* nh_;
-    ros::Subscriber current_sub_;
+    ros::Publisher current_pub_;
     ros::Publisher battery_state_pub_;
 	ros::Publisher voltage_pub_;
 
@@ -45,6 +46,7 @@ private:
     std::string battery_type_;
     int cells_in_series_;
     int cells_in_parallel_;
+    int numrotors_;
     double cell_voltage_;
     double cell_capacity_;
     double cell_mass_;
@@ -65,9 +67,12 @@ private:
     std::map<std::string, BatteryInfo> battery_database_;
 
     // Outros
+	std::vector<ros::Subscriber> component_current_subs_;  // Armazena os subscribers dos componentes
+	std::map<std::string, double> component_currents_;     // Armazena as correntes de cada componente, indexado pelo nome do tópico
     std::string link_name_;
     std::string current_topic_;
 	std::string voltage_pub_topic_;
+	std::string current_pub_topic_;
     common::Time last_update_time_;
 };
 

@@ -206,7 +206,95 @@
       <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
       <imuName>T30_inercia_::iris/imu_link::imu_sensor</imuName>
       <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
-	</plugin>
+	       <!--
+          RPM = 60 * multiplier / (2 * PI)
+        -->
+ 
+      <control channel="0">	 
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>T30_inercia_::rotor_0_joint</jointName>
+        <multiplier>-491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="1"> <!--CCW-->
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>T30_inercia_::rotor_3_joint</jointName>
+        <multiplier>491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="2"> <!--CW-->
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>T30_inercia_::rotor_4_joint</jointName>
+        <multiplier>-491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="3"> <!--CCW-->
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>T30_inercia_::rotor_1_joint</jointName>
+        <multiplier>491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="4"> <!--CCW-->
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>T30_inercia_::rotor_5_joint</jointName>
+        <multiplier>491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="5"> <!--CW-->
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>T30_inercia_::rotor_2_joint</jointName>
+        <multiplier>-491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+    </plugin>
 
 	<plugin name="vento_do_euler" filename="libeuler_aerodinamica_v1_aero_plugin.so">
 	  <robotNamespace>/T30_drone</robotNamespace>
@@ -258,93 +346,15 @@
 		<!-- Nome do link onde a massa da bateria será atribuída -->
 		<nomeLink>T30_inercia_::bateria</nomeLink>
 
+		<!-- Tópico ROS onde a corrente consumida será recebida -->
+		<TopicoCorrente>/battery/current</TopicoCorrente>
+
 		<!-- Tópico ROS onde a tensão disponível será publicada -->
 		<TopicoTensao>/battery/voltage</TopicoTensao>
 
 		<!-- Tópico ROS onde o estado da bateria será publicado -->
 		<EstadoBattPubTopic>/battery/state</EstadoBattPubTopic>
-
-		<numRotores>6</numRotores>
-
 	</plugin>
 
-	<plugin name="euler_mot 1_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
-		<numero_motor>1</numero_motor>
-		<PWM_min>1000</PWM_min>
-		<PWM_max>2000</PWM_max>
-		<coeff>0.200</coeff>
-		<current_coeff>3.75</current_coeff>
-		<joint_name>T30_inercia_::rotor_0_joint</joint_name>
-		<current_topic>/battery/current/motor1</current_topic>
-		<forceUpdateRate>0.1</forceUpdateRate><!-- Taxa de atualização para aplicação de forças (em segundos) -->
-		<orientacao>CW</orientacao><!-- Orientacai, CW ou CCW -->
-		<coef_drag>0.00012</coef_drag><!-- Orientacai, CW ou CCW -->
-		<back_emf>0.00005</back_emf>
-	</plugin>
-	<plugin name="euler_mot 2_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
-		<numero_motor>2</numero_motor>
-		<PWM_min>1000</PWM_min>
-		<PWM_max>2000</PWM_max>
-		<coeff>0.200</coeff>
-		<current_coeff>3.75</current_coeff>
-		<joint_name>T30_inercia_::rotor_3_joint</joint_name>
-		<current_topic>/battery/current/motor2</current_topic>
-		<forceUpdateRate>0.1</forceUpdateRate><!-- Taxa de atualização para aplicação de forças (em segundos) -->
-		<orientacao>CCW</orientacao><!-- Orientacai, CW ou CCW -->
-		<coef_drag>0.00012</coef_drag><!-- Orientacai, CW ou CCW -->
-		<back_emf>0.00005</back_emf>
-	</plugin>
-	<plugin name="euler_mot 3_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
-		<numero_motor>3</numero_motor>
-		<PWM_min>1000</PWM_min>
-		<PWM_max>2000</PWM_max>
-		<coeff>0.200</coeff>
-		<current_coeff>3.75</current_coeff>
-		<joint_name>T30_inercia_::rotor_4_joint</joint_name>
-		<current_topic>/battery/current/motor3</current_topic>
-		<forceUpdateRate>0.1</forceUpdateRate><!-- Taxa de atualização para aplicação de forças (em segundos) -->
-		<orientacao>CW</orientacao><!-- Orientacai, CW ou CCW -->
-		<coef_drag>0.00012</coef_drag><!-- Orientacai, CW ou CCW -->
-		<back_emf>0.00005</back_emf>
-	</plugin>
-	<plugin name="euler_mot_4 plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
-		<numero_motor>4</numero_motor>
-		<PWM_min>1000</PWM_min>
-		<PWM_max>2000</PWM_max>
-		<coeff>0.200</coeff>
-		<current_coeff>3.75</current_coeff>
-		<joint_name>T30_inercia_::rotor_1_joint</joint_name>
-		<current_topic>/battery/current/motor4</current_topic>
-		<forceUpdateRate>0.1</forceUpdateRate><!-- Taxa de atualização para aplicação de forças (em segundos) -->
-		<orientacao>CCW</orientacao><!-- Orientacai, CW ou CCW -->
-		<coef_drag>0.00012</coef_drag><!-- Orientacai, CW ou CCW -->
-		<back_emf>0.00005</back_emf>
-	</plugin>
-	<plugin name="euler_mot_5 plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
-		<numero_motor>5</numero_motor>
-		<PWM_min>1000</PWM_min>
-		<PWM_max>2000</PWM_max>
-		<coeff>0.200</coeff>
-		<current_coeff>3.75</current_coeff>
-		<joint_name>T30_inercia_::rotor_5_joint</joint_name>
-		<current_topic>/battery/current/motor5</current_topic>
-		<forceUpdateRate>0.1</forceUpdateRate><!-- Taxa de atualização para aplicação de forças (em segundos) -->
-		<orientacao>CCW</orientacao><!-- Orientacai, CW ou CCW -->
-		<coef_drag>0.00012</coef_drag><!-- Orientacai, CW ou CCW -->
-		<back_emf>0.00005</back_emf>
-	</plugin>
-	<plugin name="euler_mot_6 plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
-		<numero_motor>6</numero_motor>
-		<PWM_min>1000</PWM_min>
-		<PWM_max>2000</PWM_max>
-		<coeff>0.200</coeff>
-		<current_coeff>3.75</current_coeff>
-		<joint_name>T30_inercia_::rotor_2_joint</joint_name>
-		<current_topic>/battery/current/motor6</current_topic>
-		<forceUpdateRate>0.1</forceUpdateRate><!-- Taxa de atualização para aplicação de forças (em segundos) -->
-		<orientacao>CW</orientacao><!-- Orientacai, CW ou CCW -->
-		<coef_drag>0.00012</coef_drag><!-- Orientacai, CW ou CCW -->
-		<back_emf>0.00005</back_emf>
-	</plugin>
   </model>
 </sdf>

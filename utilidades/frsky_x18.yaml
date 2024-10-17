@@ -1,0 +1,31 @@
+description: Configuracao para o controle da FrSKy X18 muito lindo que o Euler Comprou ;-;
+match:
+  - FrSky*
+controls:
+
+  # map axis id 2 to rc channel 1
+  - channel: 1
+    type: axis
+    id: 3
+
+  # map axis id 3 to rc channel 2
+  - channel: 2
+    type: axis
+    id: 2
+    invert: true
+
+  # map axis id 1 to rc channel 3
+  - channel: 3
+    type: axis
+    id: 0
+   # invert: true
+
+  # map axis id 0 to rc channel 4
+  - channel: 4
+    type: axis
+    id: 1
+
+  # map switch to rc channel 5 (flight mode switch with three positions)
+  - channel: 5
+    type: axis
+    id: 4 

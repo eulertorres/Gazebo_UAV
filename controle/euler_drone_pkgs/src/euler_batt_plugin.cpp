@@ -52,15 +52,21 @@ void EulerBattPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     else
         link_name_ = "battery_link";
 
-    if (_sdf->HasElement("TopicoCorrente"))
-        current_topic_ = _sdf->Get<std::string>("TopicoCorrente");
-    else
-        current_topic_ = "/battery/current";
+	// Definir o tópico de corrente (pode ser parametrizado via SDF)
+	if (_sdf->HasElement("TopicoCorrente"))
+		current_pub_topic_ = _sdf->Get<std::string>("TopicoCorrente");
+	else
+		current_pub_topic_ = "/battery/Total_current";
 	// Definir o tópico de tensão (pode ser parametrizado via SDF)
 	if (_sdf->HasElement("TopicoTensao"))
 		voltage_pub_topic_ = _sdf->Get<std::string>("TopicoTensao");
 	else
 		voltage_pub_topic_ = "/battery/voltage";
+
+	if (_sdf->HasElement("numRotores"))
+		numrotors_ = _sdf->Get<int>("numRotores");
+	else
+		numrotors_ = 4;
 
     // Obter link da bateria
     link_ = model_->GetLink(link_name_);
@@ -75,15 +81,30 @@ void EulerBattPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     // Calcula a massa da bateria e atribui ao link
     CalculateAndSetBatteryMass();
 
-    // Inscrever-se no tópico de corrente
-    current_sub_ = nh_->subscribe(current_topic_, 1, &EulerBattPlugin::CurrentCallback, this);
+
+    // Busca os tópicos
+    ros::master::V_TopicInfo master_topics;
+    ros::master::getTopics(master_topics);
 
 	// Inicializar o publisher para o tópico de tensão
 	voltage_pub_ = nh_->advertise<std_msgs::Float32>(voltage_pub_topic_, 1);
+	current_pub_ = nh_->advertise<std_msgs::Float32>(current_pub_topic_, 1);
 
     // Conectar ao evento de atualização do mundo do Gazebo
     update_connection_ = event::Events::ConnectWorldUpdateBegin(
         std::bind(&EulerBattPlugin::OnUpdate, this, std::placeholders::_1));
+
+    // Inscrição em tópicos de corrente para cada motor
+    for (int i = 1; i <= numrotors_; ++i) {
+        std::string topic_name = "/battery/current/motor" + std::to_string(i);
+
+        // Inscreve-se no tópico de corrente do motor
+        ros::Subscriber sub = nh_->subscribe<std_msgs::Float32>(
+            topic_name, 1, boost::bind(&EulerBattPlugin::CurrentComponentCallback, this, _1, topic_name));
+        component_current_subs_.push_back(sub);
+        component_currents_[topic_name] = 0.0;  // Inicializa a corrente para este motor
+        std::cout << "[euler_batt_plugin] Inscrito no tópico: " << topic_name << "\n";
+    }
 
     std::cout << "[euler_batt_plugin] Plugin carregado com sucesso.\n";
 	std::cout.flush(); 
@@ -94,8 +115,17 @@ void EulerBattPlugin::OnUpdate(const common::UpdateInfo& _info) {
     common::Time current_time = world_->SimTime();
     double dt = (current_time - last_update_time_).Double();
 
+    // Somar as correntes de todos os componentes que estão publicando
+    double total_component_current = 0.0;
+    for (const auto& component_current : component_currents_) {
+        total_component_current += component_current.second;  // Soma as correntes de todos os componentes
+    }
+
+    // Adicionar a corrente da eletrônica ou outros componentes fixos (se houver)
+    current_draw_ = total_component_current;
+
     // Atualiza o parâmetro SIM_BATT_VOLTAGE a cada 10 Hz
-    if (dt >= 1) {  // 1 Hz = 1s
+    if (dt >= 0.1) {  // Periodo
 
 		// Atualiza o estado de carga (SoC)
 		UpdateBatteryState(dt);
@@ -137,7 +167,7 @@ void EulerBattPlugin::ConfigureBatteryParameters() {
     // Estado inicial de carga (100%)
     state_of_charge_ = 1;  // 100%
     available_voltage_ = total_voltage_;
-	current_draw_ = 0.5;	//Debug apenas, arrumar para corrente da avionica
+	current_draw_ = 0;	//Debug apenas, arrumar para corrente da avionica
 }
 
 void EulerBattPlugin::CalculateAndSetBatteryMass() {
@@ -153,15 +183,15 @@ void EulerBattPlugin::CalculateAndSetBatteryMass() {
 	std::cout.flush(); 
 }
 
-void EulerBattPlugin::CurrentCallback(const std_msgs::Float32::ConstPtr& msg) {
-    current_draw_ = msg->data;  // Corrente em Amperes
-    //current_draw_ = 50;  // Corrente em Amperes
+void EulerBattPlugin::CurrentComponentCallback(const std_msgs::Float32::ConstPtr& msg, const std::string& topic_name) {
+    // Atualiza a corrente consumida pelo componente (motor, IMU, etc.)
+    component_currents_[topic_name] = msg->data;
 }
 
 void EulerBattPlugin::UpdateBatteryState(double dt) {
     // Atualiza o estado de carga (SoC)
     double discharge = (current_draw_ * dt) / (3600.0 * total_capacity_);  // Normalizado para segundos
-    state_of_charge_ -= discharge;
+    state_of_charge_ -= discharge*1.1;
     if (state_of_charge_ < 0.0) state_of_charge_ = 0.0;
 
     // Atualiza a tensão disponível (simplificação linear)
@@ -175,8 +205,11 @@ void EulerBattPlugin::UpdateBatteryState(double dt) {
 
 void EulerBattPlugin::PublishVoltage() {
     std_msgs::Float32 voltage_msg;
+    std_msgs::Float32 current_msg;
     voltage_msg.data = available_voltage_;
+    current_msg.data = current_draw_;
     voltage_pub_.publish(voltage_msg);
+    current_pub_.publish(current_msg);
 
 /*
     // Executa o script Python apenas uma vez, após a primeira publicação
@@ -198,9 +231,8 @@ void EulerBattPlugin::PublishVoltage() {
 		std::cout.flush(); 
     }
 */
+
 }
-
-
 
 
 }  // namespace gazebo
