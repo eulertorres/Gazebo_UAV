@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import (
     QLabel, QSplitter, QSizePolicy, QComboBox, QCheckBox, QMessageBox
 )
 from PyQt5.QtCore import QProcess, Qt
-from PyQt5.QtGui import QFont, QIcon, QPixmap
+from PyQt5.QtGui import QFont, QIcon, QPixmap, QTextCursor
 
 class TerminalTab(QWidget):
     def __init__(self, label, cmd, process_type, parent=None):
@@ -73,6 +73,8 @@ class TerminalTab(QWidget):
     def update_output(self):
         output = self.process.readAll().data().decode()
         self.output.append(output)
+        # Auto-scroll para o final
+        self.output.moveCursor(QTextCursor.End)
 
     def process_finished(self):
         self.output.append(f"\nProcesso '{self.label}' foi finalizado.")
@@ -126,29 +128,34 @@ class MainWindow(QMainWindow):
         left_layout = QVBoxLayout()
         output_layout = QVBoxLayout()
 
-        # Adicionar título e imagem
+        # Adicionar título, versão e imagem
         title_label = QLabel("SIMULADOR RW")
         title_label.setStyleSheet("font-size: 24px; font-weight: bold;")
         title_label.setAlignment(Qt.AlignCenter)
+
+        version_label = QLabel("Versão 1.0")
+        version_label.setAlignment(Qt.AlignLeft)
+
         image_label = QLabel()
         image_path = os.path.join(os.path.dirname(__file__), 'utilidades/resources/gato.jpg')
         pixmap = QPixmap(image_path)
         image_label.setPixmap(pixmap.scaled(100, 100, Qt.KeepAspectRatio))
 
         title_container = QHBoxLayout()
+        title_container.addWidget(version_label)
         title_container.addStretch()
         title_container.addWidget(title_label)
-        title_container.addWidget(image_label)
         title_container.addStretch()
+        title_container.addWidget(image_label)
 
         # Dropdowns
         self.ambiente_combo = QComboBox()
-        self.ambiente_combo.addItems(["EASy", "T30", "Pista vazia"])
-        self.ambiente_label = QLabel("Selecione o Ambiente:")
+        self.ambiente_combo.addItems(["pista_vazia"])  # Por enquanto, apenas 'pista_vazia'
+        self.ambiente_label = QLabel("Selecione o Ambiente (Mundo):")
 
         self.aeronave_combo = QComboBox()
         self.aeronave_combo.addItems(["EASy", "T30", "T30_barra", "T30_estavel"])
-        self.aeronave_label = QLabel("Selecione a Aeronave (Ardupilot):")
+        self.aeronave_label = QLabel("Selecione a Aeronave:")
 
         # Botões On/Off para Console e Mapa
         self.console_checkbox = QCheckBox("Console")
@@ -157,7 +164,7 @@ class MainWindow(QMainWindow):
         self.mapa_checkbox.setChecked(True)
 
         # Caixas de texto para parâmetros
-        self.j_label = QLabel("Numero de nucleos:")
+        self.j_label = QLabel("Número de núcleos:")
         self.j_input = QLineEdit("8")
         self.lat_label = QLabel("Latitude:")
         self.lat_input = QLineEdit("-22.013852")
@@ -231,6 +238,9 @@ class MainWindow(QMainWindow):
         # Área de saída (abas com terminais simulados)
         output_layout.addWidget(self.tabs)
 
+        # Adicionar a aba de comandos do Ardupilot
+        self.create_ardupilot_commands_tab()
+
         # Configuração do layout principal
         top_layout.addLayout(left_layout)
         top_layout.addLayout(output_layout)
@@ -248,15 +258,62 @@ class MainWindow(QMainWindow):
         container.setLayout(main_layout)
         self.setCentralWidget(container)
 
+    def create_ardupilot_commands_tab(self):
+        self.ardupilot_commands_tab = QWidget()
+        layout = QVBoxLayout()
+
+        # Caixa de texto para o valor de X no Takeoff
+        self.takeoff_label = QLabel("Altitude de Decolagem (m):")
+        self.takeoff_input = QLineEdit("2")
+
+        takeoff_layout = QHBoxLayout()
+        takeoff_btn = QPushButton("Takeoff")
+        takeoff_btn.clicked.connect(self.takeoff_command)
+        takeoff_layout.addWidget(takeoff_btn)
+        takeoff_layout.addWidget(self.takeoff_label)
+        takeoff_layout.addWidget(self.takeoff_input)
+
+        commands = [
+            ("Carregar Joystick", self.load_joystick),
+            ("Listar Missões", lambda: self.send_ardupilot_command('wp list')),
+            ("Limpar Missões", lambda: self.send_ardupilot_command('wp clear')),
+            ("Modo Guided", lambda: self.send_ardupilot_command('mode guided')),
+            ("Modo Auto", lambda: self.send_ardupilot_command('mode auto')),
+            ("RTL", lambda: self.send_ardupilot_command('rtl')),
+            ("Loiter", lambda: self.send_ardupilot_command('mode loiter')),
+            ("Stabilize", lambda: self.send_ardupilot_command('mode stabilize')),
+            ("Arm Throttle", lambda: self.send_ardupilot_command('arm throttle')),
+            # Adicione mais comandos conforme necessário
+        ]
+
+        for label, func in commands:
+            btn = QPushButton(label)
+            btn.clicked.connect(func)
+            layout.addWidget(btn)
+
+        layout.addLayout(takeoff_layout)
+
+        self.ardupilot_commands_tab.setLayout(layout)
+        self.tabs.addTab(self.ardupilot_commands_tab, "Comandos Ardupilot")
+        self.tabs.setTabEnabled(self.tabs.indexOf(self.ardupilot_commands_tab), False)
+
+    def takeoff_command(self):
+        altitude = self.takeoff_input.text()
+        self.send_ardupilot_command(f'takeoff {altitude}')
+
+    def send_ardupilot_command(self, command):
+        if 'Ardupilot' in self.process_tabs:
+            tab_info = self.process_tabs['Ardupilot']
+            tab = tab_info['tab']
+            tab.process.write((command + '\n').encode())
+        else:
+            QMessageBox.warning(self, "Aviso", "Ardupilot não está em execução.")
+
     def start_gazebo(self):
         label = "Gazebo"
         ambiente = self.ambiente_combo.currentText()
-        if ambiente == "EASy":
-            cmd = 'roslaunch simulacao EASy.launch 2>&1 | grep -v "DS: no mapping for sensor id"'
-        elif ambiente == "T30":
-            cmd = 'roslaunch simulacao T30.launch 2>&1 | grep -v "DS: no mapping for sensor id"'
-        else:
-            cmd = 'roslaunch simulacao simulacao.launch 2>&1 | grep -v "DS: no mapping for sensor id"'
+        aeronave = self.aeronave_combo.currentText()
+        cmd = f'roslaunch simulacao simulacao.launch model_name:={aeronave} world:={ambiente} 2>&1 | grep -v "DS: no mapping for sensor id"'
         self.start_process(label, cmd, process_type='gazebo')
         # Habilitar o botão Script Avionica
         self.buttons["script_avionica"].setEnabled(True)
@@ -275,20 +332,15 @@ class MainWindow(QMainWindow):
         lon_value = self.lon_input.text()
         cmd = f"cd {cwd} && sim_vehicle.py -f gazebo-iris --speedup 20 -j {j_value} -v ArduCopter {console_flag} {map_flag} -l {lat_value},{lon_value}"
         self.start_process(label, cmd, process_type='ardupilot')
-        # Habilitar o botão Carregar Joystick
+        # Habilitar o botão Carregar Joystick e comandos do Ardupilot
         self.buttons["joystick"].setEnabled(True)
+        self.tabs.setTabEnabled(self.tabs.indexOf(self.ardupilot_commands_tab), True)
         self.buttons_state["Ardupilot"] = True
 
     def load_joystick(self):
-        if 'Ardupilot' in self.process_tabs:
-            tab_info = self.process_tabs['Ardupilot']
-            tab = tab_info['tab']
-            # Enviar o comando para o processo do Ardupilot
-            tab.process.write('module load joystick\n'.encode())
-            # Habilitar o botão Enviar Missão
-            self.buttons["enviar_missao"].setEnabled(True)
-        else:
-            QMessageBox.warning(self, "Aviso", "Por favor, inicie o Ardupilot primeiro.")
+        self.send_ardupilot_command('module load joystick')
+        # Habilitar o botão Enviar Missão
+        self.buttons["enviar_missao"].setEnabled(True)
 
     def start_mission_planner(self):
         label = "MissionPlanner"
@@ -358,14 +410,22 @@ class MainWindow(QMainWindow):
                 # Fechar o MissionPlanner
                 tab.process.terminate()
             elif process_type == 'ardupilot':
-                # Fechar o Ardupilot
+                # Fechar o Ardupilot e seus terminais
                 tab.process.terminate()
+                #os.system('pkill -f sim_vehicle.py')
+                #os.system('pkill -f mavproxy.py')
             elif process_type == 'script':
                 # Enviar sinal Ctrl+C
                 tab.process.terminate()
             else:
                 tab.process.terminate()
             tab.process.waitForFinished()
+            # Desabilitar a aba de comandos do Ardupilot se necessário
+            if label == 'Ardupilot':
+                self.tabs.setTabEnabled(self.tabs.indexOf(self.ardupilot_commands_tab), False)
+                self.buttons["joystick"].setEnabled(False)
+                self.buttons["enviar_missao"].setEnabled(False)
+                self.buttons_state["Ardupilot"] = False
         else:
             QMessageBox.information(self, "Processo Não Encontrado", f"{label} não está em execução.")
 

@@ -8,6 +8,10 @@ roslaunch simulacao T30.launch 2>&1 | grep -v "DS: no mapping for sensor id"
 roslaunch simulacao simulacao.launch 2>&1 | grep -v "DS: no mapping for sensor id"
 
 
+Geral: 
+
+roslaunch simulacao simulacao.launch model_name:=EASy world:=pista_vazia 2>&1 | grep -v "DS: no mapping for sensor id"
+
 ---------------------------- (Arupilot para cada aeronave ) --------------------------
 
 cd ~/catkin_ws/src/Euler_Drone_Sim/simulacao/models/EASy/Copter

@@ -6,14 +6,20 @@
     <arg name="paused" default="false"/>
     <arg name="use_sim_time" default="true"/>
     <arg name="gui" default="true"/>
-	<arg name="verbose" default="true" />
+    <arg name="verbose" default="true"/>
     <arg name="headless" default="false"/>
     <arg name="debug" default="false"/>
     <arg name="fcu_url" default="udp://127.0.0.1:14550@14550"/>
     <arg name="gcs_url" default=""/>
 
+    <!-- Argumento para o nome do modelo -->
+    <arg name="model_name" default="T30"/>
+
     <!-- Definir o caminho completo para o arquivo do mundo -->
     <arg name="world_file" default="$(find simulacao)/worlds/$(arg world).world"/>
+
+    <!-- Definir o caminho para o modelo baseado no argumento model_name -->
+    <arg name="model_file" default="$(find simulacao)/models/$(arg model_name)/model.sdf"/>
 
     <!-- Carregar o ambiente do mundo -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -23,9 +29,8 @@
         <arg name="gui" value="$(arg gui)"/>
         <arg name="headless" value="$(arg headless)"/>
         <arg name="debug" value="$(arg debug)"/>
-		<arg name="verbose" value="$(arg verbose)"/>
+        <arg name="verbose" value="$(arg verbose)"/>
     </include>
-
 
     <!-- Inicia o MAVRos -->
     <node pkg="mavros" type="mavros_node" name="mavros" output="screen">
@@ -34,11 +39,9 @@
         <param name="target_system_id" value="1"/>
         <param name="target_component_id" value="1"/>
         <rosparam param="/rosout/logger_level">debug</rosparam>
-
-		<!-- Configuração para habilitar o plugin de bateria -->
-		<rosparam param="/mavros/battery">true</rosparam>
     </node>
 
-    <!-- Outros nós ou plugins -->
+    <!-- Spawn do modelo com base no argumento -->
+    <node name="spawn_model" pkg="gazebo_ros" type="spawn_model" output="screen" args="-file $(arg model_file) -sdf -model $(arg model_name)"/>
 
 </launch>
