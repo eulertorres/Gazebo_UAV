@@ -2,18 +2,23 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 'CONSTANTES MOTOR'
-KV_rpm = 400                  # [rpm/Vin]
-kV_rad = KV_rpm * np.pi/30  # [rad/s/Vin]
-Kt = 1/ kV_rad                # [Nm/A]
+KV_rpm = 400                    # [rpm/Vin]
+kV_rad = KV_rpm * np.pi/30      # [rad/s/Vin]
+Kt = 1/ kV_rad                  # [Nm/A]
 R = 0.116                       # [ohms]
 L = 0.004                       # [L]
-Vin = 19.47                     # [Vin]
+
+Vbat = 25
+PWM = 80                        # [%]
+Vin = PWM/100 * Vbat
+n_esc = 1
+i0 = 1
 
 'CONSTANTES HELICE'
 
 Iz = 2*5.23*10**-3   #[kg*m²]
 a = 0.00000153635  # coef. quadratico torque
-b = -0.000198845   # Coef. linear torque
+b = -0.000198845   # Coef. linear torque  
 
 dt = 0.001  # [s]
 tempo = 10 # [s]
@@ -37,7 +42,7 @@ omega_vetor = []
 i_vetor = []
 
 
-for step in range(tempo/dt):
+for step in range(int(tempo/dt)):
     t_vetor.append(t)
     omega_vetor.append(omega)
     i_vetor.append(i)
@@ -61,6 +66,8 @@ for step in range(tempo/dt):
     
     # Atualizando o tempo
     t += dt
+    
+I_bat = (PWM/100)*(i + i0)/n_esc
 
 # Plotando os resultados
 plt.plot(t_vetor, omega_vetor, label='Vinelocidade Angular')
