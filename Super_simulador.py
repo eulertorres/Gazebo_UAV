@@ -1,18 +1,20 @@
 import sys
 import os
+import signal
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QPushButton,
     QVBoxLayout, QHBoxLayout, QTextEdit, QTabWidget, QLineEdit,
     QLabel, QSplitter, QSizePolicy, QComboBox, QCheckBox, QMessageBox
 )
-from PyQt5.QtCore import QProcess, Qt, QEvent
+from PyQt5.QtCore import QProcess, Qt
 from PyQt5.QtGui import QFont, QIcon, QPixmap
 
 class TerminalTab(QWidget):
-    def __init__(self, label, cmd, parent=None):
+    def __init__(self, label, cmd, process_type, parent=None):
         super().__init__(parent)
         self.label = label
         self.cmd = cmd
+        self.process_type = process_type
         self.process = QProcess(self)
         self.process.setProcessChannelMode(QProcess.MergedChannels)
         self.pid = None  # Armazenar o PID do processo
@@ -21,13 +23,27 @@ class TerminalTab(QWidget):
         layout = QVBoxLayout()
         self.output = QTextEdit()
         self.output.setReadOnly(True)
-        self.output.setStyleSheet("background-color: black; color: white;")
-        font = QFont("Monospace")
-        font.setStyleHint(QFont.TypeWriter)
+        # Melhorar a aparência do terminal
+        self.output.setStyleSheet("""
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            font-family: Consolas, 'Courier New', monospace;
+            font-size: 12px;
+        """)
+        font = QFont("Consolas")
+        font.setStyleHint(QFont.Monospace)
         self.output.setFont(font)
 
         self.input_line = QLineEdit()
         self.input_line.returnPressed.connect(self.send_input)
+        self.input_line.setStyleSheet("""
+            background-color: #2d2d2d;
+            color: #d4d4d4;
+            border: none;
+            padding: 5px;
+            font-family: Consolas, 'Courier New', monospace;
+            font-size: 12px;
+        """)
 
         layout.addWidget(self.output)
         layout.addWidget(QLabel("Digite um comando e pressione Enter:"))
@@ -61,25 +77,10 @@ class TerminalTab(QWidget):
     def process_finished(self):
         self.output.append(f"\nProcesso '{self.label}' foi finalizado.")
 
-    def stop_process(self):
-        if self.pid:
-            confirm = QMessageBox.question(
-                self, "Encerrar Processo",
-                f"Deseja encerrar o processo '{self.label}' com PID {self.pid}?",
-                QMessageBox.Yes | QMessageBox.No, QMessageBox.No
-            )
-            if confirm == QMessageBox.Yes:
-                os.kill(self.pid, 9)  # Enviar sinal SIGKILL
-                self.process.waitForFinished()
-                self.pid = None
-        else:
-            self.process.terminate()
-            self.process.waitForFinished()
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Simulador do RW")
+        self.setWindowTitle("SIMULADOR RW")
         self.resize(1200, 800)
         self.initUI()
         # Definir o ícone do programa
@@ -87,35 +88,35 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QIcon(icon_path))
 
     def initUI(self):
-        # Aplicar estilo cinza escuro
+        # Aplicar tema claro com letras pretas
         self.setStyleSheet("""
             QMainWindow {
-                background-color: #2b2b2b;
-                color: #ffffff;
+                background-color: #f0f0f0;
+                color: #000000;
             }
-            QLabel, QPushButton, QLineEdit, QComboBox {
-                color: #ffffff;
+            QLabel, QPushButton, QLineEdit, QComboBox, QCheckBox {
+                color: #000000;
             }
             QPushButton {
-                background-color: #3c3c3c;
+                background-color: #dcdcdc;
                 border: none;
                 padding: 5px;
             }
             QPushButton:hover {
-                background-color: #505050;
+                background-color: #c0c0c0;
             }
             QPushButton:pressed {
-                background-color: #2b2b2b;
+                background-color: #a0a0a0;
             }
             QTabWidget::pane {
                 border: 1px solid #444;
             }
             QTabBar::tab {
-                background: #3c3c3c;
+                background: #dcdcdc;
                 padding: 5px;
             }
             QTabBar::tab:selected {
-                background: #2b2b2b;
+                background: #f0f0f0;
             }
         """)
 
@@ -126,16 +127,19 @@ class MainWindow(QMainWindow):
         output_layout = QVBoxLayout()
 
         # Adicionar título e imagem
-        title_layout = QHBoxLayout()
-        title_label = QLabel("Simulador do RW")
+        title_label = QLabel("SIMULADOR RW")
         title_label.setStyleSheet("font-size: 24px; font-weight: bold;")
+        title_label.setAlignment(Qt.AlignCenter)
         image_label = QLabel()
         image_path = os.path.join(os.path.dirname(__file__), 'utilidades/resources/gato.jpg')
         pixmap = QPixmap(image_path)
         image_label.setPixmap(pixmap.scaled(100, 100, Qt.KeepAspectRatio))
-        title_layout.addWidget(title_label)
-        title_layout.addStretch()
-        title_layout.addWidget(image_label)
+
+        title_container = QHBoxLayout()
+        title_container.addStretch()
+        title_container.addWidget(title_label)
+        title_container.addWidget(image_label)
+        title_container.addStretch()
 
         # Dropdowns
         self.ambiente_combo = QComboBox()
@@ -144,7 +148,7 @@ class MainWindow(QMainWindow):
 
         self.aeronave_combo = QComboBox()
         self.aeronave_combo.addItems(["EASy", "T30", "T30_barra", "T30_estavel"])
-        self.aeronave_label = QLabel("Selecione a Aeronave:")
+        self.aeronave_label = QLabel("Selecione a Aeronave (Ardupilot):")
 
         # Botões On/Off para Console e Mapa
         self.console_checkbox = QCheckBox("Console")
@@ -153,7 +157,7 @@ class MainWindow(QMainWindow):
         self.mapa_checkbox.setChecked(True)
 
         # Caixas de texto para parâmetros
-        self.j_label = QLabel("Valor de -j:")
+        self.j_label = QLabel("Numero de nucleos:")
         self.j_input = QLineEdit("8")
         self.lat_label = QLabel("Latitude:")
         self.lat_input = QLineEdit("-22.013852")
@@ -186,12 +190,12 @@ class MainWindow(QMainWindow):
 
         actions = [
             ("Abrir ambiente Gazebo", self.start_gazebo, "gazebo"),
-            ("Script Avionica", self.start_avionics_script, "script_avionica"),
             ("Iniciar Ardupilot", self.start_ardupilot, "ardupilot"),
-            ("Carregar Joystick", self.load_joystick, "joystick"),
-            ("Enviar Missão", self.send_mission, "enviar_missao"),
             ("Abrir MissionPlanner", self.start_mission_planner, "mission_planner"),
+            ("Carregar Joystick", self.load_joystick, "joystick"),
             ("Plot Tempo Real", self.start_real_time_plot, "plot_tempo_real"),
+            ("Script Avionica", self.start_avionics_script, "script_avionica"),
+            ("Enviar Missão", self.send_mission, "enviar_missao"),
             ("Plot Excel", self.plot_excel, "plot_excel")
         ]
 
@@ -204,7 +208,7 @@ class MainWindow(QMainWindow):
             start_btn.setEnabled(True)  # Ajustaremos a habilitação posteriormente
 
             stop_btn = QPushButton("Encerrar")
-            stop_btn.setStyleSheet("background-color: red; color: white;")
+            stop_btn.setStyleSheet("background-color: red; color: black;")
             stop_btn.clicked.connect(lambda _, l=label: self.stop_process(l))
 
             self.buttons[key] = start_btn
@@ -215,7 +219,7 @@ class MainWindow(QMainWindow):
 
         # Botão para encerrar tudo e fechar o programa
         self.exit_btn = QPushButton("Encerrar Tudo e Sair")
-        self.exit_btn.setStyleSheet("background-color: darkred; color: white;")
+        self.exit_btn.setStyleSheet("background-color: darkred; color: black;")
         self.exit_btn.clicked.connect(self.close_application)
         left_layout.addWidget(self.exit_btn)
 
@@ -236,9 +240,8 @@ class MainWindow(QMainWindow):
         top_widget = QWidget()
         top_widget.setLayout(top_layout)
         splitter.addWidget(top_widget)
-        # Não precisamos adicionar a área de terminais ao splitter aqui
 
-        main_layout.addLayout(title_layout)
+        main_layout.addLayout(title_container)
         main_layout.addWidget(splitter)
 
         container = QWidget()
@@ -254,8 +257,7 @@ class MainWindow(QMainWindow):
             cmd = 'roslaunch simulacao T30.launch 2>&1 | grep -v "DS: no mapping for sensor id"'
         else:
             cmd = 'roslaunch simulacao simulacao.launch 2>&1 | grep -v "DS: no mapping for sensor id"'
-
-        self.start_process(label, cmd)
+        self.start_process(label, cmd, process_type='gazebo')
         # Habilitar o botão Script Avionica
         self.buttons["script_avionica"].setEnabled(True)
         self.buttons_state["Gazebo"] = True
@@ -265,40 +267,40 @@ class MainWindow(QMainWindow):
         aeronave = self.aeronave_combo.currentText()
         home_dir = os.path.expanduser("~")
         cwd = os.path.join(home_dir, f"catkin_ws/src/Euler_Drone_Sim/simulacao/models/{aeronave}/Copter")
-
         # Parâmetros configuráveis
         console_flag = "--console" if self.console_checkbox.isChecked() else ""
         map_flag = "--map" if self.mapa_checkbox.isChecked() else ""
         j_value = self.j_input.text()
         lat_value = self.lat_input.text()
         lon_value = self.lon_input.text()
-
         cmd = f"cd {cwd} && sim_vehicle.py -f gazebo-iris --speedup 20 -j {j_value} -v ArduCopter {console_flag} {map_flag} -l {lat_value},{lon_value}"
-        self.start_process(label, cmd)
+        self.start_process(label, cmd, process_type='ardupilot')
         # Habilitar o botão Carregar Joystick
         self.buttons["joystick"].setEnabled(True)
         self.buttons_state["Ardupilot"] = True
 
     def load_joystick(self):
-        label = "Carregar Joystick"
-        cmd = "module load joystick"
-        self.start_process(label, cmd)
-        # Habilitar o botão Enviar Missão
-        self.buttons["enviar_missao"].setEnabled(True)
+        if 'Ardupilot' in self.process_tabs:
+            tab_info = self.process_tabs['Ardupilot']
+            tab = tab_info['tab']
+            # Enviar o comando para o processo do Ardupilot
+            tab.process.write('module load joystick\n'.encode())
+            # Habilitar o botão Enviar Missão
+            self.buttons["enviar_missao"].setEnabled(True)
+        else:
+            QMessageBox.warning(self, "Aviso", "Por favor, inicie o Ardupilot primeiro.")
 
     def start_mission_planner(self):
         label = "MissionPlanner"
         home_dir = os.path.expanduser("~")
         cwd = os.path.join(home_dir, "Desktop/MissionPlanner")
         cmd = f"cd {cwd} && mono MissionPlanner.exe"
-        self.start_process(label, cmd)
+        self.start_process(label, cmd, process_type='mission_planner')
 
     def start_real_time_plot(self):
         label = "Plot Tempo Real"
-        home_dir = os.path.expanduser("~")
-        cwd = os.path.join(home_dir, "catkin_ws/src/Euler_Drone_Sim/controle/euler_drone_pkgs/src/scripts")
-        cmd = f"cd {cwd} && python Plot.py"
-        self.start_process(label, cmd)
+        cmd = "rqt"
+        self.start_process(label, cmd, process_type='script')
 
     def start_avionics_script(self):
         label = "Script Avionica"
@@ -308,7 +310,7 @@ class MainWindow(QMainWindow):
         home_dir = os.path.expanduser("~")
         cwd = os.path.join(home_dir, "catkin_ws/src/Euler_Drone_Sim/controle/euler_drone_pkgs/src/scripts")
         cmd = f"cd {cwd} && python MAVLink_sender.py"
-        self.start_process(label, cmd)
+        self.start_process(label, cmd, process_type='script')
 
     def send_mission(self):
         label = "Enviar Missão"
@@ -318,30 +320,52 @@ class MainWindow(QMainWindow):
         home_dir = os.path.expanduser("~")
         cwd = os.path.join(home_dir, "catkin_ws/src/Euler_Drone_Sim/controle/euler_drone_pkgs/src/scripts")
         cmd = f"cd {cwd} && python Mission_sender.py"
-        self.start_process(label, cmd)
+        self.start_process(label, cmd, process_type='script')
 
     def plot_excel(self):
         label = "Plot Excel"
         home_dir = os.path.expanduser("~")
         cwd = os.path.join(home_dir, "catkin_ws/src/Euler_Drone_Sim/controle/euler_drone_pkgs/src/scripts")
-        cmd = f"cd {cwd} && python PlotExcel.py"
-        self.start_process(label, cmd)
+        cmd = f"cd {cwd} && python Plot.py"
+        self.start_process(label, cmd, process_type='script')
 
-    def start_process(self, label, cmd):
+    def start_process(self, label, cmd, process_type):
         if label in self.process_tabs:
             QMessageBox.information(self, "Processo em Execução", f"{label} já está em execução.")
             return
-        tab = TerminalTab(label, cmd)
+        tab = TerminalTab(label, cmd, process_type)
         self.tabs.addTab(tab, label)
-        self.process_tabs[label] = tab
+        self.process_tabs[label] = {'tab': tab, 'process_type': process_type}
 
     def stop_process(self, label):
         if label in self.process_tabs:
-            tab = self.process_tabs[label]
-            tab.stop_process()
+            tab_info = self.process_tabs[label]
+            tab = tab_info['tab']
+            process_type = tab_info['process_type']
+            # Remover a aba do terminal
             index = self.tabs.indexOf(tab)
             self.tabs.removeTab(index)
             del self.process_tabs[label]
+            # Encerra o processo adequadamente
+            if process_type == 'gazebo':
+                # Encerra o processo Gazebo
+                os.system('killall -9 gzserver')
+                os.system('killall -9 gzclient')
+                # Enviar SIGINT para o processo
+                if tab.pid:
+                    os.kill(tab.pid, signal.SIGINT)
+            elif process_type == 'mission_planner':
+                # Fechar o MissionPlanner
+                tab.process.terminate()
+            elif process_type == 'ardupilot':
+                # Fechar o Ardupilot
+                tab.process.terminate()
+            elif process_type == 'script':
+                # Enviar sinal Ctrl+C
+                tab.process.terminate()
+            else:
+                tab.process.terminate()
+            tab.process.waitForFinished()
         else:
             QMessageBox.information(self, "Processo Não Encontrado", f"{label} não está em execução.")
 

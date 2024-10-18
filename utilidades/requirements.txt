@@ -1,3 +1,5 @@
 pymavlink
 joystick
 pygame
+openpyxl
+xlsxwriter
