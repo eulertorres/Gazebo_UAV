@@ -93,6 +93,14 @@ def monitor_keyboard(bag_filename):
 
 # Função para processar o arquivo .bag de forma incremental
 def process_bag_file_incremental(bag_filename, excel_filename):
+    # Cria o diretório "Resultados" se não existir
+    if not os.path.exists('Resultados'):
+        os.makedirs('Resultados')
+    
+    # Ajusta o caminho do arquivo Excel para a pasta "Resultados"
+    excel_filepath = os.path.join('Resultados', excel_filename)
+
+
     print("Processando o arquivo .bag e extraindo os dados...")
     bag = rosbag.Bag(bag_filename)
 
@@ -225,7 +233,7 @@ def process_bag_file_incremental(bag_filename, excel_filename):
 
     writer.close()
     bag.close()
-    print("Dados salvos no arquivo Excel: {}".format(excel_filename))
+    print("Dados salvos no arquivo Excel: {}".format(excel_filepath))
 
 # Função principal
 def main():
