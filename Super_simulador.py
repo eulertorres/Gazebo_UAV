@@ -1,6 +1,7 @@
 import sys
 import os
 import signal
+import psutil  # Ensure psutil is installed: pip install psutil
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QPushButton,
     QVBoxLayout, QHBoxLayout, QTextEdit, QTabWidget, QLineEdit,
@@ -17,7 +18,6 @@ class TerminalTab(QWidget):
         self.process_type = process_type
         self.process = QProcess(self)
         self.process.setProcessChannelMode(QProcess.MergedChannels)
-        self.pid = None  # Armazenar o PID do processo
 
         # Layouts
         layout = QVBoxLayout()
@@ -59,7 +59,9 @@ class TerminalTab(QWidget):
         self.start_process()
 
     def start_process(self):
-        self.process.start("bash", ["-c", self.cmd])
+        # Start the process
+        full_cmd = f"source ~/catkin_ws/devel/setup.bash && {self.cmd}"
+        self.process.start("bash", ["-c", full_cmd])
 
     def process_started(self):
         self.pid = self.process.processId()
@@ -83,7 +85,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("SIMULADOR RW")
-        self.resize(1200, 800)
+        self.resize(800, 980)
         self.initUI()
         # Definir o ícone do programa
         icon_path = os.path.join(os.path.dirname(__file__), 'utilidades/resources/gato.jpg')
@@ -133,7 +135,7 @@ class MainWindow(QMainWindow):
         title_label.setStyleSheet("font-size: 24px; font-weight: bold;")
         title_label.setAlignment(Qt.AlignCenter)
 
-        version_label = QLabel("Versão 1.0")
+        version_label = QLabel("Versão 1.5")
         version_label.setAlignment(Qt.AlignLeft)
 
         image_label = QLabel()
@@ -154,14 +156,14 @@ class MainWindow(QMainWindow):
         self.ambiente_label = QLabel("Selecione o Ambiente (Mundo):")
 
         self.aeronave_combo = QComboBox()
-        self.aeronave_combo.addItems(["EASy", "T30", "T30_barra", "T30_estavel"])
+        self.aeronave_combo.addItems(["T30", "T30_barra", "T30_estavel", "EASy"])
         self.aeronave_label = QLabel("Selecione a Aeronave:")
 
         # Botões On/Off para Console e Mapa
         self.console_checkbox = QCheckBox("Console")
         self.console_checkbox.setChecked(True)
         self.mapa_checkbox = QCheckBox("Mapa")
-        self.mapa_checkbox.setChecked(True)
+        self.mapa_checkbox.setChecked(False)
 
         # Caixas de texto para parâmetros
         self.j_label = QLabel("Número de núcleos:")
@@ -199,7 +201,6 @@ class MainWindow(QMainWindow):
             ("Abrir ambiente Gazebo", self.start_gazebo, "gazebo"),
             ("Iniciar Ardupilot", self.start_ardupilot, "ardupilot"),
             ("Abrir MissionPlanner", self.start_mission_planner, "mission_planner"),
-            ("Carregar Joystick", self.load_joystick, "joystick"),
             ("Plot Tempo Real", self.start_real_time_plot, "plot_tempo_real"),
             ("Script Avionica", self.start_avionics_script, "script_avionica"),
             ("Enviar Missão", self.send_mission, "enviar_missao"),
@@ -224,6 +225,17 @@ class MainWindow(QMainWindow):
             btn_layout.addWidget(stop_btn)
             left_layout.addLayout(btn_layout)
 
+        # Botão para Compilar Plugins
+        compile_btn = QPushButton("Compilar Plugins")
+        compile_btn.clicked.connect(self.compile_plugins)
+        left_layout.addWidget(compile_btn)
+
+        # Botão para fechar tudo (sem sair)
+        close_all_btn = QPushButton("Encerrar Todos os Processos")
+        close_all_btn.setStyleSheet("background-color: orange; color: black;")
+        close_all_btn.clicked.connect(self.stop_all_processes)
+        left_layout.addWidget(close_all_btn)
+
         # Botão para encerrar tudo e fechar o programa
         self.exit_btn = QPushButton("Encerrar Tudo e Sair")
         self.exit_btn.setStyleSheet("background-color: darkred; color: black;")
@@ -232,7 +244,6 @@ class MainWindow(QMainWindow):
 
         # Ajustar habilitação inicial dos botões
         self.buttons["script_avionica"].setEnabled(False)
-        self.buttons["joystick"].setEnabled(False)
         self.buttons["enviar_missao"].setEnabled(False)
 
         # Área de saída (abas com terminais simulados)
@@ -275,14 +286,14 @@ class MainWindow(QMainWindow):
 
         commands = [
             ("Carregar Joystick", self.load_joystick),
+            ("Arm Throttle", lambda: self.send_ardupilot_command('arm throttle')),
+            ("Modo Guided", lambda: self.send_ardupilot_command('mode guided')),
             ("Listar Missões", lambda: self.send_ardupilot_command('wp list')),
             ("Limpar Missões", lambda: self.send_ardupilot_command('wp clear')),
-            ("Modo Guided", lambda: self.send_ardupilot_command('mode guided')),
             ("Modo Auto", lambda: self.send_ardupilot_command('mode auto')),
             ("RTL", lambda: self.send_ardupilot_command('rtl')),
             ("Loiter", lambda: self.send_ardupilot_command('mode loiter')),
             ("Stabilize", lambda: self.send_ardupilot_command('mode stabilize')),
-            ("Arm Throttle", lambda: self.send_ardupilot_command('arm throttle')),
             # Adicione mais comandos conforme necessário
         ]
 
@@ -332,8 +343,7 @@ class MainWindow(QMainWindow):
         lon_value = self.lon_input.text()
         cmd = f"cd {cwd} && sim_vehicle.py -f gazebo-iris --speedup 20 -j {j_value} -v ArduCopter {console_flag} {map_flag} -l {lat_value},{lon_value}"
         self.start_process(label, cmd, process_type='ardupilot')
-        # Habilitar o botão Carregar Joystick e comandos do Ardupilot
-        self.buttons["joystick"].setEnabled(True)
+        # Habilitar comandos do Ardupilot
         self.tabs.setTabEnabled(self.tabs.indexOf(self.ardupilot_commands_tab), True)
         self.buttons_state["Ardupilot"] = True
 
@@ -381,6 +391,18 @@ class MainWindow(QMainWindow):
         cmd = f"cd {cwd} && python Plot.py"
         self.start_process(label, cmd, process_type='script')
 
+    def compile_plugins(self):
+        # Close all running processes without closing the application
+        self.stop_all_processes()
+
+        # Define the commands
+        home_dir = os.path.expanduser("~")
+        cmd = f"cd {home_dir}/catkin_ws && catkin_make && source devel/setup.bash"
+
+        # Start the process and display output in a new tab
+        label = "Compilar Plugins"
+        self.start_process(label, cmd, process_type='compile')
+
     def start_process(self, label, cmd, process_type):
         if label in self.process_tabs:
             QMessageBox.information(self, "Processo em Execução", f"{label} já está em execução.")
@@ -394,46 +416,61 @@ class MainWindow(QMainWindow):
             tab_info = self.process_tabs[label]
             tab = tab_info['tab']
             process_type = tab_info['process_type']
-            # Remover a aba do terminal
+
+            # Terminate the QProcess
+            tab.process.terminate()
+            tab.process.waitForFinished()
+
+            # Remove the tab
             index = self.tabs.indexOf(tab)
             self.tabs.removeTab(index)
             del self.process_tabs[label]
-            # Encerra o processo adequadamente
+
+            # Specific termination routines
             if process_type == 'gazebo':
-                # Encerra o processo Gazebo
-                os.system('killall -9 gzserver')
-                os.system('killall -9 gzclient')
-                # Enviar SIGINT para o processo
-                if tab.pid:
-                    os.kill(tab.pid, signal.SIGINT)
-            elif process_type == 'mission_planner':
-                # Fechar o MissionPlanner
-                tab.process.terminate()
+                self.terminate_process_by_name(['gzserver', 'gzclient', 'gazebo'])
+                self.buttons_state["Gazebo"] = False
+                self.buttons["script_avionica"].setEnabled(False)
             elif process_type == 'ardupilot':
-                # Fechar o Ardupilot e seus terminais
-                tab.process.terminate()
-                #os.system('pkill -f sim_vehicle.py')
-                #os.system('pkill -f mavproxy.py')
-            elif process_type == 'script':
-                # Enviar sinal Ctrl+C
-                tab.process.terminate()
-            else:
-                tab.process.terminate()
-            tab.process.waitForFinished()
-            # Desabilitar a aba de comandos do Ardupilot se necessário
-            if label == 'Ardupilot':
+                self.terminate_process_by_name(['arducopter', 'sim_vehicle.py', 'mavproxy.py'])
                 self.tabs.setTabEnabled(self.tabs.indexOf(self.ardupilot_commands_tab), False)
-                self.buttons["joystick"].setEnabled(False)
-                self.buttons["enviar_missao"].setEnabled(False)
                 self.buttons_state["Ardupilot"] = False
+            elif process_type == 'mission_planner':
+                self.terminate_process_by_name(['MissionPlanner.exe', 'mono'])
+            elif process_type == 'compile':
+                pass  # No additional termination needed
+
+            # For any other scripts or processes, attempt to terminate by PID
+            else:
+                if tab.process.processId() > 0:
+                    try:
+                        parent = psutil.Process(tab.process.processId())
+                        for child in parent.children(recursive=True):
+                            child.terminate()
+                        parent.terminate()
+                    except Exception as e:
+                        print(f"Erro ao encerrar o processo: {e}")
         else:
             QMessageBox.information(self, "Processo Não Encontrado", f"{label} não está em execução.")
 
-    def close_application(self):
-        # Encerrar todos os processos
-        for label in list(self.process_tabs.keys()):
+    def terminate_process_by_name(self, process_names):
+        for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+            try:
+                cmdline = ' '.join(proc.info['cmdline'])
+                if any(name in proc.info['name'] or name in cmdline for name in process_names):
+                    proc.terminate()
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                continue
+
+    def stop_all_processes(self):
+        # Encerrar todos os processos sem fechar a aplicação
+        labels = list(self.process_tabs.keys())
+        for label in labels:
             self.stop_process(label)
-        # Fechar o aplicativo
+
+    def close_application(self):
+        # Encerrar todos os processos e fechar a aplicação
+        self.stop_all_processes()
         self.close()
 
     def closeEvent(self, event):

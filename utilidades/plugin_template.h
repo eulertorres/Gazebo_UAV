@@ -32,11 +32,6 @@ private:
     void PublishCurrent();
     void PublishTorque();
     void PublishRPM();
-    void calcula(double dt);
-	void PrintDebug(double duty, double Vq, double dIq_dt, double desired_angular_velocity, double error);
-
-	// Funções intde ambiente
-	double GetMaxCurrentForAWG(int awg);
 
     // Ponteiros para o modelo, mundo e articulação
     physics::ModelPtr model_;
@@ -58,7 +53,6 @@ private:
 
     // Variáveis para armazenar valores
     int motor_number_;
-    int wire_gauge_awg_;
     double pwm_value_;
     double pwm_min_;
     double pwm_max_;
@@ -67,27 +61,16 @@ private:
     // Constantes do motor
     double KV_rpm_;
     double KV_rad_;
+    double Kt_;
+    double R_;
+    double L_;
     double i0_;
     double n_esc_;
-    double current_;        // Current in the q-axis
-    double Kt_;             // Torque constant (Nm/A)
-    double Kbq_;            // Back-EMF constant (V/(rad/s))
-    double R_;              // Phase resistance (Ohms)
-    double L_;              // Phase inductance (Henrys)
-    double b_;              // Damping coefficient (N·m·s/rad)
-    double angular_velocity_; // Angular velocity (rad/s)
-    double rpm_;            // Rotational speed (RPM)
-    double max_current_;            // 
-    
-	//PID controle PWM
-    double Kp;
-    double Ki;
-    double Kd;
-    double integral_error_;
-    double prev_error_;
 
-	bool is_delta_;            // Delta ou estrela
-	bool debug_;            // Delta ou estrela
+    // Constantes da hélice
+    double Iz_;
+    double a_;
+    double b_;
 
     // Variáveis de estado
     double omega_;
@@ -96,6 +79,8 @@ private:
 
     // Outras variáveis
     double torque_;
+    double current_;
+    double rpm;
 
     std::string joint_name_;
     std::string current_topic_;
@@ -108,7 +93,7 @@ private:
 
     common::Time last_pwm_received_time_;
     common::Time last_update_time_;
-    common::Time last_publish_time_;
+    common::Time last_integration_time_;
 };
 
 }  // namespace gazebo

@@ -1,9 +1,10 @@
-<?xml version='1.0'?>
+<?xml version='3.8'?>
 <sdf version='1.6'>
   <model name='T30_drone'>
     <include>
       <uri>model://T30_inercia</uri>
     </include>
+
     <plugin name="rotor_0_blade_1" filename="libLiftDragPlugin.so"> <!-- CW -->
 	  <a0>0.4</a0>
 	  <alpha_stall>1.4</alpha_stall>
@@ -197,7 +198,7 @@
       <upward>0 0 1</upward>
       <link_name>T30_inercia_::rotor_5</link_name>
     </plugin>
-	
+
     <plugin name="arducopter_plugin" filename="libArduPilotPlugin.so">
       <fdm_addr>127.0.0.1</fdm_addr>
       <fdm_port_in>9002</fdm_port_in>
@@ -221,16 +222,16 @@
 	  <windSpeedVariance>0.0</windSpeedVariance> <!-- Variação da velocidade do vento (m/s) -->
 	  <windDirection>0 1 0</windDirection> <!-- Direção do vento em coordenadas XYZ -->
 
-	  <frontArea>1.0</frontArea> <!-- Area em m² -->
+	  <frontArea>3.8</frontArea> <!-- Area em m² -->
 	  <dragCoeff>1.15</dragCoeff> <!-- Direção da rajada em coordenadas XYZ -->
 
 	  <!-- Campo de vento customizado -->
 	  <useCustomStaticWindField>false</useCustomStaticWindField>
 	  
-	  <windForceVariance>1.0</windForceVariance> <!-- Direção da rajada em coordenadas XYZ -->
+	  <windForceVariance>3.8</windForceVariance> <!-- Direção da rajada em coordenadas XYZ -->
 	  <!-- Definições de rajadas de vento -->
 	  <windGustStart>0.0</windGustStart> <!-- Tempo em que a rajada começa (s) -->
-	  <windGustDuration>1.0</windGustDuration> <!-- Duração da rajada (s) -->
+	  <windGustDuration>3.8</windGustDuration> <!-- Duração da rajada (s) -->
 	  <windGustForceMean>5.5</windGustForceMean> <!-- Força média da rajada (N) -->
 	  <windGustForceVariance>2.0</windGustForceVariance> <!-- Variação da força da rajada (N) -->
 	  <windGustDirection>1 0 0</windGustDirection> <!-- Direção da rajada em coordenadas XYZ -->
@@ -268,83 +269,134 @@
 
 	</plugin>
 
-	<plugin name="euler_mot 1_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
-		<numero_motor>1</numero_motor>
+	<!-- Motor 1 -->
+	<plugin name="euler_mot_1_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
+		<numero_motor>1</numero_motor> <!-- Identificação -->
 		<PWM_min>1000</PWM_min>
 		<PWM_max>2000</PWM_max>
-		<coeff>0.200</coeff>
-		<current_coeff>3.75</current_coeff>
+		<KV_rpm>77</KV_rpm> <!-- Comercial line-to-line -->
+		<delta>true</delta> <!-- Se é enrolamento Delta ou estrela -->
+		<Kp>0.85</Kp>	<!-- Ganho P ESC -->
+		<Ki>0.085</Ki>  <!-- Ganho I ESC -->
+		<Kd>0.046</Kd>  <!-- Ganho D ESC -->
+		<R>0.0/12</R> <!-- Motor phase resistance in ohms -->
+		<L>0.001</L> <!-- Motor phase inductance in henrys -->
+		<i0>0.25</i0> <!-- Motor idle current in amperes -->
+		<n_esc>0.92</n_esc> <!-- ESC efficiency -->
+		<b>0.00105</b> <!-- coeficiente amortecimento (positive) -->
+		<AWG>10</AWG>	<!-- Para limitar corrente max ESC -->
 		<joint_name>T30_inercia_::rotor_0_joint</joint_name>
 		<current_topic>/battery/current/motor1</current_topic>
-		<forceUpdateRate>0.1</forceUpdateRate><!-- Taxa de atualização para aplicação de forças (em segundos) -->
-		<orientacao>CW</orientacao><!-- Orientacai, CW ou CCW -->
-		<coef_drag>0.00012</coef_drag><!-- Orientacai, CW ou CCW -->
-		<back_emf>0.00005</back_emf>
+		<rpm_topic>/motor1/rpm</rpm_topic>
+		<torque_topic>/motor1/torque</torque_topic>
+		<orientacao>CW</orientacao> <!-- Orientacao: CW or CCW -->
+		<debug>false</debug> <!-- Printa informações dos cálculos em detalhes -->	
 	</plugin>
-	<plugin name="euler_mot 2_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
+
+	<!-- Motor 2 -->
+	<plugin name="euler_mot_2_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
 		<numero_motor>2</numero_motor>
 		<PWM_min>1000</PWM_min>
 		<PWM_max>2000</PWM_max>
-		<coeff>0.200</coeff>
-		<current_coeff>3.75</current_coeff>
+		<KV_rpm>77</KV_rpm>
+		<Kp>0.85</Kp>
+		<Ki>0.085</Ki>
+		<Kd>0.046</Kd>
+		<R>0.012</R>
+		<L>0.001</L>
+		<i0>0.25</i0>
+		<n_esc>0.92</n_esc>
+		<b>0.00105</b>
 		<joint_name>T30_inercia_::rotor_3_joint</joint_name>
 		<current_topic>/battery/current/motor2</current_topic>
-		<forceUpdateRate>0.1</forceUpdateRate><!-- Taxa de atualização para aplicação de forças (em segundos) -->
-		<orientacao>CCW</orientacao><!-- Orientacai, CW ou CCW -->
-		<coef_drag>0.00012</coef_drag><!-- Orientacai, CW ou CCW -->
-		<back_emf>0.00005</back_emf>
+		<rpm_topic>/motor2/rpm</rpm_topic>
+		<torque_topic>/motor2/torque</torque_topic>
+		<orientacao>CCW</orientacao>
 	</plugin>
-	<plugin name="euler_mot 3_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
+
+	<!-- Motor 3 -->
+	<plugin name="euler_mot_3_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
 		<numero_motor>3</numero_motor>
 		<PWM_min>1000</PWM_min>
 		<PWM_max>2000</PWM_max>
-		<coeff>0.200</coeff>
-		<current_coeff>3.75</current_coeff>
+		<KV_rpm>77</KV_rpm>
+		<Kp>0.85</Kp>
+		<Ki>0.085</Ki>
+		<Kd>0.046</Kd>
+		<R>0.012</R>
+		<L>0.001</L>
+		<i0>0.25</i0>
+		<n_esc>0.92</n_esc>
+		<b>0.00105</b>
 		<joint_name>T30_inercia_::rotor_4_joint</joint_name>
 		<current_topic>/battery/current/motor3</current_topic>
-		<forceUpdateRate>0.1</forceUpdateRate><!-- Taxa de atualização para aplicação de forças (em segundos) -->
-		<orientacao>CW</orientacao><!-- Orientacai, CW ou CCW -->
-		<coef_drag>0.00012</coef_drag><!-- Orientacai, CW ou CCW -->
-		<back_emf>0.00005</back_emf>
+		<rpm_topic>/motor3/rpm</rpm_topic>
+		<torque_topic>/motor3/torque</torque_topic>
+		<orientacao>CW</orientacao>
 	</plugin>
-	<plugin name="euler_mot_4 plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
+
+	<!-- Motor 4 -->
+	<plugin name="euler_mot_4_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
 		<numero_motor>4</numero_motor>
 		<PWM_min>1000</PWM_min>
 		<PWM_max>2000</PWM_max>
-		<coeff>0.200</coeff>
-		<current_coeff>3.75</current_coeff>
+		<KV_rpm>77</KV_rpm>
+		<Kp>0.85</Kp>
+		<Ki>0.085</Ki>
+		<Kd>0.046</Kd>
+		<R>0.012</R>
+		<L>0.001</L>
+		<i0>0.25</i0>
+		<n_esc>0.92</n_esc>
+		<b>0.00105</b>
 		<joint_name>T30_inercia_::rotor_1_joint</joint_name>
 		<current_topic>/battery/current/motor4</current_topic>
-		<forceUpdateRate>0.1</forceUpdateRate><!-- Taxa de atualização para aplicação de forças (em segundos) -->
-		<orientacao>CCW</orientacao><!-- Orientacai, CW ou CCW -->
-		<coef_drag>0.00012</coef_drag><!-- Orientacai, CW ou CCW -->
-		<back_emf>0.00005</back_emf>
+		<rpm_topic>/motor4/rpm</rpm_topic>
+		<torque_topic>/motor4/torque</torque_topic>
+		<orientacao>CCW</orientacao>
 	</plugin>
-	<plugin name="euler_mot_5 plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
+
+	<!-- Motor 5 -->
+	<plugin name="euler_mot_5_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
 		<numero_motor>5</numero_motor>
 		<PWM_min>1000</PWM_min>
 		<PWM_max>2000</PWM_max>
-		<coeff>0.200</coeff>
-		<current_coeff>3.75</current_coeff>
+		<KV_rpm>77</KV_rpm>
+		<Kp>0.85</Kp>
+		<Ki>0.085</Ki>
+		<Kd>0.046</Kd>
+		<R>0.012</R>
+		<L>0.001</L>
+		<i0>0.25</i0>
+		<n_esc>0.92</n_esc>
+		<b>0.00105</b>
 		<joint_name>T30_inercia_::rotor_5_joint</joint_name>
 		<current_topic>/battery/current/motor5</current_topic>
-		<forceUpdateRate>0.1</forceUpdateRate><!-- Taxa de atualização para aplicação de forças (em segundos) -->
-		<orientacao>CCW</orientacao><!-- Orientacai, CW ou CCW -->
-		<coef_drag>0.00012</coef_drag><!-- Orientacai, CW ou CCW -->
-		<back_emf>0.00005</back_emf>
+		<rpm_topic>/motor5/rpm</rpm_topic>
+		<torque_topic>/motor5/torque</torque_topic>
+		<orientacao>CCW</orientacao>
 	</plugin>
-	<plugin name="euler_mot_6 plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
+
+	<!-- Motor 6 -->
+	<plugin name="euler_mot_6_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
 		<numero_motor>6</numero_motor>
 		<PWM_min>1000</PWM_min>
 		<PWM_max>2000</PWM_max>
-		<coeff>0.200</coeff>
-		<current_coeff>3.75</current_coeff>
+		<KV_rpm>77</KV_rpm>
+		<Kp>0.85</Kp>
+		<Ki>0.085</Ki>
+		<Kd>0.046</Kd>
+		<R>0.012</R>
+		<L>0.001</L>
+		<i0>0.25</i0>
+		<n_esc>0.92</n_esc>
+		<b>0.00105</b>
 		<joint_name>T30_inercia_::rotor_2_joint</joint_name>
 		<current_topic>/battery/current/motor6</current_topic>
-		<forceUpdateRate>0.1</forceUpdateRate><!-- Taxa de atualização para aplicação de forças (em segundos) -->
-		<orientacao>CW</orientacao><!-- Orientacai, CW ou CCW -->
-		<coef_drag>0.00012</coef_drag><!-- Orientacai, CW ou CCW -->
-		<back_emf>0.00005</back_emf>
+		<rpm_topic>/motor6/rpm</rpm_topic>
+		<torque_topic>/motor6/torque</torque_topic>
+		<orientacao>CW</orientacao>
 	</plugin>
+
   </model>
 </sdf>
