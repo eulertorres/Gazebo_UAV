@@ -13,7 +13,7 @@
     <arg name="gcs_url" default=""/>
 
     <!-- Argumento para o nome do modelo -->
-    <arg name="model_name" default="T30"/>
+    <arg name="model_name" default="nenhum"/>
 
     <!-- Definir o caminho completo para o arquivo do mundo -->
     <arg name="world_file" default="$(find simulacao)/worlds/$(arg world).world"/>
@@ -41,7 +41,9 @@
         <rosparam param="/rosout/logger_level">debug</rosparam>
     </node>
 
-    <!-- Spawn do modelo com base no argumento -->
-    <node name="spawn_model" pkg="gazebo_ros" type="spawn_model" output="screen" args="-file $(arg model_file) -sdf -model $(arg model_name)"/>
+    <!-- Condição para spawn do modelo -->
+    <group if="$(eval arg('model_name') != 'nenhum' and arg('model_name') != '')">
+        <node name="spawn_model" pkg="gazebo_ros" type="spawn_model" output="screen" args="-file $(arg model_file) -sdf -model $(arg model_name)"/>
+    </group>
 
 </launch>

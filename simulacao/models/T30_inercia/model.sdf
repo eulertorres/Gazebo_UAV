@@ -12,7 +12,7 @@
           <iyz>0.16</iyz>
           <izz>8.38</izz>
         </inertia>
-        <pose>0.0 -0.05 0.59 0 -0 0</pose>
+        <pose>0.0 -0.0 0.567 0 -0 0</pose>	<!-- com carga é 527 -->
       </inertial>
       <pose>-0.001895 0.019522 0 0 -0 0</pose>
       <gravity>1</gravity>
@@ -322,7 +322,7 @@
         </inertia>
         <pose>0 0 0 0 -0 0</pose>
       </inertial>
-      <pose>0.561428 -0.90018 0.72 0 -0 0</pose>
+      <pose>0.561428 -0.90018 0.72 0.07 0 -0.99</pose>
       <gravity>1</gravity>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
@@ -421,7 +421,7 @@
         </inertia>
         <pose>0 0 0 0 -0 0</pose>
       </inertial>
-      <pose>-0.561955 -0.898951 0.72 0 -0 0</pose>
+      <pose>-0.561955 -0.898951 0.72 0.07 0 0.99</pose>
       <gravity>1</gravity>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
@@ -619,7 +619,7 @@
         </inertia>
         <pose>0 0 0 0 -0 0</pose>
       </inertial>
-      <pose>-0.55993 0.895027 0.72 0 -0 0</pose>
+      <pose>-0.55993 0.895027 0.72 -0.07 0 -0.99</pose>
       <gravity>1</gravity>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
@@ -718,7 +718,7 @@
         </inertia>
         <pose>0 0 0 0 -0 0</pose>
       </inertial>
-      <pose>0.562512 0.892467 0.72 0 -0 0</pose>
+      <pose>0.562512 0.892467 0.72 -0.07 0 0.99</pose>
       <gravity>1</gravity>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>

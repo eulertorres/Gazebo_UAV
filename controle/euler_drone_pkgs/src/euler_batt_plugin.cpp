@@ -198,8 +198,8 @@ void EulerBattPlugin::UpdateBatteryState(double dt) {
     available_voltage_ = total_voltage_ * state_of_charge_;
     double min_cell_voltage = 3.2;  // Tensão mínima por célula
     double min_total_voltage = min_cell_voltage * cells_in_series_;
-    if (available_voltage_ < min_total_voltage)
-        available_voltage_ = min_total_voltage;
+    //if (available_voltage_ < min_total_voltage)
+    //    available_voltage_ = min_total_voltage;
 }
 
 

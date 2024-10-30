@@ -34,6 +34,9 @@ class TerminalTab(QWidget):
         font.setStyleHint(QFont.Monospace)
         self.output.setFont(font)
 
+        # **Limitar o número máximo de linhas**
+        self.output.document().setMaximumBlockCount(500)  # Limita a 500 linhas
+
         self.input_line = QLineEdit()
         self.input_line.returnPressed.connect(self.send_input)
         self.input_line.setStyleSheet("""
@@ -85,7 +88,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("SIMULADOR RW")
-        self.resize(800, 980)
+        self.resize(800, 920)
         self.initUI()
         # Definir o ícone do programa
         icon_path = os.path.join(os.path.dirname(__file__), 'utilidades/resources/gato.jpg')
@@ -153,10 +156,11 @@ class MainWindow(QMainWindow):
         # Dropdowns
         self.ambiente_combo = QComboBox()
         self.ambiente_combo.addItems(["pista_vazia"])  # Por enquanto, apenas 'pista_vazia'
+        self.ambiente_combo.addItems(["cidade_pequena"])
         self.ambiente_label = QLabel("Selecione o Ambiente (Mundo):")
 
         self.aeronave_combo = QComboBox()
-        self.aeronave_combo.addItems(["T30", "T30_barra", "T30_estavel", "EASy"])
+        self.aeronave_combo.addItems(["T30", "T30_barra", "T30_estavel", "EASy", "nenhum"])
         self.aeronave_label = QLabel("Selecione a Aeronave:")
 
         # Botões On/Off para Console e Mapa
@@ -186,6 +190,21 @@ class MainWindow(QMainWindow):
         left_layout.addWidget(self.lat_input)
         left_layout.addWidget(self.lon_label)
         left_layout.addWidget(self.lon_input)
+
+        # Buttons to change Gazebo update rate
+        update_rate_layout = QHBoxLayout()
+        vel_max_btn = QPushButton("Vel. MAX")
+        vel_max_btn.clicked.connect(lambda: self.set_update_rate(100000))
+        vel_normal_btn = QPushButton("Vel. NORMAL")
+        vel_normal_btn.clicked.connect(lambda: self.set_update_rate(1000))
+        vel_slow_btn = QPushButton("Vel. LENTA")
+        vel_slow_btn.clicked.connect(lambda: self.set_update_rate(100))
+
+        update_rate_layout.addWidget(vel_max_btn)
+        update_rate_layout.addWidget(vel_normal_btn)
+        update_rate_layout.addWidget(vel_slow_btn)
+
+        left_layout.addLayout(update_rate_layout)
 
         # Botões e suas funções
         self.tabs = QTabWidget()
@@ -304,6 +323,44 @@ class MainWindow(QMainWindow):
 
         layout.addLayout(takeoff_layout)
 
+        # Adicionar botão para mostrar PIDs
+        show_pids_btn = QPushButton("Mostrar PIDs")
+        show_pids_btn.clicked.connect(self.show_pids)
+        layout.addWidget(show_pids_btn)
+
+        # Layout para entradas de P, I, D
+        pid_input_layout = QHBoxLayout()
+        p_label = QLabel("P:")
+        self.p_input = QLineEdit()
+        i_label = QLabel("I:")
+        self.i_input = QLineEdit()
+        d_label = QLabel("D:")
+        self.d_input = QLineEdit()
+
+        pid_input_layout.addWidget(p_label)
+        pid_input_layout.addWidget(self.p_input)
+        pid_input_layout.addWidget(i_label)
+        pid_input_layout.addWidget(self.i_input)
+        pid_input_layout.addWidget(d_label)
+        pid_input_layout.addWidget(self.d_input)
+
+        layout.addLayout(pid_input_layout)
+
+        # Layout para botões de Set Pitch, Roll e Yaw
+        pid_set_layout = QHBoxLayout()
+        set_pitch_btn = QPushButton("Set Pitch")
+        set_pitch_btn.clicked.connect(self.set_pitch_gains)
+        set_roll_btn = QPushButton("Set Roll")
+        set_roll_btn.clicked.connect(self.set_roll_gains)
+        set_yaw_btn = QPushButton("Set Yaw")
+        set_yaw_btn.clicked.connect(self.set_yaw_gains)
+
+        pid_set_layout.addWidget(set_pitch_btn)
+        pid_set_layout.addWidget(set_roll_btn)
+        pid_set_layout.addWidget(set_yaw_btn)
+
+        layout.addLayout(pid_set_layout)
+
         self.ardupilot_commands_tab.setLayout(layout)
         self.tabs.addTab(self.ardupilot_commands_tab, "Comandos Ardupilot")
         self.tabs.setTabEnabled(self.tabs.indexOf(self.ardupilot_commands_tab), False)
@@ -319,6 +376,45 @@ class MainWindow(QMainWindow):
             tab.process.write((command + '\n').encode())
         else:
             QMessageBox.warning(self, "Aviso", "Ardupilot não está em execução.")
+
+    def show_pids(self):
+        pid_params = [
+            'ATC_RAT_PIT_P',
+            'ATC_RAT_RLL_P',
+            'ATC_RAT_YAW_P',
+            'ATC_RAT_PIT_I',
+            'ATC_RAT_RLL_I',
+            'ATC_RAT_YAW_I',
+            'ATC_RAT_PIT_D',
+            'ATC_RAT_RLL_D',
+            'ATC_RAT_YAW_D'
+        ]
+        for param in pid_params:
+            self.send_ardupilot_command(f'param show {param}')
+
+    def set_pitch_gains(self):
+        p_value = self.p_input.text()
+        i_value = self.i_input.text()
+        d_value = self.d_input.text()
+        self.send_ardupilot_command(f'param set ATC_RAT_PIT_P {p_value}')
+        self.send_ardupilot_command(f'param set ATC_RAT_PIT_I {i_value}')
+        self.send_ardupilot_command(f'param set ATC_RAT_PIT_D {d_value}')
+
+    def set_roll_gains(self):
+        p_value = self.p_input.text()
+        i_value = self.i_input.text()
+        d_value = self.d_input.text()
+        self.send_ardupilot_command(f'param set ATC_RAT_RLL_P {p_value}')
+        self.send_ardupilot_command(f'param set ATC_RAT_RLL_I {i_value}')
+        self.send_ardupilot_command(f'param set ATC_RAT_RLL_D {d_value}')
+
+    def set_yaw_gains(self):
+        p_value = self.p_input.text()
+        i_value = self.i_input.text()
+        d_value = self.d_input.text()
+        self.send_ardupilot_command(f'param set ATC_RAT_YAW_P {p_value}')
+        self.send_ardupilot_command(f'param set ATC_RAT_YAW_I {i_value}')
+        self.send_ardupilot_command(f'param set ATC_RAT_YAW_D {d_value}')
 
     def start_gazebo(self):
         label = "Gazebo"
@@ -477,6 +573,18 @@ class MainWindow(QMainWindow):
         # Sobrescrever o evento de fechamento para encerrar os processos
         self.close_application()
         event.accept()
+
+    def set_update_rate(self, rate):
+        cmd = f"source ~/catkin_ws/devel/setup.bash && gz physics -u {rate}"
+        process = QProcess(self)
+        process.setProcessChannelMode(QProcess.MergedChannels)
+        process.start("bash", ["-c", cmd])
+        process.waitForFinished()
+        output = process.readAll().data().decode()
+        if output:
+            QMessageBox.information(self, "Taxa de Atualização Alterada", output)
+        else:
+            QMessageBox.information(self, "Taxa de Atualização Alterada", f"Taxa de atualização do Gazebo ajustada para {rate}")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

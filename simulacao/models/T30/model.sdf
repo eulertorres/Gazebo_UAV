@@ -222,7 +222,7 @@
 	  <windSpeedVariance>0.0</windSpeedVariance> <!-- Variação da velocidade do vento (m/s) -->
 	  <windDirection>0 1 0</windDirection> <!-- Direção do vento em coordenadas XYZ -->
 
-	  <frontArea>3.8</frontArea> <!-- Area em m² -->
+	  <frontArea>1.0</frontArea> <!-- Area em m² -->
 	  <dragCoeff>1.15</dragCoeff> <!-- Direção da rajada em coordenadas XYZ -->
 
 	  <!-- Campo de vento customizado -->
@@ -248,13 +248,13 @@
 	<!-- Inclusão do plugin euler_batt_plugin -->
 	<plugin name="euler_batt_plugin" filename="libeuler_aerodinamica_v1_batt_plugin.so">
 		<!-- Tipo de bateria: 'Welion', 'LiPo', 'LiIon' ou outro definido no plugin -->
-		<batteryType>Welion</batteryType>
+		<batteryType>LiPo</batteryType>
 
 		<!-- Número de células em série (S) -->
 		<S>14</S>
 
 		<!-- Número de células em paralelo (P) -->
-		<P>3</P>
+		<P>13</P>
 
 		<!-- Nome do link onde a massa da bateria será atribuída -->
 		<nomeLink>T30_inercia_::bateria</nomeLink>
@@ -276,10 +276,10 @@
 		<PWM_max>2000</PWM_max>
 		<KV_rpm>77</KV_rpm> <!-- Comercial line-to-line -->
 		<delta>true</delta> <!-- Se é enrolamento Delta ou estrela -->
-		<Kp>0.85</Kp>	<!-- Ganho P ESC -->
-		<Ki>0.085</Ki>  <!-- Ganho I ESC -->
-		<Kd>0.046</Kd>  <!-- Ganho D ESC -->
-		<R>0.0/12</R> <!-- Motor phase resistance in ohms -->
+		<Kp>2.5</Kp>	<!-- Ganho P ESC -->
+		<Ki>0.45</Ki> <!-- Ganho I ESC -->
+		<Kd>0.003</Kd>  <!-- Ganho D ESC -->
+		<R>0.012</R> <!-- Motor phase resistance in ohms -->
 		<L>0.001</L> <!-- Motor phase inductance in henrys -->
 		<i0>0.25</i0> <!-- Motor idle current in amperes -->
 		<n_esc>0.92</n_esc> <!-- ESC efficiency -->
@@ -290,7 +290,7 @@
 		<rpm_topic>/motor1/rpm</rpm_topic>
 		<torque_topic>/motor1/torque</torque_topic>
 		<orientacao>CW</orientacao> <!-- Orientacao: CW or CCW -->
-		<debug>false</debug> <!-- Printa informações dos cálculos em detalhes -->	
+		<debug>true</debug> <!-- Printa informações dos cálculos em detalhes -->	
 	</plugin>
 
 	<!-- Motor 2 -->
@@ -299,9 +299,9 @@
 		<PWM_min>1000</PWM_min>
 		<PWM_max>2000</PWM_max>
 		<KV_rpm>77</KV_rpm>
-		<Kp>0.85</Kp>
-		<Ki>0.085</Ki>
-		<Kd>0.046</Kd>
+		<Kp>2.5</Kp>
+		<Ki>0.45</Ki>
+		<Kd>0.003</Kd>
 		<R>0.012</R>
 		<L>0.001</L>
 		<i0>0.25</i0>
@@ -320,9 +320,9 @@
 		<PWM_min>1000</PWM_min>
 		<PWM_max>2000</PWM_max>
 		<KV_rpm>77</KV_rpm>
-		<Kp>0.85</Kp>
-		<Ki>0.085</Ki>
-		<Kd>0.046</Kd>
+		<Kp>2.5</Kp>
+		<Ki>0.45</Ki>
+		<Kd>0.003</Kd>
 		<R>0.012</R>
 		<L>0.001</L>
 		<i0>0.25</i0>
@@ -341,9 +341,9 @@
 		<PWM_min>1000</PWM_min>
 		<PWM_max>2000</PWM_max>
 		<KV_rpm>77</KV_rpm>
-		<Kp>0.85</Kp>
-		<Ki>0.085</Ki>
-		<Kd>0.046</Kd>
+		<Kp>2.5</Kp>
+		<Ki>0.45</Ki>
+		<Kd>0.003</Kd>
 		<R>0.012</R>
 		<L>0.001</L>
 		<i0>0.25</i0>
@@ -362,9 +362,9 @@
 		<PWM_min>1000</PWM_min>
 		<PWM_max>2000</PWM_max>
 		<KV_rpm>77</KV_rpm>
-		<Kp>0.85</Kp>
-		<Ki>0.085</Ki>
-		<Kd>0.046</Kd>
+		<Kp>2.5</Kp>
+		<Ki>0.45</Ki>
+		<Kd>0.003</Kd>
 		<R>0.012</R>
 		<L>0.001</L>
 		<i0>0.25</i0>
@@ -383,9 +383,9 @@
 		<PWM_min>1000</PWM_min>
 		<PWM_max>2000</PWM_max>
 		<KV_rpm>77</KV_rpm>
-		<Kp>0.85</Kp>
-		<Ki>0.085</Ki>
-		<Kd>0.046</Kd>
+		<Kp>2.5</Kp>
+		<Ki>0.45</Ki>
+		<Kd>0.003</Kd>
 		<R>0.012</R>
 		<L>0.001</L>
 		<i0>0.25</i0>

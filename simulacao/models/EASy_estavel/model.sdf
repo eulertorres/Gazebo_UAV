@@ -266,10 +266,134 @@
       <fdm_port_out>9003</fdm_port_out>
       <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
       <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
-      <imuName>iris::iris/imu_link::imu_sensor</imuName>
+      <imuName>iris_demo::iris::iris/imu_link::imu_sensor</imuName>
       <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
-	</plugin>
+	       <!--
+          RPM = 60 * multiplier / (2 * PI)
+        -->
+      <control channel="0">
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>iris::rotor_0_joint</jointName>
+        <multiplier>-491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="1">
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>iris::rotor_4_joint</jointName>
+        <multiplier>-491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="2">
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>iris::rotor_1_joint</jointName>
+        <multiplier>491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="3">
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>iris::rotor_3_joint</jointName>
+        <multiplier>491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="4">
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>iris::rotor_7_joint</jointName>
+        <multiplier>491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="5">
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>iris::rotor_5_joint</jointName>
+        <multiplier>491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="6">
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>iris::rotor_6_joint</jointName>
+        <multiplier>-491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+      <control channel="7">
+        <type>VELOCITY</type>
+        <offset>0</offset>
+        <p_gain>1.0</p_gain>
+        <i_gain>0.0</i_gain>
+        <d_gain>0.0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>2.5</cmd_max>
+        <cmd_min>-2.5</cmd_min>
+        <jointName>iris::rotor_2_joint</jointName>
+        <multiplier>-491</multiplier>
+        <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+      </control>
+    </plugin>
 
+	<!--
+	<plugin name="plugin_resistencia_ar_simples" filename="libfluid_resitance_plugin.so">
+		<TopicName>/resistencia_ar/frame</TopicName>
+		<LinkName>iris::base_link</LinkName>
+		<rate>10.0</rate>
+		<uCoeff>2.0</uCoeff>
+	</plugin>  
+	-->
+	
 	<plugin name="gazebo_wind_plugin" filename="libeuler_aerodinamica_v1.so">
 	  <robotNamespace>/iris_demo</robotNamespace>
 	  <xyzOffset>0 0 0</xyzOffset> <!-- Altere para a posição desejada -->
@@ -279,9 +403,9 @@
 	  <windSpeedPubTopic>vento/velocidade</windSpeedPubTopic>
 	  
 	  <!-- Definições de vento constante -->
-	  <windSpeedMean>0.2</windSpeedMean> <!-- Velocidade média do vento (m/s) -->
+	  <windSpeedMean>0.01</windSpeedMean> <!-- Velocidade média do vento (m/s) -->
 	  <windSpeedVariance>0.0</windSpeedVariance> <!-- Variação da velocidade do vento (m/s) -->
-	  <windDirection>0 0.8 0.2</windDirection> <!-- Direção do vento em coordenadas XYZ -->
+	  <windDirection>0 1 0</windDirection> <!-- Direção do vento em coordenadas XYZ -->
 
 	  <frontArea>1.0</frontArea> <!-- Area em m² -->
 	  <dragCoeff>1.15</dragCoeff> <!-- Direção da rajada em coordenadas XYZ -->
@@ -305,201 +429,6 @@
 	  <!-- ID do frame para mensagens -->
 	  <frameId>world</frameId>
 	</plugin>
-
-	<!-- Inclusão do plugin euler_batt_plugin -->
-	<plugin name="euler_batt_plugin" filename="libeuler_aerodinamica_v1_batt_plugin.so">
-		<!-- Tipo de bateria: 'Welion', 'LiPo', 'LiIon' ou outro definido no plugin -->
-		<batteryType>LiIon</batteryType>
-
-		<!-- Número de células em série (S) -->
-		<S>14</S>
-
-		<!-- Número de células em paralelo (P) -->
-		<P>38</P>
-
-		<!-- Nome do link onde a massa da bateria será atribuída -->
-		<nomeLink>iris::bateria</nomeLink>
-
-		<!-- Tópico ROS onde a tensão disponível será publicada -->
-		<TopicoTensao>/battery/voltage</TopicoTensao>
-
-		<!-- Tópico ROS onde o estado da bateria será publicado -->
-		<EstadoBattPubTopic>/battery/state</EstadoBattPubTopic>
-
-		<numRotores>8</numRotores>
-
-	</plugin>
-
-	<!-- Motor 1 -->
-	<plugin name="euler_mot_1_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
-		<numero_motor>1</numero_motor> <!-- Identificação -->
-		<PWM_min>1000</PWM_min>
-		<PWM_max>2000</PWM_max>
-		<KV_rpm>77</KV_rpm> <!-- Comercial line-to-line -->
-		<delta>true</delta> <!-- Se é enrolamento Delta ou estrela -->
-		<Kp>0.85</Kp>	<!-- Ganho P ESC -->
-		<Ki>0.085</Ki>  <!-- Ganho I ESC -->
-		<Kd>0.046</Kd>  <!-- Ganho D ESC -->
-		<R>0.0/12</R> <!-- Motor phase resistance in ohms -->
-		<L>0.001</L> <!-- Motor phase inductance in henrys -->
-		<i0>0.25</i0> <!-- Motor idle current in amperes -->
-		<n_esc>0.92</n_esc> <!-- ESC efficiency -->
-		<b>0.00105</b> <!-- coeficiente amortecimento (positive) -->
-		<AWG>10</AWG>	<!-- Para limitar corrente max ESC -->
-		<joint_name>iris::rotor_0_joint</joint_name>
-		<current_topic>/battery/current/motor1</current_topic>
-		<rpm_topic>/motor1/rpm</rpm_topic>
-		<torque_topic>/motor1/torque</torque_topic>
-		<orientacao>CW</orientacao> <!-- Orientacao: CW or CCW -->
-		<debug>true</debug> <!-- Printa informações dos cálculos em detalhes -->	
-	</plugin>
-
-	<!-- Motor 2 -->
-	<plugin name="euler_mot_2_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
-		<numero_motor>2</numero_motor>
-		<PWM_min>1000</PWM_min>
-		<PWM_max>2000</PWM_max>
-		<KV_rpm>77</KV_rpm>
-		<Kp>0.85</Kp>
-		<Ki>0.085</Ki>
-		<Kd>0.046</Kd>
-		<R>0.012</R>
-		<L>0.001</L>
-		<i0>0.25</i0>
-		<n_esc>0.92</n_esc>
-		<b>0.00105</b>
-		<joint_name>iris::rotor_4_joint</joint_name>
-		<current_topic>/battery/current/motor2</current_topic>
-		<rpm_topic>/motor2/rpm</rpm_topic>
-		<torque_topic>/motor2/torque</torque_topic>
-		<orientacao>CW</orientacao>
-	</plugin>
-
-	<!-- Motor 3 -->
-	<plugin name="euler_mot_3_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
-		<numero_motor>3</numero_motor>
-		<PWM_min>1000</PWM_min>
-		<PWM_max>2000</PWM_max>
-		<KV_rpm>77</KV_rpm>
-		<Kp>0.85</Kp>
-		<Ki>0.085</Ki>
-		<Kd>0.046</Kd>
-		<R>0.012</R>
-		<L>0.001</L>
-		<i0>0.25</i0>
-		<n_esc>0.92</n_esc>
-		<b>0.00105</b>
-		<joint_name>iris::rotor_1_joint</joint_name>
-		<current_topic>/battery/current/motor3</current_topic>
-		<rpm_topic>/motor3/rpm</rpm_topic>
-		<torque_topic>/motor3/torque</torque_topic>
-		<orientacao>CCW</orientacao>
-	</plugin>
-
-	<!-- Motor 4 -->
-	<plugin name="euler_mot_4_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
-		<numero_motor>4</numero_motor>
-		<PWM_min>1000</PWM_min>
-		<PWM_max>2000</PWM_max>
-		<KV_rpm>77</KV_rpm>
-		<Kp>0.85</Kp>
-		<Ki>0.085</Ki>
-		<Kd>0.046</Kd>
-		<R>0.012</R>
-		<L>0.001</L>
-		<i0>0.25</i0>
-		<n_esc>0.92</n_esc>
-		<b>0.00105</b>
-		<joint_name>iris::rotor_3_joint</joint_name>
-		<current_topic>/battery/current/motor4</current_topic>
-		<rpm_topic>/motor4/rpm</rpm_topic>
-		<torque_topic>/motor4/torque</torque_topic>
-		<orientacao>CCW</orientacao>
-	</plugin>
-
-	<!-- Motor 5 -->
-	<plugin name="euler_mot_5_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
-		<numero_motor>5</numero_motor>
-		<PWM_min>1000</PWM_min>
-		<PWM_max>2000</PWM_max>
-		<KV_rpm>77</KV_rpm>
-		<Kp>0.85</Kp>
-		<Ki>0.085</Ki>
-		<Kd>0.046</Kd>
-		<R>0.012</R>
-		<L>0.001</L>
-		<i0>0.25</i0>
-		<n_esc>0.92</n_esc>
-		<b>0.00105</b>
-		<joint_name>iris::rotor_7_joint</joint_name>
-		<current_topic>/battery/current/motor5</current_topic>
-		<rpm_topic>/motor5/rpm</rpm_topic>
-		<torque_topic>/motor5/torque</torque_topic>
-		<orientacao>CCW</orientacao>
-	</plugin>
-
-	<!-- Motor 6 -->
-	<plugin name="euler_mot_6_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
-		<numero_motor>6</numero_motor>
-		<PWM_min>1000</PWM_min>
-		<PWM_max>2000</PWM_max>
-		<KV_rpm>77</KV_rpm>
-		<Kp>0.85</Kp>
-		<Ki>0.085</Ki>
-		<Kd>0.046</Kd>
-		<R>0.012</R>
-		<L>0.001</L>
-		<i0>0.25</i0>
-		<n_esc>0.92</n_esc>
-		<b>0.00105</b>
-		<joint_name>iris::rotor_5_joint</joint_name>
-		<current_topic>/battery/current/motor6</current_topic>
-		<rpm_topic>/motor6/rpm</rpm_topic>
-		<torque_topic>/motor6/torque</torque_topic>
-		<orientacao>CCW</orientacao>
-	</plugin>
 	
-	<!-- Motor 7 -->
-	<plugin name="euler_mot_7_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
-		<numero_motor>7</numero_motor>
-		<PWM_min>1000</PWM_min>
-		<PWM_max>2000</PWM_max>
-		<KV_rpm>77</KV_rpm>
-		<Kp>0.85</Kp>
-		<Ki>0.085</Ki>
-		<Kd>0.046</Kd>
-		<R>0.012</R>
-		<L>0.001</L>
-		<i0>0.25</i0>
-		<n_esc>0.92</n_esc>
-		<b>0.00105</b>
-		<joint_name>iris::rotor_6_joint</joint_name>
-		<current_topic>/battery/current/motor7</current_topic>
-		<rpm_topic>/motor7/rpm</rpm_topic>
-		<torque_topic>/motor7/torque</torque_topic>
-		<orientacao>CW</orientacao>
-	</plugin>
-
-	<!-- Motor 8 -->
-	<plugin name="euler_mot_8_plugin" filename="libeuler_aerodinamica_v1_mot_plugin.so">
-		<numero_motor>8</numero_motor>
-		<PWM_min>1000</PWM_min>
-		<PWM_max>2000</PWM_max>
-		<KV_rpm>77</KV_rpm>
-		<Kp>0.85</Kp>
-		<Ki>0.085</Ki>
-		<Kd>0.046</Kd>
-		<R>0.012</R>
-		<L>0.001</L>
-		<i0>0.25</i0>
-		<n_esc>0.92</n_esc>
-		<b>0.00105</b>
-		<joint_name>iris::rotor_2_joint</joint_name>
-		<current_topic>/battery/current/motor8</current_topic>
-		<rpm_topic>/motor8/rpm</rpm_topic>
-		<torque_topic>/motor8/torque</torque_topic>
-		<orientacao>CW</orientacao>
-	</plugin>
-
   </model>
 </sdf>

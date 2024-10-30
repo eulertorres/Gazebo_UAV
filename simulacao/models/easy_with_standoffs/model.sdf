@@ -67,6 +67,59 @@
         </surface>
       </collision>
     </link>
+
+	<link name='bateria'>
+	  <pose>0 0 0.8 0 0 0</pose>
+	  <inertial>
+		<pose>0 0 0 0 0 0</pose>
+		<mass>0.01</mass>
+		<inertia>
+		  <ixx>0.02</ixx>
+		  <ixy>0</ixy>
+		  <ixz>0</ixz>
+		  <iyy>0.02</iyy>
+		  <iyz>0</iyz>
+		  <izz>0.02</izz>
+		</inertia>
+	  </inertial>
+	  <visual name="bateria_visual">
+		<pose>0 0 0 0 0 0</pose>
+		<geometry>
+		  <box>
+			<size>0.42 0.25 0.08</size>
+		  </box>
+		</geometry>
+		<material>
+		  <script>
+			<uri>file://media/materials/scripts/gazebo.material</uri>
+			<name>Gazebo/Green</name>
+		  </script>
+		</material>
+	  </visual>
+	</link>
+    <joint name='bateria/joint' type='revolute'>
+      <child>bateria</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>0</upper>
+          <effort>0</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <damping>1.0</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+
 	
 	<link name='iris/imu_link'>
 	  <pose>0.0 0.0 0.75215 0 0 0</pose>

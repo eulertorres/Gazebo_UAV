@@ -33,7 +33,7 @@ private:
     void PublishTorque();
     void PublishRPM();
     void calcula(double dt);
-	void PrintDebug(double duty, double Vq, double dIq_dt, double desired_angular_velocity, double error);
+	void PrintDebug(double duty, double Vq, double dIq_dt, double desired_angular_velocity, double error, double IE, double DE);
 
 	// Funções intde ambiente
 	double GetMaxCurrentForAWG(int awg);
@@ -55,6 +55,7 @@ private:
     ros::Publisher current_pub_;
     ros::Publisher torque_pub_;
     ros::Publisher rpm_pub_;
+    ros::Publisher rpm_des_pub_;
 
     // Variáveis para armazenar valores
     int motor_number_;
@@ -63,6 +64,7 @@ private:
     double pwm_min_;
     double pwm_max_;
     double battery_voltage_;
+    double max_angular_velocity;
 
     // Constantes do motor
     double KV_rpm_;
@@ -77,6 +79,7 @@ private:
     double b_;              // Damping coefficient (N·m·s/rad)
     double angular_velocity_; // Angular velocity (rad/s)
     double rpm_;            // Rotational speed (RPM)
+    double rpm_des;            // Rotational speed (RPM)
     double max_current_;            // 
     
 	//PID controle PWM

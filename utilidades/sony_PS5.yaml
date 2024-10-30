@@ -1,0 +1,35 @@
+description: Configuracao para o controle do Play 5
+match:
+  - Sony*
+controls:
+
+  # map axis id 2 to rc channel 1
+  - channel: 1
+    type: axis
+    id: 4
+
+  # map axis id 3 to rc channel 2
+  - channel: 2
+    type: axis
+    id: 3
+    invert: true
+
+  # map axis id 1 to rc channel 3
+  - channel: 3
+    type: axis
+    id: 1
+   # invert: true
+
+  # map axis id 0 to rc channel 4
+  - channel: 4
+    type: axis
+    id: 0
+
+  # map switch to rc channel 5 (flight mode switch with three positions)
+  - channel: 5
+    type: axis
+    id: 2
+
+  - channel: 6
+    type: axis
+    id: 5

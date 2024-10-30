@@ -15,6 +15,7 @@ EulerMotPlugin::EulerMotPlugin()
       current_(0.0),
       torque_(0.0),
       rpm_(0.0),
+      rpm_des(0.0),
       angular_velocity_(0.0),
       is_delta_(true),
       debug_(false),  // Inicializa a flag de debug como false
@@ -70,13 +71,6 @@ void EulerMotPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     else
         KV_rpm_ = 77;  // Valor padrão alterado para 77
 
-    // Calcula KV_rad_
-    KV_rad_ = KV_rpm_ * M_PI / 30.0;  // Converte rpm/V para rad/s/V
-
-    // Kt é o recíproco de KV_rad
-    Kt_ = 1.0 / KV_rad_;
-    Kbq_ = Kt_;             // Constante de força contraeletromotriz (V/(rad/s))
-
     if (_sdf->HasElement("R"))
         R_ = _sdf->Get<double>("R");
     else
@@ -86,8 +80,6 @@ void EulerMotPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
         L_ = _sdf->Get<double>("L");
     else
         L_ = 0.004;
-
-    L_ = L_ / 2;   // Configuração Delta
 
     if (_sdf->HasElement("i0"))
         i0_ = _sdf->Get<double>("i0");
@@ -154,7 +146,7 @@ void EulerMotPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     if (_sdf->HasElement("Kd"))
         Kd = _sdf->Get<double>("Kd");
     else
-        Kd = 0.0046;  // Valor padrão
+        Kd = 0.0;  // Valor padrão
 
     // Obtém o ponteiro para a articulação
     joint_ = model_->GetJoint(joint_name_);
@@ -167,6 +159,7 @@ void EulerMotPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     current_pub_ = nh_->advertise<std_msgs::Float32>(current_topic_, 1);
     torque_pub_ = nh_->advertise<std_msgs::Float32>(torque_topic_, 1);
     rpm_pub_ = nh_->advertise<std_msgs::Float32>(rpm_topic_, 1);  // Publicador para RPM
+    if (debug_) rpm_des_pub_ = nh_->advertise<std_msgs::Float32>("/motor" + motor_str + "/rpm_desired", 1);  // Publicador para RPM
 
     // Inscreve-se nos tópicos de PWM e tensão da bateria
     pwm_sub_ = nh_->subscribe("/mavros/rc/out", 1, &EulerMotPlugin::PwmCallback, this);
@@ -178,6 +171,23 @@ void EulerMotPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
 
     // Calcular a corrente máxima com base no AWG
     max_current_ = GetMaxCurrentForAWG(wire_gauge_awg_);
+
+    // Calcula KV_rad_
+    KV_rad_ = KV_rpm_ * M_PI / 30.0;  // Converte rpm/V para rad/s/V
+
+    // Kt é o recíproco de KV_rad
+    if(is_delta_){
+		Kt_ = (1.0 / KV_rad_)*sqrt(3/2);
+		L_ = L_ / 2;   // Configuração Delta
+		R_ = R_ / 2;
+	}else{
+		Kt_ = 1.0/(KV_rad_*sqrt(2));
+		L_ = L_* 3 / 2;   // Configuração Estrela
+		R_ = R_* 3 / 2;
+	}
+
+    Kbq_ = Kt_;             // Constante de força contraeletromotriz (V/(rad/s))
+
 
     std::cout << "[euler_mot_plugin] Plugin do motor carregado com sucesso.\n";
     if (debug_) {
@@ -224,7 +234,12 @@ void EulerMotPlugin::calcula(double dt) {
     }
 
     // **1. Definir a velocidade angular desejada**
-    double max_angular_velocity = (sqrt(2.0 / 3.0) * battery_voltage_) / Kbq_;
+	if(is_delta_){
+		max_angular_velocity = sqrt(3.0 / 2.0) * battery_voltage_ / Kbq_;
+	}else{
+		max_angular_velocity = sqrt(1.0 / 2.0) * battery_voltage_ / Kbq_;
+	}
+
     double desired_angular_velocity = duty * max_angular_velocity;
 
     // **2. Calcular o erro de velocidade**
@@ -247,7 +262,7 @@ void EulerMotPlugin::calcula(double dt) {
     double derivative = (error - prev_error_) / dt;
 
     // Saída do controlador PID (V_q)
-    double Vq = Kp * error + Ki * integral_error_ + Kd * derivative;
+    double Vq =  Kp * error + Ki * integral_error_ + Kd * derivative;
 
     // Atualizar o erro anterior
     prev_error_ = error;
@@ -290,15 +305,15 @@ void EulerMotPlugin::calcula(double dt) {
     } else {
         joint_->SetForce(0, torque_);
     }
-
     if (debug_) {
-        PrintDebug(duty, Vq, dIq_dt, desired_angular_velocity, error);
+        PrintDebug(duty, Vq, dIq_dt, desired_angular_velocity, error, integral_error_, derivative);
     }
 }
 
-void EulerMotPlugin::PrintDebug(double duty, double Vq, double dIq_dt, double desired_angular_velocity, double error){
+void EulerMotPlugin::PrintDebug(double duty, double Vq, double dIq_dt, double desired_angular_velocity, double error, double IE, double DE){
     std::cout << "[Motor " << motor_number_ << "] PWM Value: " << pwm_value_ << ", Duty Cycle: " << duty << std::endl;
     std::cout << "[Motor " << motor_number_ << "] Battery Voltage: " << battery_voltage_ << ", Vq: " << Vq << std::endl;
+    std::cout << "[Motor " << motor_number_ << "] P: " << Kp * error << ", I: " << Ki * IE << ", D: " << Kd * DE << std::endl;
     std::cout << "[Motor " << motor_number_ << "] Desired Angular Velocity (rad/s): " << desired_angular_velocity << std::endl;
     std::cout << "[Motor " << motor_number_ << "] Actual Angular Velocity (rad/s): " << angular_velocity_ << std::endl;
     std::cout << "[Motor " << motor_number_ << "] Error: " << error << std::endl;
@@ -310,12 +325,18 @@ void EulerMotPlugin::PrintDebug(double duty, double Vq, double dIq_dt, double de
     } else{
         std::cout << "[Motor " << motor_number_ << "] Applying torque (CCW): " << torque_ << std::endl;
     }
+    std::cout << "[Motor " << motor_number_ << "] ------------------------------------------------------- " << std::endl;
+	rpm_des = desired_angular_velocity * 60.0 / (2 * M_PI);
 }
 
 // Publica a corrente calculada
 void EulerMotPlugin::PublishCurrent() {
     std_msgs::Float32 current_msg;
-    current_msg.data = current_;
+    if (current_ < 0){
+		current_msg.data = 0.0;
+	} else{
+		current_msg.data = current_;
+	}
     current_pub_.publish(current_msg);
 }
 
@@ -331,6 +352,11 @@ void EulerMotPlugin::PublishRPM() {
     std_msgs::Float32 rpm_msg;
     rpm_msg.data = rpm_;
     rpm_pub_.publish(rpm_msg);
+	if(debug_){
+		std_msgs::Float32 rpm_des_msg;
+		rpm_des_msg.data = rpm_des;
+		rpm_des_pub_.publish(rpm_des_msg);
+	}
 }
 
 void EulerMotPlugin::PwmCallback(const mavros_msgs::RCOut::ConstPtr& msg) {
