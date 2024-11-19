@@ -56,6 +56,8 @@ private:
     ros::Publisher torque_pub_;
     ros::Publisher rpm_pub_;
     ros::Publisher rpm_des_pub_;
+    ros::Publisher vq_pub_;
+    ros::Publisher vq_des_pub_;
 
     // Variáveis para armazenar valores
     int motor_number_;

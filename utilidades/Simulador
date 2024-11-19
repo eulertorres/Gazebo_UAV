@@ -143,3 +143,16 @@ git remote set-url origin https://eulertorres:ghp_POz1jwYTzR75FQrK2j81zNOfjnBS1G
     rc <channel> <pwm_value>: Define o valor PWM de um canal RC específico.
 
     Exemplo: rc 3 1500
+
+	motortest <motor_id> <pwm_type> <value> <duration> <throttle_type>
+
+	Tabela de Combinações
+Valor	Eixos Ativados
+1	Roll
+2	Pitch
+3	Roll + Pitch
+4	Yaw
+5	Roll + Yaw
+6	Pitch + Yaw
+7	Roll + Pitch + Yaw
+Se você quiser ajustar apenas Roll e Pitch, o valor correto para AUTOTUNE_AXES é 3.

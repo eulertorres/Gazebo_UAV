@@ -32,6 +32,7 @@
         <arg name="verbose" value="$(arg verbose)"/>
     </include>
 
+
     <!-- Inicia o MAVRos -->
     <node pkg="mavros" type="mavros_node" name="mavros" output="screen">
         <param name="fcu_url" value="$(arg fcu_url)"/>

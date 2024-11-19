@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>euler_aerodinamica_v1</name>
-  <version>0.0.1</version>
-  <description>Pacote contendo plugins de aerodinâmica e bateria.</description>
+  <name>euler</name>
+  <version>1.2.1</version>
+  <description>Pacote contendo plugins de aerodinâmica, motor e bateria.</description>
 
   <maintainer email="euler.feitosa@xmobots.com">Euler Torres</maintainer>
   <license>BSD-3-Clause</license>

@@ -162,7 +162,7 @@ void EulerMotPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     if (debug_) rpm_des_pub_ = nh_->advertise<std_msgs::Float32>("/motor" + motor_str + "/rpm_desired", 1);  // Publicador para RPM
 
     // Inscreve-se nos tópicos de PWM e tensão da bateria
-    pwm_sub_ = nh_->subscribe("/mavros/rc/out", 1, &EulerMotPlugin::PwmCallback, this);
+    pwm_sub_ = nh_->subscribe("/rc/out", 1, &EulerMotPlugin::PwmCallback, this);
     voltage_sub_ = nh_->subscribe("/battery/voltage", 1, &EulerMotPlugin::VoltageCallback, this);
 
     // Conecta-se ao evento de atualização do Gazebo
@@ -211,8 +211,11 @@ void EulerMotPlugin::OnUpdate(const common::UpdateInfo& _info) {
     calcula(dt);
     last_update_time_ = current_time;
 
+	// **Atualizar RPM para publicação**
+    rpm_ = angular_velocity_ * 60.0 / (2 * M_PI);
+
     // Publica em uma taxa menor (por exemplo, a cada 0.1s)
-    if ((current_time - last_publish_time_) >= 0.1) {
+    if ((current_time - last_publish_time_) >= 0.01) {
         PublishCurrent();
         PublishTorque();
         PublishRPM();
@@ -224,12 +227,10 @@ void EulerMotPlugin::OnUpdate(const common::UpdateInfo& _info) {
 void EulerMotPlugin::calcula(double dt) {
     double duty = (pwm_value_ - pwm_min_) / (pwm_max_ - pwm_min_);
 
-	// **Atualizar RPM para publicação**
-    rpm_ = angular_velocity_ * 60.0 / (2 * M_PI);
-
     if (duty < 0.01 || battery_voltage_ <= 2.0) {
         torque_ = 0.0;
 		current_ = i0_;
+		rpm_des = 0;
         return;
     }
 
@@ -240,7 +241,7 @@ void EulerMotPlugin::calcula(double dt) {
 		max_angular_velocity = sqrt(1.0 / 2.0) * battery_voltage_ / Kbq_;
 	}
 
-    double desired_angular_velocity = duty * max_angular_velocity;
+    double desired_angular_velocity = duty * max_angular_velocity * 0.9;
 
     // **2. Calcular o erro de velocidade**
     // Obter velocidade angular atual
@@ -363,6 +364,10 @@ void EulerMotPlugin::PwmCallback(const mavros_msgs::RCOut::ConstPtr& msg) {
     if (motor_number_ > 0 && motor_number_ <= msg->channels.size()) {
         pwm_value_ = msg->channels[motor_number_ - 1];
         last_pwm_received_time_ = world_->SimTime();  // Atualiza o tempo da última recepção
+		//if(debug_){
+			//std::cout << "[Motor " << motor_number_ << "] tempo da ultima att: " << last_pwm_received_time_ << "----------------------------------------------------" << std::endl;
+			//std::cout.flush();
+		//}
     }
 }
 

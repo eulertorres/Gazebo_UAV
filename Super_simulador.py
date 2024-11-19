@@ -35,7 +35,7 @@ class TerminalTab(QWidget):
         self.output.setFont(font)
 
         # **Limitar o número máximo de linhas**
-        self.output.document().setMaximumBlockCount(500)  # Limita a 500 linhas
+        self.output.document().setMaximumBlockCount(5000)  # Limita a 500 linhas
 
         self.input_line = QLineEdit()
         self.input_line.returnPressed.connect(self.send_input)
@@ -303,9 +303,23 @@ class MainWindow(QMainWindow):
         takeoff_layout.addWidget(self.takeoff_label)
         takeoff_layout.addWidget(self.takeoff_input)
 
+        # Botão "Carregar Joystick"
+        carregar_joystick_btn = QPushButton("Carregar Joystick")
+        carregar_joystick_btn.clicked.connect(self.load_joystick)
+        layout.addWidget(carregar_joystick_btn)
+
+        # Layout horizontal para "Arm Throttle" e "Desarmar"
+        arm_layout = QHBoxLayout()
+        arm_btn = QPushButton("Arm Throttle")
+        arm_btn.clicked.connect(lambda: self.send_ardupilot_command('arm throttle'))
+        disarm_btn = QPushButton("Desarmar")
+        disarm_btn.clicked.connect(lambda: self.send_ardupilot_command('disarm'))
+        arm_layout.addWidget(arm_btn)
+        arm_layout.addWidget(disarm_btn)
+        layout.addLayout(arm_layout)
+
+        # Continuar adicionando os outros comandos
         commands = [
-            ("Carregar Joystick", self.load_joystick),
-            ("Arm Throttle", lambda: self.send_ardupilot_command('arm throttle')),
             ("Modo Guided", lambda: self.send_ardupilot_command('mode guided')),
             ("Listar Missões", lambda: self.send_ardupilot_command('wp list')),
             ("Limpar Missões", lambda: self.send_ardupilot_command('wp clear')),
