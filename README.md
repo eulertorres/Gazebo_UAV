@@ -1,5 +1,3 @@
-Instalação
-
 sudo sh -c 'wget -O - https://packages.osrfoundation.org/gazebo.key | apt-key add -'
 gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'minimize'
 sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -sc) main" > /etc/apt/sources.list.d/gazebo-stable.list'
