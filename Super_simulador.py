@@ -88,7 +88,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("SIMULADOR RW")
-        self.resize(800, 920)
+        self.resize(920, 920)
         self.initUI()
         # Definir o ícone do programa
         icon_path = os.path.join(os.path.dirname(__file__), 'utilidades/resources/gato.jpg')
@@ -155,12 +155,12 @@ class MainWindow(QMainWindow):
 
         # Dropdowns
         self.ambiente_combo = QComboBox()
-        self.ambiente_combo.addItems(["pista_vazia"])  # Por enquanto, apenas 'pista_vazia'
+        self.ambiente_combo.addItems(["pista_vazia", "mundo_vazio"])  # Por enquanto, apenas 'pista_vazia'
         self.ambiente_combo.addItems(["cidade_pequena"])
         self.ambiente_label = QLabel("Selecione o Ambiente (Mundo):")
 
         self.aeronave_combo = QComboBox()
-        self.aeronave_combo.addItems(["T30", "T30_barra", "T30_estavel", "EASy", "nenhum"])
+        self.aeronave_combo.addItems(["T30", "T30_barra", "T30_estavel", "EASy", "MN801S-150KV-APC2015-SAMA-FW25", "nenhum"])
         self.aeronave_label = QLabel("Selecione a Aeronave:")
 
         # Botões On/Off para Console e Mapa
