@@ -1,0 +1,21 @@
+Inicia simulação:
+
+roslaunch euler_drone_pkgs propeller_test.launch
+=============================================================================================================
+
+Encontrar o IP do WSL: No terminal do WSL - Preparar para WIndows <-> WSL
+ip addr show eth0 | grep 'inet ' | awk '{print $2}' | cut -d/ -f1
+
+172.19.210.196
+
+Tem que dsativar Firwall
+
+Ir em "Firewall do Windows" > "Configurações Avançadas".
+
+Criar uma "Regra de Saída" (Outbound Rule).
+
+Permitir conexões do tipo "Programa", apontando para o MATLAB.exe (ou simulink.exe).
+
+Ou, de forma mais simples, permitir tráfego UDP para o IP do WSL (o que você anotou) na Porta Remota 9002.
+
+=============================================================================================================

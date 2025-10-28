@@ -1,0 +1,40 @@
+<?xml version='1.0'?>
+<launch>
+
+    <!-- Argumentos -->
+    <arg name="world" default="mundo_vazio"/>
+    <arg name="paused" default="false"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="verbose" default="true"/>
+    <arg name="headless" default="false"/>
+    <arg name="debug" default="false"/>
+    <arg name="gcs_url" default=""/>
+
+    <!-- Argumento para o nome do modelo -->
+    <arg name="model_name" default="MN801S-150KV-APC2015-SAMA-FW25"/>
+
+    <!-- Definir o caminho completo para o arquivo do mundo -->
+    <arg name="world_file" default="$(find simulacao)/worlds/$(arg world).world"/>
+
+    <!-- Definir o caminho para o modelo baseado no argumento model_name -->
+    <arg name="model_file" default="$(find simulacao)/models/$(arg model_name)/model.sdf"/>
+
+    <!-- Carregar o ambiente do mundo -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(arg world_file)"/>
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="gui" value="$(arg gui)"/>
+        <arg name="headless" value="$(arg headless)"/>
+        <arg name="debug" value="$(arg debug)"/>
+        <arg name="verbose" value="$(arg verbose)"/>
+    </include>
+
+
+    <!-- Condição para spawn do modelo -->
+    <group if="$(eval arg('model_name') != 'nenhum' and arg('model_name') != '')">
+        <node name="spawn_model" pkg="gazebo_ros" type="spawn_model" output="screen" args="-file $(arg model_file) -sdf -model $(arg model_name)"/>
+    </group>
+
+</launch>

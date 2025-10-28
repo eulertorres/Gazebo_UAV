@@ -253,8 +253,6 @@ void EulerMotPluginV2::ReceiveMotorCommand() {
     ssize_t recvSize = socket_in_.Recv(&pkt, sizeof(ServoPacket), 1);
 
     if (recvSize == -1) {
-        // Não recebeu um pacote
-        // Você pode adicionar tratamento de erro aqui se desejar
         return;
     }
 

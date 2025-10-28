@@ -430,29 +430,19 @@
 
 	</plugin>
 
-	<!-- Motor -->
-	<plugin name="euler_mot_1_plugin" filename="libeuler_mot_plugin.so">
-		<numero_motor>1</numero_motor> <!-- Identificação -->
-		<PWM_min>1000</PWM_min>
-		<PWM_max>2000</PWM_max>
-		<KV_rpm>150</KV_rpm> <!-- Comercial line-to-line -->
-		<delta>true</delta> <!-- Se é enrolamento Delta ou estrela -->
-		<Kp>0.2</Kp>		<!-- Ganho P ESC -->
-		<Ki>0.8</Ki> <!-- Ganho I ESC -->
-		<Kd>0.0</Kd>  <!-- Ganho D ESC -->
-		<R>0.012</R> <!-- Motor phase resistance in ohms -->
-		<L>0.0008</L> <!-- Motor phase inductance in henrys -->
-		<i0>0.25</i0> <!-- Motor idle current in amperes -->
-		<n_esc>0.92</n_esc> <!-- ESC efficiency -->
-		<b>0.00105</b> <!-- coeficiente amortecimento (positive) -->
-		<AWG>10</AWG>	<!-- Para limitar corrente max ESC -->
-		<joint_name>T30_inercia_::rotor_0_joint</joint_name>
-		<current_topic>/battery/current/motor1</current_topic>
-		<rpm_topic>/motor1/rpm</rpm_topic>
-		<torque_topic>/motor1/torque</torque_topic>
-		<orientacao>CW</orientacao> <!-- Orientacao: CW or CCW -->
-		<debug>false</debug> <!-- Printa informações dos cálculos em detalhes -->	
-	</plugin>
+
+	<plugin name="euler_motor_plugin_v2" filename="libeuler_mot_plugin_v2.so">
+		<listen_addr>0.0.0.0</listen_addr>
+		<fdm_port_in>9002</fdm_port_in> 
+
+		<motor channel="0">
+		  <joint_name>propeller_joint</joint_name> <KV_rpm>77</KV_rpm>
+		  <R>0.116</R>
+		  <L>0.004</L>
+		  <pwm_min>1000</pwm_min>
+		  <pwm_max>2000</pwm_max>
+		  </motor>
+    </plugin>
 
 	<plugin name="rotor_X_blade_1" filename="libLiftDragPlugin.so">
       <a0>0.1</a0>
