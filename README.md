@@ -1,81 +1,59 @@
-sudo sh -c 'wget -O - https://packages.osrfoundation.org/gazebo.key | apt-key add -'
-gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'minimize'
-sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -sc) main" > /etc/apt/sources.list.d/gazebo-stable.list'
-sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-sudo apt update
-sudo apt-get install ros-noetic-rospy
-sudo apt install flameshot
-sudo apt install wine64
-sudo snap install notepad-plus-plus
-sudo apt install libignition-gazebo6 libignition-gazebo6-dev
-sudo apt install curl
-curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
-sudo apt update
-sudo apt install ros-noetic-desktop-full
-echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
-source ~/.bashrc
-sudo apt install rapidjson-dev
-sudo apt install libopencv-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl
-sudo apt install python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws/
-catkin_make
-echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
-source ~/.bashrc
-cd ~
-git clone https://github.com/ArduPilot/ardupilot.git
-cd ardupilot
-git submodule update --init --recursive
-sudo apt install -y python3-pip python3-dev python3-setuptools g++ make
-sudo pip3 install future
-./waf configure --board sitl
-./waf copter
-sudo apt install ros-noetic-mavros ros-noetic-mavros-extras
-sudo pip3 install MAVProxy
-echo "export PATH=$PATH:$HOME/ardupilot/Tools/autotest" >> ~/.bashrc
-echo "export PATH=/usr/lib/ccache:$PATH" >> ~/.bashrc
-source ~/.bashrc
-sudo ln -s /usr/bin/python3 /usr/bin/python
-sudo apt install python3-wxgtk4.0
-cd ~/
-git clone https://github.com/khancyr/ardupilot_gazebo
-cd ardupilot_gazebo
-mkdir build
-cd build
-cmake ..
-make -j4
-sudo make install
-echo 'source /usr/share/gazebo/setup.sh' >> ~/.bashrc
-echo 'export GAZEBO_MODEL_PATH=~/ardupilot_gazebo/models' >> ~/.bashrc
-echo 'export GAZEBO_RESOURCE_PATH=~/ardupilot_gazebo/worlds:${GAZEBO_RESOURCE_PATH}' >> ~/.bashrc
-source ~/.bashrc
-sudo apt remove modemmanager
-sudo dpkg --add-architecture i386
-sudo mkdir -pm755 /etc/apt/keyrings
-sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
-sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/$(lsb_release -cs)/winehq-$(lsb_release -cs).sources
-sudo apt update
-sudo apt install --install-recommends winehq-stable
-sudo apt install ca-certificates gnupg
-sudo gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
-sudo apt update
-sudo apt install mono-devel
-source /opt/ros/noetic/setup.bash 
-sudo bash -c 'source /opt/ros/noetic/setup.bash; rosrun mavros install_geographiclib_datasets.sh'
-cd ~/catkin_ws
-source devel/setup.bash
-sudo add-apt-repository ppa:obsproject/obs-studio
-sudo apt update
-sudo apt install obs-studio
-echo 'export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/catkin_ws/devel/lib' >> ~/.bashrc
-source ~/.bashrc
-cd ~/catkin_ws/src
-git clone https://github.com/eulertorres/Euler_Drone_Sim
-cd  Euler_Drone_Sim/utilidades
-pip install -r requirements.txt
-mkdir ~/.mavproxy/joysticks
-cp ~/catkin_ws/src/Euler_Drone_Sim/utilidades/frsky_x18.yaml ~/.mavproxy/joysticks
-sudo apt install htop
-sudo apt update
-sudo apt install unrar
+# Gazebo UAV Simulation Suite
+
+This repository bundles a full ROS Noetic + Gazebo workflow for running ArduPilot-powered multirotor simulations with custom aerodynamics, motor, and battery plugins. It also ships a PyQt-based desktop launcher that orchestrates Gazebo worlds, ArduPilot SITL, MAVROS, plotting utilities, and mission upload helpers from a single window.
+
+## Repository layout
+
+- **`Super_simulador.py`** — PyQt5 control panel that starts and monitors Gazebo (`roslaunch simulacao simulacao.launch`), ArduPilot SITL (`sim_vehicle.py`), Mission Planner (via Mono), live plotting with `rqt`, avionics helpers, mission upload, and plugin compilation. Tabs expose ArduPilot CLI commands (arming, mode switching, PID tuning, takeoff altitude), joystick loading, and Gazebo physics rate shortcuts.【F:Super_simulador.py†L1-L246】【F:Super_simulador.py†L247-L524】
+- **`controle/euler_drone_pkgs`** — Catkin package (`euler`) containing C++ Gazebo plugins for aerodynamics, battery modeling, motor dynamics, and ArduPilot interfacing, plus Python utilities for joystick->RC override and MAVLink mission helpers. Build configuration links against `gazebo_ros`, `roscpp`, `sensor_msgs`, and Boost.【F:controle/euler_drone_pkgs/CMakeLists.txt†L1-L72】【F:controle/euler_drone_pkgs/Control.py†L1-L23】
+- **`simulacao`** — Catkin package defining Gazebo worlds and vehicle models (T30, EASy variants, etc.) with MAVROS integration. The `simulacao.launch` file accepts `model_name` and `world` arguments to spawn the selected SDF model and start MAVROS against ArduPilot’s UDP endpoint.【F:simulacao/launch/simulacao.launch†L1-L46】【F:simulacao/launch/simulacao.launch†L47-L61】
+- **`utilidades`** — Helper assets such as plugin templates, joystick profiles (`frsky_x18.yaml`, `sony_PS5.yaml`), simulation requirements, and documentation/figures used during modeling.【F:utilidades/plugin_template.cpp†L1-L72】【F:utilidades/requirements.txt†L1-L11】
+
+## Prerequisites
+
+- Ubuntu with ROS Noetic, Gazebo (Ignition libraries where noted), MAVROS, and typical ROS build tools (`catkin`, `python3-rosinstall`, etc.).
+- ArduPilot source tree compiled for SITL (`./waf configure --board sitl && ./waf copter`) with `sim_vehicle.py` available in `PATH`.
+- Mono and Wine for running Mission Planner from Linux, plus joystick support (e.g., MAVProxy joystick module and profiles in `utilidades`).
+- Python dependencies for the launcher and mission scripts: `PyQt5`, `psutil`, and those listed in `utilidades/requirements.txt`.
+
+## Building the workspace
+
+1. Create a catkin workspace if you do not already have one:
+   ```bash
+   mkdir -p ~/catkin_ws/src
+   cd ~/catkin_ws
+   catkin_make
+   echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
+   ```
+2. Place this repository inside `~/catkin_ws/src/Euler_Drone_Sim/` and ensure ArduPilot is cloned at `~/ardupilot/` with submodules initialized.
+3. Build the plugins and packages:
+   ```bash
+   cd ~/catkin_ws
+   catkin_make
+   source devel/setup.bash
+   ```
+
+## Running the simulator
+
+1. Launch the desktop controller:
+   ```bash
+   python3 Super_simulador.py
+   ```
+2. In the GUI:
+   - Select a Gazebo world (`pista_vazia`, `cidade_pequena`, etc.) and aircraft (`T30`, `T30_barra`, `T30_estavel`, `EASy`, or `nenhum`).
+   - Click **"Abrir ambiente Gazebo"** to spawn the world and optional model; **"Iniciar Ardupilot"** starts SITL in the corresponding model directory with optional console/map views and configurable cores/coordinates.【F:Super_simulador.py†L247-L335】【F:simulacao/launch/simulacao.launch†L1-L61】
+   - Use the **Comandos Ardupilot** tab for arming, mode changes, takeoff altitude, PID inspection/tuning, and joystick loading (enables mission upload).【F:Super_simulador.py†L247-L429】
+   - Optional buttons open Mission Planner, live ROS plotting (`rqt`), avionics and mission sender scripts, Excel plotting, or recompile the catkin workspace. Process output appears in per-task tabs, and “Encerrar” controls terminate individual or all processes safely.【F:Super_simulador.py†L247-L524】
+
+## Models and assets
+
+- Gazebo models for T30 and EASy airframes (including inertial and stability variants) live under `simulacao/models/` with associated ArduPilot parameters, EEPROM snapshots, terrain tiles, and visualization assets.【F:simulacao/models/T30/model.sdf†L1-L40】【F:simulacao/models/EASy_estavel/easy.xacro†L1-L40】
+- World definitions are stored in `simulacao/worlds/`, with example `pista_vazia.world` referenced by the launcher.【F:simulacao/launch/simulacao.launch†L1-L38】
+- Mission planning helpers and sample routes reside in `controle/euler_drone_pkgs/src/scripts/Dados/`, alongside plotting and MAVLink utilities invoked from the GUI.【F:controle/euler_drone_pkgs/src/scripts/Mission_sender.py†L1-L40】【F:controle/euler_drone_pkgs/src/scripts/Plot.py†L1-L40】
+- Joystick configuration YAMLs in `utilidades` can be copied to `~/.mavproxy/joysticks` for MAVProxy’s joystick module.【F:utilidades/frsky_x18.yaml†L1-L18】【F:utilidades/sony_PS5.yaml†L1-L19】
+
+## Notes
+
+- Environment variables such as `GAZEBO_MODEL_PATH`, `GAZEBO_RESOURCE_PATH`, and `GAZEBO_PLUGIN_PATH` should include the catkin workspace and the ArduPilot Gazebo models/plugins to ensure Gazebo can locate assets.
+- When adjusting Gazebo physics update rates or stopping processes from the GUI, the launcher uses `gz physics`, QProcess, and `psutil` to manage subprocesses gracefully.【F:Super_simulador.py†L1-L130】【F:Super_simulador.py†L430-L524】
+
